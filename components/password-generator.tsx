@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Label } from './ui/label'
 import { Slider } from './ui/slider'
 import { Switch } from './ui/switch'
@@ -26,12 +26,7 @@ interface PasswordOptions {
   quantumSafe: boolean
 }
 
-interface PasswordGeneratorProps {
-  context?: ServiceContext;
-  onGenerate?: (password: string) => void;
-}
-
-export function PasswordGenerator({ context, onGenerate }: PasswordGeneratorProps) {
+export function PasswordGenerator() {
   const { toast } = useToast()
   const [password, setPassword] = useState('')
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
@@ -97,13 +92,7 @@ export function PasswordGenerator({ context, onGenerate }: PasswordGeneratorProp
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5" />
-          Quantum-Safe Password Generator
-        </CardTitle>
-        <CardDescription>
-          Generate cryptographically secure passwords with quantum resistance
-        </CardDescription>
+        <CardTitle>Password Generator</CardTitle>
       </CardHeader>
       <CardContent>
         <motion.div
