@@ -395,12 +395,12 @@ export function HistoryPanel() {
                           </div>
                         )}
 
-                        {entry.metadata.analysis.patterns && (
+                        {entry.metadata?.analysis?.patterns && (
                           <div className="mt-2 space-y-1">
                             <h4 className="text-sm font-medium">Security Checks:</h4>
                             <div className="grid grid-cols-2 gap-2">
-                              {Object.entries(entry.metadata.analysis.patterns).map(([pattern, exists]) => (
-                                <div key={pattern} className="flex items-center gap-2">
+                              {Object.entries(entry.metadata.analysis.patterns).map(([pattern, exists]: [string, boolean], index: number) => (
+                                <div key={`${entry.id}-pattern-${index}`} className="flex items-center gap-2">
                                   {exists ? (
                                     <XCircle className="h-3 w-3 text-red-500" />
                                   ) : (
@@ -413,12 +413,12 @@ export function HistoryPanel() {
                           </div>
                         )}
 
-                        {entry.metadata.analysis.recommendations?.length > 0 && (
+                        {entry.metadata?.analysis?.recommendations?.length > 0 && (
                           <div className="mt-2">
                             <h4 className="text-sm font-medium">Recommendations:</h4>
                             <ul className="list-disc pl-4 text-xs space-y-0.5">
-                              {entry.metadata.analysis.recommendations.map((rec, i) => (
-                                <li key={i}>{rec}</li>
+                              {entry.metadata.analysis.recommendations.map((rec: string, index: number) => (
+                                <li key={`${entry.id}-rec-${index}`}>{rec}</li>
                               ))}
                             </ul>
                           </div>

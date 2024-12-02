@@ -2,16 +2,14 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 
-interface MemorableOptions {
-  wordCount: number;
-  capitalize: boolean;
-  includeNumbers: boolean;
-  includeSeparators: boolean;
-}
-
 interface MemorableOptionsProps {
-  options: MemorableOptions;
-  onChange: (options: MemorableOptions) => void;
+  options: {
+    wordCount: number;
+    capitalize: boolean;
+    includeNumbers: boolean;
+    includeSeparators: boolean;
+  };
+  onChange: (options: MemorableOptionsProps['options']) => void;
 }
 
 export function MemorableOptions({ options, onChange }: MemorableOptionsProps) {

@@ -8,7 +8,7 @@ import { Switch } from './ui/switch'
 import { Button } from './ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { motion } from 'framer-motion'
-import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle, Globe, Settings2, Sparkles, Hash, Brain } from 'lucide-react'
+import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle, Globe, Settings2, Sparkles, Hash, Brain, Loader2, Wand2, AlertCircle } from 'lucide-react'
 import { generatePassword } from '@/lib/generators'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
@@ -27,6 +27,8 @@ import { ContextOptions } from "./password/context-options"
 import { PatternOptions } from "./password/pattern-options"
 import { MemorableOptions } from "./password/memorable-options"
 import { analyzePassword } from "./password/password-output"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 
 interface PasswordOptions {
   uppercase: boolean
@@ -69,6 +71,8 @@ export function PasswordGenerator() {
   const [mode, setMode] = useState<GenerationMode>('basic');
   const [context, setContext] = useState('');
   const [analyzedContext, setAnalyzedContext] = useState<PasswordRequirements | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const contextAnalyzer = new ContextAnalyzer();
   const patternGenerator = new PatternGenerator();
@@ -130,6 +134,8 @@ export function PasswordGenerator() {
 
   const handleGeneratePassword = async () => {
     try {
+      setIsGenerating(true);
+      setError(null);
       let result: GenerationResult;
       if (usePattern && pattern) {
         const generated = patternGenerator.generateFromPattern(pattern);
@@ -197,14 +203,15 @@ export function PasswordGenerator() {
           tags: ['generated']
         }
       })
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast({
-          title: 'Error',
-          description: error.message,
-          variant: 'destructive',
-        })
-      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate password');
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error,
+      });
+    } finally {
+      setIsGenerating(false);
     }
   }
 
@@ -258,41 +265,58 @@ export function PasswordGenerator() {
     }
   };
 
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch(e.key) {
+          case 'g':
+            e.preventDefault();
+            handleGeneratePassword();
+            break;
+          case 'c':
+            e.preventDefault();
+            if (password) copyToClipboard();
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [password]);
+
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
+      <CardHeader className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <CardTitle>Password Generator</CardTitle>
-          <div className="flex gap-2">
-            <Button 
-              variant={mode === 'basic' ? 'default' : 'outline'}
-              onClick={() => handleModeChange('basic')}
-            >
-              <Settings2 className="h-4 w-4 mr-2" />
-              Basic
-            </Button>
-            <Button
-              variant={mode === 'context' ? 'default' : 'outline'} 
-              onClick={() => handleModeChange('context')}
-            >
-              <Sparkles className="h-4 w-4 mr-2" />
-              AI Context
-            </Button>
-            <Button
-              variant={mode === 'pattern' ? 'default' : 'outline'}
-              onClick={() => handleModeChange('pattern')}
-            >
-              <Hash className="h-4 w-4 mr-2" />
-              Pattern
-            </Button>
-            <Button
-              variant={mode === 'memorable' ? 'default' : 'outline'}
-              onClick={() => handleModeChange('memorable')}
-            >
-              <Brain className="h-4 w-4 mr-2" />
-              Memorable
-            </Button>
-          </div>
+          <Tabs 
+            value={mode} 
+            onValueChange={(value) => handleModeChange(value as GenerationMode)}
+            className="w-full sm:w-auto"
+          >
+            <TabsList className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 p-1 bg-muted rounded-lg">
+              {[
+                { value: 'basic', icon: <Settings2 className="h-4 w-4" />, label: 'Basic' },
+                { value: 'context', icon: <Sparkles className="h-4 w-4" />, label: 'AI Context' },
+                { value: 'pattern', icon: <Hash className="h-4 w-4" />, label: 'Pattern' },
+                { value: 'memorable', icon: <Brain className="h-4 w-4" />, label: 'Memorable' }
+              ].map(tab => (
+                <TabsTrigger 
+                  key={tab.value}
+                  value={tab.value}
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-2 rounded-md transition-all",
+                    "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
+                    "hover:bg-background/50"
+                  )}
+                >
+                  {tab.icon}
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
       </CardHeader>
 
@@ -338,12 +362,31 @@ export function PasswordGenerator() {
           />
         )}
 
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        
         <Button 
           className="w-full mt-6" 
           size="lg"
           onClick={handleGeneratePassword}
+          disabled={isGenerating}
         >
-          Generate Password
+          {isGenerating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Wand2 className="mr-2 h-4 w-4" />
+              Generate Password
+            </>
+          )}
         </Button>
       </CardContent>
     </Card>

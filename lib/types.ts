@@ -6,6 +6,15 @@ export interface PasswordAnalysis {
   timeToCrack: string;
   quantumResistant: boolean;
   weaknesses: string[];
+  breached?: boolean;
+  breachCount?: number;
+  patterns?: {
+    hasCommonWords: boolean;
+    hasKeyboardPatterns: boolean;
+    hasRepeatingChars: boolean;
+    hasSequentialChars: boolean;
+  };
+  recommendations?: string[];
 }
 
 export interface PasswordMetadata {
