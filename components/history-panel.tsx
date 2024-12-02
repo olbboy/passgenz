@@ -18,6 +18,8 @@ import {
   Download,
   Upload,
   AlertCircle,
+  XCircle,
+  CheckCircle,
 } from 'lucide-react'
 import { HistoryManagementService, HistoryEntry, HistoryFilter } from '@/lib/history-management'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -36,6 +38,14 @@ import {
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { eventBus } from '@/lib/event-bus'
+
+// Helper function
+function formatPatternName(pattern: string): string {
+  return pattern
+    .replace(/([A-Z])/g, ' $1')
+    .toLowerCase()
+    .replace(/^./, str => str.toUpperCase());
+}
 
 export function HistoryPanel() {
   const { toast } = useToast()
@@ -382,6 +392,35 @@ export function HistoryPanel() {
                                 {tag}
                               </Badge>
                             ))}
+                          </div>
+                        )}
+
+                        {entry.metadata.analysis.patterns && (
+                          <div className="mt-2 space-y-1">
+                            <h4 className="text-sm font-medium">Security Checks:</h4>
+                            <div className="grid grid-cols-2 gap-2">
+                              {Object.entries(entry.metadata.analysis.patterns).map(([pattern, exists]) => (
+                                <div key={pattern} className="flex items-center gap-2">
+                                  {exists ? (
+                                    <XCircle className="h-3 w-3 text-red-500" />
+                                  ) : (
+                                    <CheckCircle className="h-3 w-3 text-green-500" />
+                                  )}
+                                  <span className="text-xs">{formatPatternName(pattern)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {entry.metadata.analysis.recommendations?.length > 0 && (
+                          <div className="mt-2">
+                            <h4 className="text-sm font-medium">Recommendations:</h4>
+                            <ul className="list-disc pl-4 text-xs space-y-0.5">
+                              {entry.metadata.analysis.recommendations.map((rec, i) => (
+                                <li key={i}>{rec}</li>
+                              ))}
+                            </ul>
                           </div>
                         )}
                       </div>

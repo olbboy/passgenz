@@ -26,6 +26,7 @@ import { BasicOptions } from "./password/basic-options"
 import { ContextOptions } from "./password/context-options"
 import { PatternOptions } from "./password/pattern-options"
 import { MemorableOptions } from "./password/memorable-options"
+import { analyzePassword } from "./password/password-output"
 
 interface PasswordOptions {
   uppercase: boolean
@@ -173,6 +174,8 @@ export function PasswordGenerator() {
       }
 
       // Save to history
+      const metrics = analyzePassword(result.password);
+
       await historyService.addEntry({
         value: result.password,
         feature: 'password',
@@ -185,11 +188,14 @@ export function PasswordGenerator() {
             timeToCrack: result.analysis.timeToCrack,
             weaknesses: result.analysis.weaknesses,
             breached: breach.breached,
-            breachCount: breach.count
+            breachCount: breach.count,
+            characterDistribution: metrics.characterDistribution,
+            patterns: metrics.patterns,
+            recommendations: metrics.recommendations
           },
           context: serviceUrl || undefined,
           tags: ['generated']
-        } as PasswordMetadata
+        }
       })
     } catch (error: unknown) {
       if (error instanceof Error) {

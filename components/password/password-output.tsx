@@ -191,9 +191,6 @@ export function PasswordOutput({
           <AlertTitle>Password Compromised</AlertTitle>
           <AlertDescription>
             Found in {breachResult.count?.toLocaleString()} data breaches
-            {breachResult.lastBreachDate && 
-              `. Last breach: ${format(breachResult.lastBreachDate, 'PP')}`
-            }
           </AlertDescription>
         </Alert>
       )}

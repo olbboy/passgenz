@@ -16,9 +16,22 @@ export interface PasswordMetadata {
     weaknesses: string[];
     breached?: boolean;
     breachCount?: number;
+    characterDistribution?: {
+      uppercase: number;
+      lowercase: number;
+      numbers: number;
+      symbols: number;
+    };
+    patterns?: {
+      hasCommonWords: boolean;
+      hasKeyboardPatterns: boolean;
+      hasRepeatingChars: boolean;
+      hasSequentialChars: boolean;
+    };
+    recommendations?: string[];
   };
   context?: string;
-  tags?: string[];
+  tags: string[];
 }
 
 export interface GeneratorConfig {
@@ -46,4 +59,30 @@ export interface PasswordOptions {
   symbols: boolean;
   memorable: boolean;
   quantumSafe: boolean;
+}
+
+export interface HistoryMetadata {
+  strength: number;
+  analysis: {
+    entropy: number;
+    timeToCrack: string;
+    weaknesses: string[];
+    breached?: boolean;
+    breachCount?: number;
+    characterDistribution?: {
+      uppercase: number;
+      lowercase: number;
+      numbers: number;
+      symbols: number;
+    };
+    patterns?: {
+      hasCommonWords: boolean;
+      hasKeyboardPatterns: boolean;
+      hasRepeatingChars: boolean;
+      hasSequentialChars: boolean;
+    };
+    recommendations?: string[];
+  };
+  context?: string;
+  tags: string[];
 } 
