@@ -1,11 +1,12 @@
 "use client"
 
+import * as React from "react"
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
-import { Badge } from './ui/badge'
-import { ScrollArea } from './ui/scroll-area'
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { 
   Star, 
   Trash2, 
@@ -17,7 +18,6 @@ import {
   Download,
   Upload,
   AlertCircle,
-  History
 } from 'lucide-react'
 import { HistoryManagementService, HistoryEntry, HistoryFilter } from '@/lib/history-management'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -29,6 +29,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { 
+  Tooltip, 
+  TooltipContent, 
+  TooltipTrigger 
+} from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
 import { eventBus } from '@/lib/event-bus'
 
 export function HistoryPanel() {
@@ -39,6 +45,7 @@ export function HistoryPanel() {
   const [showFilters, setShowFilters] = useState(false)
   const [selectedType, setSelectedType] = useState<string>('all')
   const historyService = HistoryManagementService.getInstance()
+  const [sortBy, setSortBy] = useState<'date' | 'strength'>('date')
 
   useEffect(() => {
     loadHistory()
@@ -147,7 +154,7 @@ export function HistoryPanel() {
   }
 
   const handleClearHistory = async () => {
-    if (confirm('Are you sure you want to clear all history?')) {
+    if (window.confirm('Are you sure you want to clear all history? This action cannot be undone.')) {
       await historyService.clearHistory()
       loadHistory()
       toast({
@@ -157,204 +164,234 @@ export function HistoryPanel() {
     }
   }
 
+  const filteredEntries = React.useMemo(() => {
+    let result = entries
+
+    if (selectedType !== 'all') {
+      result = result.filter(entry => entry.feature === selectedType)
+    }
+
+    if (filter.searchText) {
+      const searchLower = filter.searchText.toLowerCase()
+      result = result.filter(entry => 
+        entry.value.toLowerCase().includes(searchLower) ||
+        entry.metadata.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+      )
+    }
+
+    if (selectedTags.length > 0) {
+      result = result.filter(entry => 
+        selectedTags.every(tag => entry.metadata.tags?.includes(tag))
+      )
+    }
+
+    return result.sort((a, b) => {
+      if (sortBy === 'date') return b.timestamp - a.timestamp
+      return (b.metadata.strength || 0) - (a.metadata.strength || 0)
+    })
+  }, [entries, selectedType, filter.searchText, selectedTags, sortBy])
+
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle>History</CardTitle>
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
+    <Card className="h-full flex flex-col">
+      <CardHeader className="flex-none space-y-0 pb-4">
+        <div className="flex items-center justify-between">
+          <CardTitle>History</CardTitle>
+          <div className="flex items-center gap-2">
+            <Select value={sortBy} onValueChange={(v: 'date' | 'strength') => setSortBy(v)}>
+              <SelectTrigger className="w-[120px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="date">Date</SelectItem>
+                <SelectItem value="strength">Strength</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="flex items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" onClick={handleExport}>
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Export History</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      className="hidden"
+                      id="import-file"
+                      accept=".json"
+                      onChange={handleImport}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => document.getElementById('import-file')?.click()}
+                    >
+                      <Upload className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Import History</TooltipContent>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 mt-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search history..."
+              className="pl-8"
+              onChange={e => handleSearch(e.target.value)}
+            />
+          </div>
+          <Button
+            variant="outline"
             size="icon"
             onClick={() => setShowFilters(!showFilters)}
           >
             <SlidersHorizontal className="h-4 w-4" />
           </Button>
-          <Button 
-            variant="outline" 
-            size="icon"
-            onClick={handleExport}
-          >
-            <Download className="h-4 w-4" />
-          </Button>
-          <div className="relative">
-            <input
-              type="file"
-              className="hidden"
-              id="import-file"
-              accept=".json"
-              onChange={handleImport}
-            />
-            <Button 
-              variant="outline" 
-              size="icon"
-              onClick={() => document.getElementById('import-file')?.click()}
-            >
-              <Upload className="h-4 w-4" />
-            </Button>
-          </div>
-          <Button 
-            variant="outline" 
-            size="icon"
-            onClick={handleClearHistory}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
         </div>
       </CardHeader>
 
-      <CardContent>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search history..."
-                className="pl-8"
-                onChange={e => handleSearch(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {showFilters && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="space-y-2"
-            >
-              <Select
-                value={selectedType}
-                onValueChange={setSelectedType}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="password">Passwords</SelectItem>
-                  <SelectItem value="pin">PINs</SelectItem>
-                  <SelectItem value="secret">Secrets</SelectItem>
-                  <SelectItem value="id">IDs</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div className="flex flex-wrap gap-1">
-                {historyService.getAllTags().map(tag => (
-                  <Badge
-                    key={tag}
-                    variant={selectedTags.includes(tag) ? 'default' : 'outline'}
-                    className="cursor-pointer"
-                    onClick={() => handleTagSelect(tag)}
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Button
-                  variant={filter.favorites ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => handleFilterChange('favorites', !filter.favorites)}
+      <CardContent className="flex-1 overflow-hidden">
+        <ScrollArea className="h-[calc(100vh-15rem)]">
+          <div className="pr-4">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {filteredEntries.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col items-center justify-center py-8 text-muted-foreground"
                 >
-                  <Star className="h-4 w-4 mr-1" />
-                  Favorites
-                </Button>
-              </div>
-            </motion.div>
-          )}
-
-          <ScrollArea className="h-[500px]">
-            <AnimatePresence>
-              {entries.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
                   <AlertCircle className="h-8 w-8 mb-2" />
                   <p>No history found</p>
-                </div>
+                  {(filter.searchText || selectedTags.length > 0 || selectedType !== 'all') && (
+                    <Button 
+                      variant="ghost" 
+                      className="mt-2"
+                      onClick={() => {
+                        setFilter({})
+                        setSelectedTags([])
+                        setSelectedType('all')
+                      }}
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </motion.div>
               ) : (
-                entries.map((entry, index) => (
-                  <motion.div
-                    key={entry.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="p-4 border-b last:border-0 hover:bg-accent/50 rounded-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 space-y-1">
-                        <div className="font-mono break-all">{entry.value}</div>
-                        <div className="text-sm text-muted-foreground flex items-center gap-2">
+                <div className="space-y-4">
+                  {filteredEntries.map((entry: HistoryEntry, index: number) => (
+                    <motion.div
+                      key={entry.id}
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.2, delay: index * 0.05 }}
+                      className={cn(
+                        "group relative p-4 rounded-lg border bg-card transition-colors",
+                        "hover:bg-accent/50"
+                      )}
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="font-mono text-sm break-all line-clamp-2">
+                            {entry.value}
+                          </div>
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    copyToClipboard(entry.value)
+                                  }}
+                                >
+                                  <Copy className="h-3.5 w-3.5" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>Copy</TooltipContent>
+                            </Tooltip>
+
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleToggleFavorite(entry.id)
+                                  }}
+                                >
+                                  <Star className={cn(
+                                    "h-3.5 w-3.5",
+                                    entry.metadata.favorite && "fill-yellow-400"
+                                  )} />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>Favorite</TooltipContent>
+                            </Tooltip>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <Clock className="h-3 w-3" />
-                          {new Date(entry.timestamp).toLocaleString()}
-                          <Badge variant="secondary">{entry.feature}</Badge>
+                          <span>{new Date(entry.timestamp).toLocaleString()}</span>
+                          <Badge variant="secondary" className="text-[10px]">
+                            {entry.feature}
+                          </Badge>
                           {entry.metadata.strength && (
-                            <Badge 
+                            <Badge
                               variant="outline"
-                              className={
+                              className={cn(
+                                "text-[10px]",
                                 entry.metadata.strength >= 0.8 ? 'bg-green-500/10' :
                                 entry.metadata.strength >= 0.6 ? 'bg-blue-500/10' :
                                 entry.metadata.strength >= 0.4 ? 'bg-yellow-500/10' :
                                 'bg-red-500/10'
-                              }
+                              )}
                             >
-                              Strength: {Math.round(entry.metadata.strength * 100)}%
+                              {Math.round(entry.metadata.strength * 100)}%
                             </Badge>
                           )}
                         </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => copyToClipboard(entry.value)}
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleToggleFavorite(entry.id)}
-                        >
-                          <Star
-                            className={`h-4 w-4 ${
-                              entry.metadata.favorite ? 'fill-yellow-400' : ''
-                            }`}
-                          />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(entry.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
 
-                    {entry.metadata.tags && entry.metadata.tags.length > 0 && (
-                      <div className="mt-2 flex items-center gap-2">
-                        <Tag className="h-3 w-3 text-muted-foreground" />
-                        <div className="flex flex-wrap gap-1">
-                          {entry.metadata.tags.map(tag => (
-                            <Badge
-                              key={tag}
-                              variant={selectedTags.includes(tag) ? 'default' : 'outline'}
-                              className="cursor-pointer"
-                              onClick={() => handleTagSelect(tag)}
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
+                        {entry.metadata.tags && entry.metadata.tags.length > 0 && (
+                          <div className="flex items-center gap-1 flex-wrap">
+                            {entry.metadata.tags?.map((tag: string) => (
+                              <Badge
+                                key={tag}
+                                variant={selectedTags.includes(tag) ? 'default' : 'outline'}
+                                className="text-[10px] cursor-pointer"
+                                onClick={(e: React.MouseEvent) => {
+                                  e.stopPropagation()
+                                  handleTagSelect(tag)
+                                }}
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </motion.div>
-                ))
+                    </motion.div>
+                  ))}
+                </div>
               )}
             </AnimatePresence>
-          </ScrollArea>
-        </div>
+          </div>
+        </ScrollArea>
       </CardContent>
     </Card>
   )

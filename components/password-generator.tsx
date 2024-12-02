@@ -168,7 +168,7 @@ export function PasswordGenerator() {
                 <span>{analysis.entropy.toFixed(2)} bits</span>
               </div>
               <Progress 
-                value={analysis ? Number(analysis.entropy.toFixed(2)) : 0} 
+                value={analysis?.entropy ? Number(analysis.entropy.toFixed(2)) : 0} 
                 className="h-2"
               />
             </div>

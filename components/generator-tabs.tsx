@@ -27,7 +27,7 @@ export function GeneratorTabs() {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => setShowHistory(!showHistory)}
+            onClick={() => setShowHistory(true)}
           >
             <History className={`h-4 w-4 ${showHistory ? 'text-primary' : ''}`} />
           </Button>
