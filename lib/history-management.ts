@@ -1,3 +1,5 @@
+import { eventBus } from './event-bus'
+
 export interface HistoryEntry {
   id: string;
   timestamp: number;
@@ -52,6 +54,9 @@ export class HistoryManagementService {
 
     this.history.set(newEntry.id, newEntry);
     await this.persistHistory();
+
+    // Emit event
+    eventBus.emit('history-updated');
 
     return newEntry;
   }
@@ -167,5 +172,40 @@ export class HistoryManagementService {
       entry.metadata.tags?.forEach(tag => tags.add(tag));
     });
     return Array.from(tags);
+  }
+
+  async exportHistory(): Promise<HistoryEntry[]> {
+    return Array.from(this.history.values());
+  }
+
+  async importHistory(data: HistoryEntry[]): Promise<void> {
+    // Validate data format
+    if (!Array.isArray(data)) {
+      throw new Error('Invalid import data format');
+    }
+
+    // Clear existing history
+    this.history.clear();
+
+    // Import new entries
+    data.forEach(entry => {
+      if (this.validateHistoryEntry(entry)) {
+        this.history.set(entry.id, entry);
+      }
+    });
+
+    await this.persistHistory();
+  }
+
+  private validateHistoryEntry(entry: any): entry is HistoryEntry {
+    return (
+      typeof entry === 'object' &&
+      typeof entry.id === 'string' &&
+      typeof entry.timestamp === 'number' &&
+      typeof entry.value === 'string' &&
+      typeof entry.feature === 'string' &&
+      ['password', 'pin', 'secret', 'id'].includes(entry.feature) &&
+      typeof entry.metadata === 'object'
+    );
   }
 } 

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Input } from './ui/input'
 import { generateId } from '@/lib/generators'
 import { PasswordAnalysis } from '@/lib/types'
+import { HistoryManagementService } from '@/lib/history-management'
 
 export function IdGenerator() {
   const { toast } = useToast()
@@ -18,11 +19,21 @@ export function IdGenerator() {
   const [format, setFormat] = useState<'uuid' | 'nanoid' | 'custom'>('uuid')
   const [prefix, setPrefix] = useState('')
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
+  const historyService = HistoryManagementService.getInstance()
 
   const handleGenerateId = async () => {
     const result = await generateId(format, prefix)
     setId(result.id)
     setAnalysis(result.analysis)
+
+    // Save to history
+    await historyService.addEntry({
+      value: result.id,
+      feature: 'id',
+      metadata: {
+        tags: ['generated', format]
+      }
+    })
   }
 
   const copyToClipboard = async () => {

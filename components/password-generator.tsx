@@ -16,6 +16,7 @@ import { ContextAnalyzer, ServiceContext, PasswordRequirements } from '@/lib/con
 import { PatternGenerator } from '@/lib/pattern-generator'
 import { MemorableGenerator } from '@/lib/memorable-generator'
 import { PasswordAnalysis, GeneratorConfig, GenerationResult } from '@/lib/types'
+import { HistoryManagementService } from '@/lib/history-management'
 
 interface PasswordOptions {
   uppercase: boolean
@@ -46,6 +47,7 @@ export function PasswordGenerator() {
   const contextAnalyzer = new ContextAnalyzer();
   const patternGenerator = new PatternGenerator();
   const memorableGenerator = new MemorableGenerator();
+  const historyService = HistoryManagementService.getInstance()
 
   const handleContextAnalysis = useCallback(() => {
     if (!serviceUrl) return;
@@ -69,6 +71,24 @@ export function PasswordGenerator() {
       const result = await generatePassword(length[0], options)
       setPassword(result.password)
       setAnalysis(result.analysis)
+
+      // Save to history
+      await historyService.addEntry({
+        value: result.password,
+        feature: 'password',
+        metadata: {
+          strength: result.analysis.strength === 'very-strong' ? 1 :
+                    result.analysis.strength === 'strong' ? 0.8 :
+                    result.analysis.strength === 'medium' ? 0.6 : 0.4,
+          analysis: {
+            entropy: result.analysis.entropy,
+            timeToCrack: result.analysis.timeToCrack,
+            weaknesses: result.analysis.weaknesses
+          },
+          context: serviceUrl || undefined,
+          tags: ['generated']
+        }
+      })
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast({

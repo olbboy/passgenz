@@ -5,7 +5,7 @@ import { PasswordGenerator } from "./password-generator"
 import { PinGenerator } from "./pin-generator"
 import { SecretGenerator } from "./secret-generator"
 import { IdGenerator } from "./id-generator"
-import { HistoryPanel } from "./history-panel"
+import { HistoryDrawer } from "./history-drawer"
 import { Button } from "./ui/button"
 import { History } from "lucide-react"
 import { useState } from "react"
@@ -33,32 +33,29 @@ export function GeneratorTabs() {
           </Button>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className={showHistory ? 'md:col-span-1' : 'md:col-span-2'}>
-            <TabsContent value="password">
-              <PasswordGenerator />
-            </TabsContent>
+        <div className="w-full max-w-2xl mx-auto">
+          <TabsContent value="password">
+            <PasswordGenerator />
+          </TabsContent>
 
-            <TabsContent value="pin">
-              <PinGenerator />
-            </TabsContent>
+          <TabsContent value="pin">
+            <PinGenerator />
+          </TabsContent>
 
-            <TabsContent value="secret">
-              <SecretGenerator />
-            </TabsContent>
+          <TabsContent value="secret">
+            <SecretGenerator />
+          </TabsContent>
 
-            <TabsContent value="id">
-              <IdGenerator />
-            </TabsContent>
-          </div>
-
-          {showHistory && (
-            <div className="md:col-span-1">
-              <HistoryPanel />
-            </div>
-          )}
+          <TabsContent value="id">
+            <IdGenerator />
+          </TabsContent>
         </div>
       </Tabs>
+
+      <HistoryDrawer 
+        open={showHistory}
+        onOpenChange={setShowHistory}
+      />
     </div>
   )
 } 

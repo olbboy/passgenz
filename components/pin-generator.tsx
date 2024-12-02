@@ -10,16 +10,27 @@ import { motion } from 'framer-motion'
 import { Copy, RefreshCw } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { generatePin } from '@/lib/generators'
+import { HistoryManagementService } from '@/lib/history-management'
 
 export function PinGenerator() {
   const { toast } = useToast()
   const [pin, setPin] = useState('')
   const [length, setLength] = useState([4])
   const [pinType, setPinType] = useState<'numeric' | 'alphanumeric' | 'extended'>('numeric')
+  const historyService = HistoryManagementService.getInstance()
 
   const handleGeneratePin = async () => {
     const result = await generatePin(length[0], pinType)
     setPin(result.pin)
+
+    // Save to history
+    await historyService.addEntry({
+      value: result.pin,
+      feature: 'pin',
+      metadata: {
+        tags: ['generated', pinType]
+      }
+    })
   }
 
   const copyToClipboard = async () => {
