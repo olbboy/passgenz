@@ -15,7 +15,7 @@ export interface PasswordRequirements {
   maxLength?: number;
   requiredChars: ('uppercase' | 'lowercase' | 'number' | 'symbol')[];
   excludedChars?: string[];
-  recommendedLength: number;
+  securityLevel: 'high' | 'medium' | 'low';
 }
 
 export class ContextAnalyzer {
@@ -85,7 +85,7 @@ export class ContextAnalyzer {
   suggestRequirements(context: ServiceContext): PasswordRequirements {
     const baseRequirements = {
       minLength: 12,
-      recommendedLength: 16,
+      securityLevel: 'medium' as const,
       requiredChars: ['uppercase', 'lowercase', 'number', 'symbol'] as Array<'uppercase' | 'lowercase' | 'number' | 'symbol'>
     };
 
@@ -94,7 +94,7 @@ export class ContextAnalyzer {
         return {
           ...baseRequirements,
           minLength: Math.max(baseRequirements.minLength, context.requirements?.minLength || 0),
-          recommendedLength: 20,
+          securityLevel: 'high',
           requiredChars: ['uppercase', 'lowercase', 'number', 'symbol'],
           excludedChars: context.requirements?.excludedChars
         };
@@ -103,7 +103,7 @@ export class ContextAnalyzer {
         return {
           ...baseRequirements,
           minLength: Math.max(8, context.requirements?.minLength || 0),
-          recommendedLength: 16,
+          securityLevel: 'medium',
           requiredChars: ['uppercase', 'lowercase', 'number']
         };
 
@@ -111,7 +111,7 @@ export class ContextAnalyzer {
         return {
           ...baseRequirements,
           minLength: Math.max(6, context.requirements?.minLength || 0),
-          recommendedLength: 12,
+          securityLevel: 'low',
           requiredChars: ['lowercase', 'number']
         };
 
@@ -155,5 +155,40 @@ export class ContextAnalyzer {
           requiredChars: ['lowercase', 'number']
         };
     }
+  }
+
+  analyzeFromText(text: string): PasswordRequirements {
+    const requirements: PasswordRequirements = {
+      minLength: 12,
+      requiredChars: ['lowercase'],
+      excludedChars: [],
+      securityLevel: 'medium'
+    };
+
+    const lowercaseText = text.toLowerCase();
+
+    // Analyze security level
+    if (lowercaseText.includes('strong') || lowercaseText.includes('secure')) {
+      requirements.securityLevel = 'high';
+      requirements.minLength = 16;
+      requirements.requiredChars = ['uppercase', 'lowercase', 'number', 'symbol'];
+    } else if (lowercaseText.includes('basic') || lowercaseText.includes('simple')) {
+      requirements.securityLevel = 'low';
+      requirements.minLength = 8;
+      requirements.requiredChars = ['lowercase', 'number'];
+    }
+
+    // Extract specific requirements
+    if (lowercaseText.includes('uppercase')) {
+      requirements.requiredChars.push('uppercase');
+    }
+    if (lowercaseText.includes('number')) {
+      requirements.requiredChars.push('number');
+    }
+    if (lowercaseText.includes('symbol')) {
+      requirements.requiredChars.push('symbol');
+    }
+
+    return requirements;
   }
 } 

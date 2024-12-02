@@ -43,7 +43,7 @@ export function ContextOptions({
             <li>• Minimum length: {analyzedContext.minLength} characters</li>
             <li>• Required characters: {analyzedContext.requiredChars.join(', ')}</li>
             <li>• Security level: {analyzedContext.securityLevel}</li>
-            {analyzedContext.excludedChars?.length > 0 && (
+            {analyzedContext?.excludedChars && analyzedContext.excludedChars.length > 0 && (
               <li>• Excluded characters: {analyzedContext.excludedChars.join(' ')}</li>
             )}
           </ul>

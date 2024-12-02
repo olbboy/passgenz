@@ -211,6 +211,47 @@ export function PasswordGenerator() {
     })
   }
 
+  const handleModeChange = (newMode: GenerationMode) => {
+    // Reset state
+    setMode(newMode);
+    setPassword('');
+    setAnalysis(null);
+    setBreachResult(null);
+    
+    // Reset mode-specific state
+    switch (newMode) {
+      case 'basic':
+        setOptions({
+          uppercase: true,
+          lowercase: true,
+          numbers: true,
+          symbols: true,
+          memorable: false,
+          quantumSafe: true
+        });
+        setLength([16]);
+        break;
+        
+      case 'context':
+        setContext('');
+        setAnalyzedContext(null);
+        break;
+        
+      case 'pattern':
+        setPattern('');
+        break;
+        
+      case 'memorable':
+        setMemorableOptions({
+          wordCount: 3,
+          capitalize: true,
+          includeNumbers: true,
+          includeSeparators: true
+        });
+        break;
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -219,28 +260,28 @@ export function PasswordGenerator() {
           <div className="flex gap-2">
             <Button 
               variant={mode === 'basic' ? 'default' : 'outline'}
-              onClick={() => setMode('basic')}
+              onClick={() => handleModeChange('basic')}
             >
               <Settings2 className="h-4 w-4 mr-2" />
               Basic
             </Button>
             <Button
               variant={mode === 'context' ? 'default' : 'outline'} 
-              onClick={() => setMode('context')}
+              onClick={() => handleModeChange('context')}
             >
               <Sparkles className="h-4 w-4 mr-2" />
               AI Context
             </Button>
             <Button
               variant={mode === 'pattern' ? 'default' : 'outline'}
-              onClick={() => setMode('pattern')}
+              onClick={() => handleModeChange('pattern')}
             >
               <Hash className="h-4 w-4 mr-2" />
               Pattern
             </Button>
             <Button
               variant={mode === 'memorable' ? 'default' : 'outline'}
-              onClick={() => setMode('memorable')}
+              onClick={() => handleModeChange('memorable')}
             >
               <Brain className="h-4 w-4 mr-2" />
               Memorable

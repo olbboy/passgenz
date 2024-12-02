@@ -37,4 +37,13 @@ export interface GeneratorConfig {
 export interface GenerationResult {
   password: string;
   analysis: PasswordAnalysis;
+}
+
+export interface PasswordOptions {
+  uppercase: boolean;
+  lowercase: boolean;
+  numbers: boolean;
+  symbols: boolean;
+  memorable: boolean;
+  quantumSafe: boolean;
 } 
