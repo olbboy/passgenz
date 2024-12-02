@@ -1,10 +1,10 @@
 "use client"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
-import { PasswordGenerator } from './password-generator'
-import { PinGenerator } from './pin-generator'
-import { SecretGenerator } from './secret-generator'
-import { IdGenerator } from './id-generator'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { PasswordGenerator } from '@/components/password-generator'
+import { PinGenerator } from '@/components/pin-generator'
+import { SecretGenerator } from '@/components/secret-generator'
+import { IdGenerator } from '@/components/id-generator'
 
 export function GeneratorTabs() {
   return (

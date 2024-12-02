@@ -5,11 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Label } from './ui/label'
 import { Slider } from './ui/slider'
 import { Button } from './ui/button'
-import { useToast } from './ui/use-toast'
+import { useToast } from '@/hooks/use-toast'
 import { motion } from 'framer-motion'
 import { Copy, RefreshCw } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
-import { generatePin } from '../lib/generators'
+import { generatePin } from '@/lib/generators'
 
 export function PinGenerator() {
   const { toast } = useToast()
@@ -43,7 +43,9 @@ export function PinGenerator() {
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-center space-x-4 bg-secondary p-4 rounded-lg">
-            <span className="text-xl font-mono flex-1">{pin || 'Click generate'}</span>
+            <span className="text-xl font-mono flex-1 font-[family-name:var(--font-geist-mono)]">
+              {pin || 'Click generate'}
+            </span>
             <Button variant="outline" size="icon" onClick={handleGeneratePin}>
               <RefreshCw className="h-4 w-4" />
             </Button>

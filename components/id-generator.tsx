@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Label } from './ui/label'
 import { Button } from './ui/button'
-import { useToast } from './ui/use-toast'
+import { useToast } from '@/hooks/use-toast'
 import { motion } from 'framer-motion'
 import { Copy, RefreshCw } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
@@ -43,7 +43,7 @@ export function IdGenerator() {
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-center space-x-4 bg-secondary p-4 rounded-lg">
-            <span className="text-xl font-mono flex-1 break-all">
+            <span className="text-xl font-mono flex-1 break-all font-[family-name:var(--font-geist-mono)]">
               {id || 'Click generate'}
             </span>
             <Button variant="outline" size="icon" onClick={handleGenerateId}>
