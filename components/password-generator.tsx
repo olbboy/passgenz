@@ -8,9 +8,18 @@ import { Switch } from './ui/switch'
 import { Button } from './ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { motion } from 'framer-motion'
-import { Copy, RefreshCw, Shield, AlertTriangle } from 'lucide-react'
+import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
 import { generatePassword } from '@/lib/generators'
 import { Progress } from '@/components/ui/progress'
+import { cn } from '@/lib/utils'
+
+interface PasswordAnalysis {
+  entropy: number
+  strength: 'weak' | 'medium' | 'strong' | 'very-strong'
+  timeToCrack: string
+  quantumResistant: boolean
+  weaknesses: string[]
+}
 
 interface PasswordOptions {
   uppercase: boolean
@@ -18,17 +27,13 @@ interface PasswordOptions {
   numbers: boolean
   symbols: boolean
   memorable: boolean
-}
-
-interface PasswordStrength {
-  score: number
-  feedback: string
-  timeToCrack: string
+  quantumSafe: boolean
 }
 
 export function PasswordGenerator() {
   const { toast } = useToast()
   const [password, setPassword] = useState('')
+  const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
   const [length, setLength] = useState([16])
   const [options, setOptions] = useState<PasswordOptions>({
     uppercase: true,
@@ -36,27 +41,14 @@ export function PasswordGenerator() {
     numbers: true,
     symbols: true,
     memorable: false,
+    quantumSafe: true
   })
-  const [strength, setStrength] = useState<PasswordStrength>({
-    score: 0,
-    feedback: '',
-    timeToCrack: '',
-  })
-
-  const calculateStrength = (pwd: string): PasswordStrength => {
-    const score = pwd.length >= 12 ? 100 : (pwd.length / 12) * 100
-    return {
-      score,
-      feedback: score >= 80 ? 'Very Strong' : score >= 60 ? 'Strong' : 'Weak',
-      timeToCrack: score >= 80 ? '> 1000 years' : '< 1 year'
-    }
-  }
 
   const handleGeneratePassword = async () => {
     try {
-      const newPassword = await generatePassword(length[0], options)
-      setPassword(newPassword)
-      setStrength(calculateStrength(newPassword))
+      const result = await generatePassword(length[0], options)
+      setPassword(result.password)
+      setAnalysis(result.analysis)
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast({
@@ -82,13 +74,13 @@ export function PasswordGenerator() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Shield className="h-5 w-5" />
-          Password Generator
+          Quantum-Safe Password Generator
         </CardTitle>
         <CardDescription>
-          Generate secure, quantum-resistant passwords
+          Generate cryptographically secure passwords with quantum resistance
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent>
         <motion.div
           className="relative"
           initial={{ opacity: 0, y: 20 }}
@@ -111,14 +103,14 @@ export function PasswordGenerator() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Password Strength</span>
-                  <span className={strength.score >= 80 ? 'text-green-500' : 'text-yellow-500'}>
-                    {strength.feedback}
+                  <span className={analysis?.strength === 'very-strong' ? 'text-green-500' : analysis?.strength === 'strong' ? 'text-blue-500' : analysis?.strength === 'medium' ? 'text-yellow-500' : 'text-red-500'}>
+                    {analysis?.strength}
                   </span>
                 </div>
-                <Progress value={strength.score} className="h-2" />
+                <Progress value={analysis?.entropy.toFixed(2) || 0} className="h-2" />
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Time to crack: {strength.timeToCrack}</span>
-                  {strength.score < 80 && (
+                  <span>Time to crack: {analysis?.timeToCrack}</span>
+                  {analysis?.strength !== 'very-strong' && (
                     <span className="flex items-center gap-1">
                       <AlertTriangle className="h-4 w-4" />
                       Consider increasing length
@@ -129,6 +121,73 @@ export function PasswordGenerator() {
             )}
           </div>
         </motion.div>
+
+        {analysis && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-4 space-y-4"
+          >
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span>Entropy Score</span>
+                <span>{analysis.entropy.toFixed(2)} bits</span>
+              </div>
+              <Progress 
+                value={analysis ? Number(analysis.entropy.toFixed(2)) : 0} 
+                className="h-2"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label>Strength</Label>
+                <div className={cn(
+                  "text-sm font-medium",
+                  analysis.strength === 'very-strong' && "text-green-500",
+                  analysis.strength === 'strong' && "text-blue-500",
+                  analysis.strength === 'medium' && "text-yellow-500",
+                  analysis.strength === 'weak' && "text-red-500"
+                )}>
+                  {analysis.strength}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label>Time to Crack</Label>
+                <div className="text-sm">{analysis.timeToCrack}</div>
+              </div>
+
+              <div className="space-y-1">
+                <Label>Quantum Resistant</Label>
+                <div className="flex items-center gap-2">
+                  {analysis.quantumResistant ? (
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <XCircle className="h-4 w-4 text-red-500" />
+                  )}
+                  <span className="text-sm">
+                    {analysis.quantumResistant ? 'Yes' : 'No'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {analysis.weaknesses.length > 0 && (
+              <div className="space-y-2">
+                <Label>Weaknesses</Label>
+                <ul className="text-sm space-y-1">
+                  {analysis.weaknesses.map((weakness, i) => (
+                    <li key={i} className="flex items-center gap-2 text-yellow-500">
+                      <AlertTriangle className="h-4 w-4" />
+                      {weakness}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </motion.div>
+        )}
 
         <div className="space-y-4">
           <div>
@@ -195,6 +254,17 @@ export function PasswordGenerator() {
                 checked={options.symbols}
                 onCheckedChange={(checked: boolean) =>
                   setOptions((prev) => ({ ...prev, symbols: checked }))
+                }
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Label htmlFor="quantumSafe">Quantum-Safe Generation</Label>
+              <Switch
+                id="quantumSafe"
+                checked={options.quantumSafe}
+                onCheckedChange={(checked) =>
+                  setOptions((prev) => ({ ...prev, quantumSafe: checked }))
                 }
               />
             </div>

@@ -15,11 +15,13 @@ export function SecretGenerator() {
   const [secret, setSecret] = useState('')
   const [algorithm, setAlgorithm] = useState('sha256')
   const [format, setFormat] = useState<'hex' | 'base64'>('hex')
+  const [analysis, setAnalysis] = useState(null)
 
   const handleGenerateSecret = async () => {
     try {
-      const newSecret = await generateSecret(format)
-      setSecret(newSecret)
+      const result = await generateSecret(format)
+      setSecret(result.secret)
+      setAnalysis(result.analysis)
     } catch (error) {
       toast({
         title: 'Error',

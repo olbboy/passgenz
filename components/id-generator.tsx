@@ -16,10 +16,12 @@ export function IdGenerator() {
   const [id, setId] = useState('')
   const [format, setFormat] = useState<'uuid' | 'nanoid' | 'custom'>('uuid')
   const [prefix, setPrefix] = useState('')
+  const [analysis, setAnalysis] = useState(null)
 
-  const handleGenerateId = () => {
-    const newId = generateId(format, prefix)
-    setId(newId)
+  const handleGenerateId = async () => {
+    const result = await generateId(format, prefix)
+    setId(result.id)
+    setAnalysis(result.analysis)
   }
 
   const copyToClipboard = async () => {

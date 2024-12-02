@@ -17,9 +17,9 @@ export function PinGenerator() {
   const [length, setLength] = useState([4])
   const [pinType, setPinType] = useState<'numeric' | 'alphanumeric' | 'extended'>('numeric')
 
-  const handleGeneratePin = () => {
-    const newPin = generatePin(length[0], pinType)
-    setPin(newPin)
+  const handleGeneratePin = async () => {
+    const result = await generatePin(length[0], pinType)
+    setPin(result.pin)
   }
 
   const copyToClipboard = async () => {
