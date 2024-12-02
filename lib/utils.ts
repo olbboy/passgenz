@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { PasswordRequirements } from '@/lib/context-analyzer'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -26,11 +27,11 @@ export function generatePatternFromRequirements(requirements: PasswordRequiremen
     lowercase: 'l',
     number: 'd',
     symbol: 's'
-  };
+  } as const;
 
   let pattern = '';
-  requirements.requiredChars.forEach(char => {
-    pattern += patternMap[char as keyof typeof patternMap];
+  requirements.requiredChars.forEach((char: 'uppercase' | 'lowercase' | 'number' | 'symbol') => {
+    pattern += patternMap[char];
   });
 
   // Pad to minimum length if needed

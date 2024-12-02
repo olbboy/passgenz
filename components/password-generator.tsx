@@ -8,7 +8,7 @@ import { Switch } from './ui/switch'
 import { Button } from './ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { motion } from 'framer-motion'
-import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle, Globe } from 'lucide-react'
+import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle, Globe, Settings2, Sparkles, Hash, Brain } from 'lucide-react'
 import { generatePassword } from '@/lib/generators'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
@@ -20,6 +20,12 @@ import { HistoryManagementService } from '@/lib/history-management'
 import { BreachDatabase } from '@/lib/breach-database'
 import { Input } from '@/components/ui/input'
 import { generatePatternFromRequirements, calculateTimeToCrack } from '@/lib/utils'
+import { Textarea } from "@/components/ui/textarea"
+import { PasswordOutput } from "./password/password-output"
+import { BasicOptions } from "./password/basic-options"
+import { ContextOptions } from "./password/context-options"
+import { PatternOptions } from "./password/pattern-options"
+import { MemorableOptions } from "./password/memorable-options"
 
 interface PasswordOptions {
   uppercase: boolean
@@ -29,6 +35,8 @@ interface PasswordOptions {
   memorable: boolean
   quantumSafe: boolean
 }
+
+type GenerationMode = 'basic' | 'context' | 'pattern' | 'memorable';
 
 export function PasswordGenerator() {
   const { toast } = useToast()
@@ -57,6 +65,9 @@ export function PasswordGenerator() {
     breached: boolean;
     count?: number;
   } | null>(null);
+  const [mode, setMode] = useState<GenerationMode>('basic');
+  const [context, setContext] = useState('');
+  const [analyzedContext, setAnalyzedContext] = useState<PasswordRequirements | null>(null);
 
   const contextAnalyzer = new ContextAnalyzer();
   const patternGenerator = new PatternGenerator();
@@ -77,55 +88,21 @@ export function PasswordGenerator() {
   }, [usePattern])
 
   const handleContextAnalysis = useCallback(() => {
-    if (!serviceUrl) return;
+    if (!context) return;
     
-    const analyzedContext = contextAnalyzer.analyzeContext(serviceUrl);
-    const requirements = contextAnalyzer.suggestRequirements(analyzedContext);
+    const requirements = contextAnalyzer.analyzeFromText(context);
+    setAnalyzedContext(requirements);
     
-    // Update length based on requirements
+    // Update options based on requirements
     setLength([requirements.minLength]);
-
-    // If using pattern, generate appropriate pattern
-    if (usePattern) {
-      const newPattern = generatePatternFromRequirements(requirements);
-      setPattern(newPattern);
-    } else {
-      // Update character options
-      setOptions(prev => ({
-        ...prev,
-        uppercase: requirements.requiredChars.includes('uppercase'),
-        lowercase: requirements.requiredChars.includes('lowercase'),
-        numbers: requirements.requiredChars.includes('number'),
-        symbols: requirements.requiredChars.includes('symbol')
-      }));
-    }
-
-    // Show requirements in UI
-    toast({
-      title: 'Password Requirements',
-      description: (
-        <div className="space-y-2">
-          <p>Minimum length: {requirements.minLength}</p>
-          <p>Required characters:</p>
-          <ul className="list-disc pl-4">
-            {requirements.requiredChars.map(char => (
-              <li key={char}>{char}</li>
-            ))}
-          </ul>
-          {requirements.excludedChars && requirements.excludedChars.length > 0 && (
-            <>
-              <p>Excluded characters:</p>
-              <ul className="list-disc pl-4">
-                {requirements.excludedChars.map(char => (
-                  <li key={char}>{char}</li>
-                ))}
-              </ul>
-            </>
-          )}
-        </div>
-      )
-    });
-  }, [serviceUrl, usePattern, toast]);
+    setOptions(prev => ({
+      ...prev,
+      uppercase: requirements.requiredChars.includes('uppercase'),
+      lowercase: requirements.requiredChars.includes('lowercase'),
+      numbers: requirements.requiredChars.includes('number'),
+      symbols: requirements.requiredChars.includes('symbol')
+    }));
+  }, [context]);
 
   const validatePasswordForService = useCallback((password: string) => {
     if (!serviceUrl) return true;
@@ -237,297 +214,90 @@ export function PasswordGenerator() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Password Generator</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <motion.div
-          className="relative"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="flex flex-col space-y-4">
-            <div className="flex items-center space-x-4 bg-secondary p-4 rounded-lg">
-              <span className="text-xl font-mono flex-1 font-[family-name:var(--font-geist-mono)]">
-                {password || 'Click generate'}
-              </span>
-              <Button variant="outline" size="icon" onClick={handleGeneratePassword}>
-                <RefreshCw className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon" onClick={copyToClipboard}>
-                <Copy className="h-4 w-4" />
-              </Button>
-            </div>
-
-            {password && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Password Strength</span>
-                  <span className={analysis?.strength === 'very-strong' ? 'text-green-500' : analysis?.strength === 'strong' ? 'text-blue-500' : analysis?.strength === 'medium' ? 'text-yellow-500' : 'text-red-500'}>
-                    {analysis?.strength}
-                  </span>
-                </div>
-                <Progress value={analysis?.entropy.toFixed(2) || 0} className="h-2" />
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Time to crack: {analysis?.timeToCrack}</span>
-                  {analysis?.strength !== 'very-strong' && (
-                    <span className="flex items-center gap-1">
-                      <AlertTriangle className="h-4 w-4" />
-                      Consider increasing length
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
+        <div className="flex items-center justify-between">
+          <CardTitle>Password Generator</CardTitle>
+          <div className="flex gap-2">
+            <Button 
+              variant={mode === 'basic' ? 'default' : 'outline'}
+              onClick={() => setMode('basic')}
+            >
+              <Settings2 className="h-4 w-4 mr-2" />
+              Basic
+            </Button>
+            <Button
+              variant={mode === 'context' ? 'default' : 'outline'} 
+              onClick={() => setMode('context')}
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              AI Context
+            </Button>
+            <Button
+              variant={mode === 'pattern' ? 'default' : 'outline'}
+              onClick={() => setMode('pattern')}
+            >
+              <Hash className="h-4 w-4 mr-2" />
+              Pattern
+            </Button>
+            <Button
+              variant={mode === 'memorable' ? 'default' : 'outline'}
+              onClick={() => setMode('memorable')}
+            >
+              <Brain className="h-4 w-4 mr-2" />
+              Memorable
+            </Button>
           </div>
-        </motion.div>
-
-        {analysis && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-4 space-y-4"
-          >
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span>Entropy Score</span>
-                <span>{analysis.entropy.toFixed(2)} bits</span>
-              </div>
-              <Progress 
-                value={analysis?.entropy ? Number(analysis.entropy.toFixed(2)) : 0} 
-                className="h-2"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label>Strength</Label>
-                <div className={cn(
-                  "text-sm font-medium",
-                  analysis.strength === 'very-strong' && "text-green-500",
-                  analysis.strength === 'strong' && "text-blue-500",
-                  analysis.strength === 'medium' && "text-yellow-500",
-                  analysis.strength === 'weak' && "text-red-500"
-                )}>
-                  {analysis.strength}
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <Label>Time to Crack</Label>
-                <div className="text-sm">{analysis.timeToCrack}</div>
-              </div>
-
-              <div className="space-y-1">
-                <Label>Quantum Resistant</Label>
-                <div className="flex items-center gap-2">
-                  {analysis.quantumResistant ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <XCircle className="h-4 w-4 text-red-500" />
-                  )}
-                  <span className="text-sm">
-                    {analysis.quantumResistant ? 'Yes' : 'No'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {analysis.weaknesses.length > 0 && (
-              <div className="space-y-2">
-                <Label>Weaknesses</Label>
-                <ul className="text-sm space-y-1">
-                  {analysis.weaknesses.map((weakness, i) => (
-                    <li key={i} className="flex items-center gap-2 text-yellow-500">
-                      <AlertTriangle className="h-4 w-4" />
-                      {weakness}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </motion.div>
-        )}
-
-        <div className="space-y-4">
-          <div>
-            <Label>Password Length: {length}</Label>
-            <Slider
-              value={length}
-              onValueChange={setLength}
-              min={8}
-              max={128}
-              step={1}
-              className="mt-2"
-            />
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="memorable">Memorable Password</Label>
-              <Switch
-                id="memorable"
-                checked={options.memorable}
-                onCheckedChange={(checked: boolean) =>
-                  setOptions((prev) => ({ ...prev, memorable: checked }))
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="uppercase">Uppercase Letters</Label>
-              <Switch
-                id="uppercase"
-                checked={options.uppercase}
-                onCheckedChange={(checked: boolean) =>
-                  setOptions((prev) => ({ ...prev, uppercase: checked }))
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="lowercase">Lowercase Letters</Label>
-              <Switch
-                id="lowercase"
-                checked={options.lowercase}
-                onCheckedChange={(checked: boolean) =>
-                  setOptions((prev) => ({ ...prev, lowercase: checked }))
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="numbers">Numbers</Label>
-              <Switch
-                id="numbers"
-                checked={options.numbers}
-                onCheckedChange={(checked: boolean) =>
-                  setOptions((prev) => ({ ...prev, numbers: checked }))
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="symbols">Special Characters</Label>
-              <Switch
-                id="symbols"
-                checked={options.symbols}
-                onCheckedChange={(checked: boolean) =>
-                  setOptions((prev) => ({ ...prev, symbols: checked }))
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="quantumSafe">Quantum-Safe Generation</Label>
-              <Switch
-                id="quantumSafe"
-                checked={options.quantumSafe}
-                onCheckedChange={(checked) =>
-                  setOptions((prev) => ({ ...prev, quantumSafe: checked }))
-                }
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Service URL (Optional)</Label>
-              <div className="flex gap-2">
-                <Input
-                  type="url"
-                  placeholder="https://example.com"
-                  value={serviceUrl}
-                  onChange={(e) => setServiceUrl(e.target.value)}
-                />
-                <Button 
-                  variant="outline"
-                  onClick={handleContextAnalysis}
-                  disabled={!serviceUrl}
-                >
-                  Analyze
-                </Button>
-              </div>
-            </div>
-
-            {/* Show context info if available */}
-            {serviceUrl && (
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <Globe className="h-4 w-4" />
-                  <span>Service: {contextAnalyzer.analyzeContext(serviceUrl).domain}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4" />
-                  <span>Security Level: {contextAnalyzer.analyzeContext(serviceUrl).securityLevel}</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="usePattern">Use Pattern</Label>
-              <Switch
-                id="usePattern"
-                checked={usePattern}
-                onCheckedChange={setUsePattern}
-              />
-            </div>
-
-            {usePattern && (
-              <div className="space-y-2">
-                <Label>Pattern (L=uppercase, l=lowercase, d=digit, s=symbol)</Label>
-                <Input
-                  value={pattern}
-                  onChange={(e) => setPattern(e.target.value)}
-                  placeholder="Example: Llddss"
-                />
-              </div>
-            )}
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="useMemorable">Memorable Password</Label>
-              <Switch
-                id="useMemorable"
-                checked={useMemorable}
-                onCheckedChange={setUseMemorable}
-              />
-            </div>
-
-            {useMemorable && (
-              <div className="space-y-2">
-                <Label>Word Count</Label>
-                <Slider
-                  value={[memorableOptions.wordCount]}
-                  onValueChange={([value]) => 
-                    setMemorableOptions(prev => ({ ...prev, wordCount: value }))
-                  }
-                  min={2}
-                  max={5}
-                  step={1}
-                />
-                {/* Add other memorable options */}
-              </div>
-            )}
-          </div>
-
-          <Button 
-            className="w-full" 
-            onClick={handleGeneratePassword}
-            size="lg"
-          >
-            Generate Secure Password
-          </Button>
         </div>
+      </CardHeader>
 
-        {breachResult?.breached && (
-          <div className="flex items-center gap-2 text-red-500">
-            <AlertTriangle className="h-4 w-4" />
-            <span>
-              This password has been found in {breachResult.count?.toLocaleString()} data breaches
-            </span>
-          </div>
+      <CardContent>
+        {/* Password Output Section */}
+        <PasswordOutput 
+          password={password}
+          analysis={analysis}
+          onGenerate={handleGeneratePassword}
+          onCopy={copyToClipboard}
+        />
+
+        {/* Generation Options */}
+        {mode === 'basic' && (
+          <BasicOptions 
+            options={options}
+            onChange={setOptions}
+            length={length}
+            onLengthChange={setLength}
+          />
         )}
+
+        {mode === 'context' && (
+          <ContextOptions 
+            context={context}
+            onContextChange={setContext}
+            analyzedContext={analyzedContext}
+            onAnalyze={handleContextAnalysis}
+          />
+        )}
+
+        {mode === 'pattern' && (
+          <PatternOptions 
+            pattern={pattern}
+            onChange={setPattern}
+          />
+        )}
+
+        {mode === 'memorable' && (
+          <MemorableOptions 
+            options={memorableOptions}
+            onChange={setMemorableOptions}
+          />
+        )}
+
+        <Button 
+          className="w-full mt-6" 
+          size="lg"
+          onClick={handleGeneratePassword}
+        >
+          Generate Password
+        </Button>
       </CardContent>
     </Card>
   )
