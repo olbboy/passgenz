@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Label } from './ui/label'
 import { Slider } from './ui/slider'
@@ -8,15 +8,18 @@ import { Switch } from './ui/switch'
 import { Button } from './ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { motion } from 'framer-motion'
-import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
+import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle, Globe } from 'lucide-react'
 import { generatePassword } from '@/lib/generators'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 import { ContextAnalyzer, ServiceContext, PasswordRequirements } from '@/lib/context-analyzer'
 import { PatternGenerator } from '@/lib/pattern-generator'
 import { MemorableGenerator } from '@/lib/memorable-generator'
-import { PasswordAnalysis, GeneratorConfig, GenerationResult } from '@/lib/types'
+import { PasswordAnalysis, GeneratorConfig, GenerationResult, PasswordMetadata } from '@/lib/types'
 import { HistoryManagementService } from '@/lib/history-management'
+import { BreachDatabase } from '@/lib/breach-database'
+import { Input } from '@/components/ui/input'
+import { generatePatternFromRequirements, calculateTimeToCrack } from '@/lib/utils'
 
 interface PasswordOptions {
   uppercase: boolean
@@ -42,35 +45,155 @@ export function PasswordGenerator() {
   })
   const [usePattern, setUsePattern] = useState(false);
   const [pattern, setPattern] = useState('');
+  const [useMemorable, setUseMemorable] = useState(false);
+  const [memorableOptions, setMemorableOptions] = useState({
+    wordCount: 3,
+    capitalize: true,
+    includeNumbers: true,
+    includeSeparators: true
+  });
   const [serviceUrl, setServiceUrl] = useState('');
+  const [breachResult, setBreachResult] = useState<{
+    breached: boolean;
+    count?: number;
+  } | null>(null);
 
   const contextAnalyzer = new ContextAnalyzer();
   const patternGenerator = new PatternGenerator();
   const memorableGenerator = new MemorableGenerator();
   const historyService = HistoryManagementService.getInstance()
+  const breachDb = BreachDatabase.getInstance();
+
+  useEffect(() => {
+    if (usePattern) {
+      setOptions(prev => ({
+        ...prev,
+        uppercase: false,
+        lowercase: false,
+        numbers: false,
+        symbols: false
+      }))
+    }
+  }, [usePattern])
 
   const handleContextAnalysis = useCallback(() => {
     if (!serviceUrl) return;
     
     const analyzedContext = contextAnalyzer.analyzeContext(serviceUrl);
-    const requirements: PasswordRequirements = contextAnalyzer.suggestRequirements(analyzedContext);
+    const requirements = contextAnalyzer.suggestRequirements(analyzedContext);
     
-    // Update options based on context
+    // Update length based on requirements
     setLength([requirements.minLength]);
-    setOptions(prev => ({
-      ...prev,
-      uppercase: requirements.requiredChars.includes('uppercase'),
-      lowercase: requirements.requiredChars.includes('lowercase'),
-      numbers: requirements.requiredChars.includes('number'),
-      symbols: requirements.requiredChars.includes('symbol')
-    }));
+
+    // If using pattern, generate appropriate pattern
+    if (usePattern) {
+      const newPattern = generatePatternFromRequirements(requirements);
+      setPattern(newPattern);
+    } else {
+      // Update character options
+      setOptions(prev => ({
+        ...prev,
+        uppercase: requirements.requiredChars.includes('uppercase'),
+        lowercase: requirements.requiredChars.includes('lowercase'),
+        numbers: requirements.requiredChars.includes('number'),
+        symbols: requirements.requiredChars.includes('symbol')
+      }));
+    }
+
+    // Show requirements in UI
+    toast({
+      title: 'Password Requirements',
+      description: (
+        <div className="space-y-2">
+          <p>Minimum length: {requirements.minLength}</p>
+          <p>Required characters:</p>
+          <ul className="list-disc pl-4">
+            {requirements.requiredChars.map(char => (
+              <li key={char}>{char}</li>
+            ))}
+          </ul>
+          {requirements.excludedChars && requirements.excludedChars.length > 0 && (
+            <>
+              <p>Excluded characters:</p>
+              <ul className="list-disc pl-4">
+                {requirements.excludedChars.map(char => (
+                  <li key={char}>{char}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      )
+    });
+  }, [serviceUrl, usePattern, toast]);
+
+  const validatePasswordForService = useCallback((password: string) => {
+    if (!serviceUrl) return true;
+    
+    const context = contextAnalyzer.analyzeContext(serviceUrl);
+    const requirements = contextAnalyzer.suggestRequirements(context);
+
+    const meetsLength = password.length >= requirements.minLength;
+    const hasRequiredChars = requirements.requiredChars.every(type => {
+      switch (type) {
+        case 'uppercase': return /[A-Z]/.test(password);
+        case 'lowercase': return /[a-z]/.test(password);
+        case 'number': return /\d/.test(password);
+        case 'symbol': return /[!@#$%^&*()_+\-=[\]{};:,.<>?]/.test(password);
+        default: return true;
+      }
+    });
+    const noExcludedChars = !requirements.excludedChars?.some(char => 
+      password.includes(char)
+    );
+
+    return meetsLength && hasRequiredChars && noExcludedChars;
   }, [serviceUrl]);
 
   const handleGeneratePassword = async () => {
     try {
-      const result = await generatePassword(length[0], options)
-      setPassword(result.password)
-      setAnalysis(result.analysis)
+      let result: GenerationResult;
+      if (usePattern && pattern) {
+        const generated = patternGenerator.generateFromPattern(pattern);
+        const entropy = patternGenerator.getPatternStrength(pattern);
+        result = {
+          password: generated,
+          analysis: {
+            entropy,
+            strength: entropy > 80 ? 'very-strong' : 
+                     entropy > 60 ? 'strong' :
+                     entropy > 40 ? 'medium' : 'weak',
+            timeToCrack: calculateTimeToCrack(entropy),
+            quantumResistant: entropy > 100,
+            weaknesses: []
+          }
+        };
+      } else if (useMemorable) {
+        const generated = memorableGenerator.generateMemorable(memorableOptions);
+        const baseResult = await generatePassword(generated.length, options);
+        result = {
+          password: generated,
+          analysis: baseResult.analysis
+        };
+      } else {
+        result = await generatePassword(length[0], options);
+      }
+
+      setPassword(result.password);
+      setAnalysis(result.analysis);
+
+      // Check breach database
+      const breach = await breachDb.checkPassword(result.password)
+      setBreachResult(breach)
+
+      // Validate against service requirements
+      if (serviceUrl && !validatePasswordForService(result.password)) {
+        toast({
+          title: 'Warning',
+          description: 'Generated password does not meet service requirements',
+          variant: 'destructive'
+        });
+      }
 
       // Save to history
       await historyService.addEntry({
@@ -83,11 +206,13 @@ export function PasswordGenerator() {
           analysis: {
             entropy: result.analysis.entropy,
             timeToCrack: result.analysis.timeToCrack,
-            weaknesses: result.analysis.weaknesses
+            weaknesses: result.analysis.weaknesses,
+            breached: breach.breached,
+            breachCount: breach.count
           },
           context: serviceUrl || undefined,
           tags: ['generated']
-        }
+        } as PasswordMetadata
       })
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -304,6 +429,88 @@ export function PasswordGenerator() {
             </div>
           </div>
 
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Service URL (Optional)</Label>
+              <div className="flex gap-2">
+                <Input
+                  type="url"
+                  placeholder="https://example.com"
+                  value={serviceUrl}
+                  onChange={(e) => setServiceUrl(e.target.value)}
+                />
+                <Button 
+                  variant="outline"
+                  onClick={handleContextAnalysis}
+                  disabled={!serviceUrl}
+                >
+                  Analyze
+                </Button>
+              </div>
+            </div>
+
+            {/* Show context info if available */}
+            {serviceUrl && (
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  <span>Service: {contextAnalyzer.analyzeContext(serviceUrl).domain}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  <span>Security Level: {contextAnalyzer.analyzeContext(serviceUrl).securityLevel}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="usePattern">Use Pattern</Label>
+              <Switch
+                id="usePattern"
+                checked={usePattern}
+                onCheckedChange={setUsePattern}
+              />
+            </div>
+
+            {usePattern && (
+              <div className="space-y-2">
+                <Label>Pattern (L=uppercase, l=lowercase, d=digit, s=symbol)</Label>
+                <Input
+                  value={pattern}
+                  onChange={(e) => setPattern(e.target.value)}
+                  placeholder="Example: Llddss"
+                />
+              </div>
+            )}
+
+            <div className="flex items-center justify-between">
+              <Label htmlFor="useMemorable">Memorable Password</Label>
+              <Switch
+                id="useMemorable"
+                checked={useMemorable}
+                onCheckedChange={setUseMemorable}
+              />
+            </div>
+
+            {useMemorable && (
+              <div className="space-y-2">
+                <Label>Word Count</Label>
+                <Slider
+                  value={[memorableOptions.wordCount]}
+                  onValueChange={([value]) => 
+                    setMemorableOptions(prev => ({ ...prev, wordCount: value }))
+                  }
+                  min={2}
+                  max={5}
+                  step={1}
+                />
+                {/* Add other memorable options */}
+              </div>
+            )}
+          </div>
+
           <Button 
             className="w-full" 
             onClick={handleGeneratePassword}
@@ -312,6 +519,15 @@ export function PasswordGenerator() {
             Generate Secure Password
           </Button>
         </div>
+
+        {breachResult?.breached && (
+          <div className="flex items-center gap-2 text-red-500">
+            <AlertTriangle className="h-4 w-4" />
+            <span>
+              This password has been found in {breachResult.count?.toLocaleString()} data breaches
+            </span>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

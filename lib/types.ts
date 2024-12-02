@@ -8,6 +8,19 @@ export interface PasswordAnalysis {
   weaknesses: string[];
 }
 
+export interface PasswordMetadata {
+  strength: number;
+  analysis: {
+    entropy: number;
+    timeToCrack: string;
+    weaknesses: string[];
+    breached?: boolean;
+    breachCount?: number;
+  };
+  context?: string;
+  tags?: string[];
+}
+
 export interface GeneratorConfig {
   length: number;
   options: {

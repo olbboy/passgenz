@@ -1,75 +1,46 @@
-export interface BreachCheckResult {
-  isBreached: boolean;
-  breachCount: number;
-  lastBreachDate?: Date;
-  sources?: string[];
-}
+export class BreachDatabase {
+  private static instance: BreachDatabase;
+  private readonly API_KEY = process.env.NEXT_PUBLIC_HIBP_API_KEY;
+  private readonly API_URL = 'https://api.pwnedpasswords.com/range/';
 
-export class BreachDatabaseService {
-  private static instance: BreachDatabaseService;
-  private readonly API_ENDPOINT = 'https://api.haveibeenpwned.com/v3';
-  private readonly API_KEY: string;
-
-  private constructor(apiKey: string) {
-    this.API_KEY = apiKey;
-  }
-
-  static getInstance(apiKey?: string): BreachDatabaseService {
-    if (!BreachDatabaseService.instance) {
-      if (!apiKey) {
-        throw new Error('API key is required for first initialization');
-      }
-      BreachDatabaseService.instance = new BreachDatabaseService(apiKey);
+  static getInstance(): BreachDatabase {
+    if (!BreachDatabase.instance) {
+      BreachDatabase.instance = new BreachDatabase();
     }
-    return BreachDatabaseService.instance;
+    return BreachDatabase.instance;
   }
 
-  async checkPassword(password: string): Promise<BreachCheckResult> {
-    const hash = await this.hashPassword(password);
-    const prefix = hash.slice(0, 5);
-    const suffix = hash.slice(5);
-
+  async checkPassword(password: string): Promise<{
+    breached: boolean;
+    count?: number;
+  }> {
     try {
-      const response = await fetch(
-        `${this.API_ENDPOINT}/range/${prefix}`,
-        {
-          headers: {
-            'hibp-api-key': this.API_KEY
-          }
-        }
-      );
+      const hash = await this.sha1(password);
+      const prefix = hash.substring(0, 5);
+      const suffix = hash.substring(5).toUpperCase();
 
-      if (!response.ok) {
-        throw new Error('Failed to check breach database');
+      const response = await fetch(`${this.API_URL}${prefix}`);
+      const data = await response.text();
+
+      const hashes = data.split('\n');
+      const match = hashes.find(h => h.split(':')[0] === suffix);
+
+      if (match) {
+        const count = parseInt(match.split(':')[1]);
+        return { breached: true, count };
       }
 
-      const data = await response.text();
-      const matches = data.split('\n')
-        .map(line => line.split(':'))
-        .filter(([hashSuffix]) => hashSuffix.toLowerCase() === suffix.toLowerCase());
-
-      return {
-        isBreached: matches.length > 0,
-        breachCount: matches.length ? parseInt(matches[0][1], 10) : 0,
-        lastBreachDate: matches.length ? new Date() : undefined,
-        sources: matches.map(m => m[2]).filter(Boolean)
-      };
+      return { breached: false };
     } catch (error) {
-      console.error('Breach check failed:', error);
-      return {
-        isBreached: false,
-        breachCount: 0
-      };
+      console.error('Failed to check breach database:', error);
+      return { breached: false };
     }
   }
 
-  private async hashPassword(password: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hash = await crypto.subtle.digest('SHA-1', data);
-    return Array.from(new Uint8Array(hash))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('')
-      .toUpperCase();
+  private async sha1(str: string): Promise<string> {
+    const buffer = new TextEncoder().encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-1', buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 } 

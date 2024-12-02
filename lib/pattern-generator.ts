@@ -5,22 +5,37 @@ interface PatternTemplate {
 }
 
 export class PatternGenerator {
-  private readonly patterns: PatternTemplate[] = [
-    {
-      pattern: '[A-Z]{2}[0-9]{4}[a-z]{2}[#@$]{1}',
-      description: 'Strong pattern with mixed case, numbers and symbols',
-      example: 'AB1234cd#'
-    },
-    // Add more patterns...
-  ];
+  private readonly patterns = {
+    'L': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    'l': 'abcdefghijklmnopqrstuvwxyz', 
+    'd': '0123456789',
+    's': '!@#$%^&*()_+-=[]{}|;:,.<>?',
+    'w': 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  };
 
   generateFromPattern(pattern: string): string {
-    // Implement pattern-based generation
-    return '';
+    return pattern.split('').map(char => {
+      if (char in this.patterns) {
+        const chars = this.patterns[char as keyof typeof this.patterns];
+        return chars[Math.floor(Math.random() * chars.length)];
+      }
+      return char;
+    }).join('');
   }
 
   validatePattern(pattern: string): boolean {
-    // Implement pattern validation
-    return true;
+    return pattern.split('').every(char => 
+      char in this.patterns || !Object.values(this.patterns).some(set => set.includes(char))
+    );
+  }
+
+  getPatternStrength(pattern: string): number {
+    let entropy = 0;
+    pattern.split('').forEach(char => {
+      if (char in this.patterns) {
+        entropy += Math.log2(this.patterns[char as keyof typeof this.patterns].length);
+      }
+    });
+    return entropy;
   }
 } 

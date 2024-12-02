@@ -1,30 +1,47 @@
-interface WordList {
-  adjectives: string[];
-  nouns: string[];
-  verbs: string[];
-  connectors: string[];
-}
-
 export class MemorableGenerator {
-  private readonly wordList: WordList = {
-    adjectives: ['happy', 'quick', 'clever', 'brave'],
-    nouns: ['fox', 'dog', 'cat', 'bird'],
-    verbs: ['jumps', 'runs', 'flies', 'swims'],
-    connectors: ['and', 'or', 'with', 'to']
-  };
+  private readonly words = [
+    // Common English words...
+    'apple', 'book', 'cat', 'dog', 'elephant',
+    'fish', 'green', 'house', 'ice', 'jump',
+    // ... more words
+  ];
 
-  generateMemorable(minLength: number): string {
-    // Implement memorable password generation
-    const adj = this.randomWord(this.wordList.adjectives);
-    const noun = this.randomWord(this.wordList.nouns);
-    const verb = this.randomWord(this.wordList.verbs);
-    const number = Math.floor(Math.random() * 100);
-    const symbol = '!@#$%^&*'[Math.floor(Math.random() * 8)];
+  private readonly separators = ['!', '@', '#', '$', '%', '&', '*'];
+  private readonly numbers = '0123456789';
 
-    return `${adj}${noun}${verb}${number}${symbol}`;
-  }
+  generateMemorable(options: {
+    wordCount?: number;
+    capitalize?: boolean;
+    includeNumbers?: boolean;
+    includeSeparators?: boolean;
+  } = {}): string {
+    const {
+      wordCount = 3,
+      capitalize = true,
+      includeNumbers = true,
+      includeSeparators = true
+    } = options;
 
-  private randomWord(words: string[]): string {
-    return words[Math.floor(Math.random() * words.length)];
+    let words = Array(wordCount).fill(0).map(() => 
+      this.words[Math.floor(Math.random() * this.words.length)]
+    );
+
+    if (capitalize) {
+      words = words.map(w => w[0].toUpperCase() + w.slice(1));
+    }
+
+    if (includeSeparators) {
+      const separator = this.separators[Math.floor(Math.random() * this.separators.length)];
+      words = words.join(separator).split('');
+    }
+
+    if (includeNumbers) {
+      const number = Array(2).fill(0)
+        .map(() => this.numbers[Math.floor(Math.random() * this.numbers.length)])
+        .join('');
+      words.push(number);
+    }
+
+    return words.join('');
   }
 } 
