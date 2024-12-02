@@ -9,13 +9,14 @@ import { motion } from 'framer-motion'
 import { Copy, RefreshCw } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { generateSecret } from '@/lib/generators'
+import { PasswordAnalysis } from '@/lib/types'
 
 export function SecretGenerator() {
   const { toast } = useToast()
   const [secret, setSecret] = useState('')
   const [algorithm, setAlgorithm] = useState('sha256')
   const [format, setFormat] = useState<'hex' | 'base64'>('hex')
-  const [analysis, setAnalysis] = useState(null)
+  const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
 
   const handleGenerateSecret = async () => {
     try {

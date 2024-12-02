@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card'
 import { Label } from './ui/label'
 import { Slider } from './ui/slider'
@@ -12,14 +12,10 @@ import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle } from 'lu
 import { generatePassword } from '@/lib/generators'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
-
-interface PasswordAnalysis {
-  entropy: number
-  strength: 'weak' | 'medium' | 'strong' | 'very-strong'
-  timeToCrack: string
-  quantumResistant: boolean
-  weaknesses: string[]
-}
+import { ContextAnalyzer, ServiceContext, PasswordRequirements } from '@/lib/context-analyzer'
+import { PatternGenerator } from '@/lib/pattern-generator'
+import { MemorableGenerator } from '@/lib/memorable-generator'
+import { PasswordAnalysis, GeneratorConfig, GenerationResult } from '@/lib/types'
 
 interface PasswordOptions {
   uppercase: boolean
@@ -30,7 +26,12 @@ interface PasswordOptions {
   quantumSafe: boolean
 }
 
-export function PasswordGenerator() {
+interface PasswordGeneratorProps {
+  context?: ServiceContext;
+  onGenerate?: (password: string) => void;
+}
+
+export function PasswordGenerator({ context, onGenerate }: PasswordGeneratorProps) {
   const { toast } = useToast()
   const [password, setPassword] = useState('')
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
@@ -43,6 +44,30 @@ export function PasswordGenerator() {
     memorable: false,
     quantumSafe: true
   })
+  const [usePattern, setUsePattern] = useState(false);
+  const [pattern, setPattern] = useState('');
+  const [serviceUrl, setServiceUrl] = useState('');
+
+  const contextAnalyzer = new ContextAnalyzer();
+  const patternGenerator = new PatternGenerator();
+  const memorableGenerator = new MemorableGenerator();
+
+  const handleContextAnalysis = useCallback(() => {
+    if (!serviceUrl) return;
+    
+    const analyzedContext = contextAnalyzer.analyzeContext(serviceUrl);
+    const requirements: PasswordRequirements = contextAnalyzer.suggestRequirements(analyzedContext);
+    
+    // Update options based on context
+    setLength([requirements.minLength]);
+    setOptions(prev => ({
+      ...prev,
+      uppercase: requirements.requiredChars.includes('uppercase'),
+      lowercase: requirements.requiredChars.includes('lowercase'),
+      numbers: requirements.requiredChars.includes('number'),
+      symbols: requirements.requiredChars.includes('symbol')
+    }));
+  }, [serviceUrl]);
 
   const handleGeneratePassword = async () => {
     try {

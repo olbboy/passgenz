@@ -10,13 +10,14 @@ import { Copy, RefreshCw } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { Input } from './ui/input'
 import { generateId } from '@/lib/generators'
+import { PasswordAnalysis } from '@/lib/types'
 
 export function IdGenerator() {
   const { toast } = useToast()
   const [id, setId] = useState('')
   const [format, setFormat] = useState<'uuid' | 'nanoid' | 'custom'>('uuid')
   const [prefix, setPrefix] = useState('')
-  const [analysis, setAnalysis] = useState(null)
+  const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
 
   const handleGenerateId = async () => {
     const result = await generateId(format, prefix)
