@@ -58,7 +58,7 @@ export function SecurityAnalysis({ analysis }: SecurityAnalysisProps) {
             ))}
             
             {/* Vulnerability Warnings */}
-            {analysis.securityAssessment.vulnerabilityWarnings.map((warning, i) => (
+            {analysis.securityAssessment.vulnerabilityWarnings.map((warning: string, i: number) => (
               <li key={i} className="flex items-center gap-2 text-red-500">
                 <AlertTriangle className="h-4 w-4" />
                 {warning}
@@ -72,7 +72,7 @@ export function SecurityAnalysis({ analysis }: SecurityAnalysisProps) {
       <div className="space-y-2">
         <h4 className="text-sm font-medium">Recommendations</h4>
         <ul className="space-y-1 text-sm">
-          {analysis.recommendations.userGuidance.map((guide, i) => (
+          {analysis.recommendations.userGuidance.map((guide: string, i: number) => (
             <li key={i} className="flex items-center gap-2">
               <Info className="h-4 w-4 text-blue-500" />
               {guide}

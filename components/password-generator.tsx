@@ -29,6 +29,7 @@ import { MemorableOptions } from "./password/memorable-options"
 import { analyzePassword } from "./password/password-output"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
+import { PasswordRules } from '@/lib/types';
 
 interface PasswordOptions {
   uppercase: boolean
@@ -151,48 +152,88 @@ export function PasswordGenerator() {
       let result: GenerationResult | undefined;
 
       if (mode === 'context' && analyzedContext) {
-        const contextOptions: PasswordOptions = {
-          uppercase: analyzedContext.passwordRules.characterRequirements.allowedCharacterSets
-            .some(set => set.type === 'uppercase' && set.required),
-          lowercase: analyzedContext.passwordRules.characterRequirements.allowedCharacterSets
-            .some(set => set.type === 'lowercase' && set.required),
-          numbers: analyzedContext.passwordRules.characterRequirements.allowedCharacterSets
-            .some(set => set.type === 'number' && set.required),
-          symbols: analyzedContext.passwordRules.characterRequirements.allowedCharacterSets
-            .some(set => set.type === 'symbol' && set.required),
-          memorable: false,
-          quantumSafe: analyzedContext.securityAssessment.level === 'very-high'
-        };
+        try {
+          // Get password rules from AI analysis
+          const res = await fetch('/api/password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ requirements: analyzedContext })
+          });
 
-        let attempts = 0;
-        const maxAttempts = 10;
-
-        while (attempts < maxAttempts) {
-          const generated = await generatePassword(
-            analyzedContext.passwordRules.length.min,
-            contextOptions
-          );
+          const data = await res.json();
+          console.log('API Response:', data);
           
-          if (validatePasswordAgainstContext(generated.password, analyzedContext)) {
-            result = {
-              password: generated.password,
-              analysis: {
-                ...generated.analysis,
-                breached: false,
-                level: analyzedContext.securityAssessment.level,
-                recommendations: [
-                  ...analyzedContext.recommendations.implementation,
-                  ...analyzedContext.recommendations.userGuidance
-                ]
-              }
-            };
-            break;
+          if (!res.ok || data.error) {
+            console.error('API Error:', data.error);
+            throw new Error(data.error || 'Failed to generate rules');
           }
-          attempts++;
-        }
 
-        if (!result) {
-          throw new Error("Could not generate password meeting all requirements");
+          // Use rules to generate password
+          const rules = data.rules;
+          console.log('Generated Rules:', rules);
+
+          // Map rules to options
+          const contextOptions: PasswordOptions = {
+            uppercase: true,  // Always enable all character types
+            lowercase: true,  // and let validatePasswordAgainstRules
+            numbers: true,    // handle the validation
+            symbols: true,
+            memorable: !rules.patterns.allowCommonWords,
+            quantumSafe: analyzedContext.securityAssessment.level === 'very-high'
+          };
+
+          let attempts = 0;
+          const maxAttempts = 10;
+          let validPassword = false;
+          
+          while (attempts < maxAttempts && !validPassword) {
+            // Generate base password
+            const generated = await generatePassword(
+              Math.max(rules.minLength, 12), // Tăng độ dài tối thiểu
+              contextOptions
+            );
+
+            // Ensure required character types
+            let enhancedPassword = generated.password;
+            if (!/[A-Z]/.test(enhancedPassword) && rules.requiredCharTypes.uppercase) {
+              enhancedPassword = 'A' + enhancedPassword.slice(1);
+            }
+            if (!/[a-z]/.test(enhancedPassword) && rules.requiredCharTypes.lowercase) {
+              enhancedPassword = enhancedPassword.slice(0, -1) + 'a';
+            }
+            if (!/[0-9]/.test(enhancedPassword) && rules.requiredCharTypes.numbers) {
+              enhancedPassword = enhancedPassword.slice(0, -2) + '1';
+            }
+            if (!/[!@#$%^&*()_+\-=[\]{};:,.<>?]/.test(enhancedPassword) && rules.requiredCharTypes.symbols) {
+              enhancedPassword = enhancedPassword.slice(0, -3) + '@';
+            }
+
+            // Validate enhanced password
+            const isValid = validatePasswordAgainstRules(enhancedPassword, rules);
+            if (isValid) {
+              result = {
+                password: enhancedPassword,
+                analysis: {
+                  ...generated.analysis,
+                  breached: false,
+                  level: analyzedContext.securityAssessment.level,
+                  recommendations: [
+                    ...analyzedContext.recommendations.implementation,
+                    ...analyzedContext.recommendations.userGuidance
+                  ]
+                }
+              };
+              validPassword = true;
+            }
+            attempts++;
+          }
+
+          if (!validPassword) {
+            throw new Error("Could not generate password meeting all requirements");
+          }
+
+        } catch (err) {
+          throw new Error(err instanceof Error ? err.message : "Failed to generate password");
         }
       } else if (usePattern && pattern) {
         const generated = patternGenerator.generateFromPattern(pattern);
@@ -209,7 +250,7 @@ export function PasswordGenerator() {
             weaknesses: [],
             breached: false
           }
-        };
+        } as GenerationResult;
       } else if (useMemorable) {
         const generated = memorableGenerator.generateMemorable(memorableOptions);
         const baseResult = await generatePassword(generated.length, options);
@@ -219,7 +260,7 @@ export function PasswordGenerator() {
             ...baseResult.analysis,
             breached: false
           }
-        };
+        } as GenerationResult;
       } else {
         const generated = await generatePassword(length[0], options);
         result = {
@@ -228,9 +269,14 @@ export function PasswordGenerator() {
             ...generated.analysis,
             breached: false
           }
-        };
+        } as GenerationResult;
       }
 
+      if (!result) {
+        throw new Error("No password was generated");
+      }
+
+      // Update state with the result
       setPassword(result.password);
       setAnalysis(result.analysis);
 
@@ -292,11 +338,12 @@ export function PasswordGenerator() {
         metadata: historyEntry
       });
     } catch (err) {
+      console.error('Generation Error:', err);
       setError(err instanceof Error ? err.message : 'Failed to generate password');
       toast({
         variant: "destructive",
         title: "Error",
-        description: error,
+        description: err instanceof Error ? err.message : 'Failed to generate password',
       });
     } finally {
       setIsGenerating(false);
@@ -532,4 +579,65 @@ function validatePasswordAgainstContext(password: string, context: PasswordRequi
     }
 
     return true;
+}
+
+// Helper function to validate password against rules
+function validatePasswordAgainstRules(password: string, rules: PasswordRules): boolean {
+  // Length check
+  if (password.length < rules.minLength) {
+    console.log('Failed length check');
+    return false;
+  }
+  if (rules.maxLength && password.length > rules.maxLength) {
+    console.log('Failed max length check');
+    return false;
+  }
+
+  // Character types check
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumbers = /[0-9]/.test(password);
+  const hasSymbols = /[!@#$%^&*()_+\-=[\]{};:,.<>?]/.test(password);
+
+  let charTypesUsed = 0;
+  if (rules.requiredCharTypes.uppercase && hasUppercase) charTypesUsed++;
+  if (rules.requiredCharTypes.lowercase && hasLowercase) charTypesUsed++;
+  if (rules.requiredCharTypes.numbers && hasNumbers) charTypesUsed++;
+  if (rules.requiredCharTypes.symbols && hasSymbols) charTypesUsed++;
+
+  if (charTypesUsed < rules.minCharTypesRequired) {
+    console.log('Failed character types check', {
+      required: rules.minCharTypesRequired,
+      used: charTypesUsed
+    });
+    return false;
+  }
+
+  // Pattern checks
+  if (!rules.patterns.allowCommonWords && /\b[a-z]{4,}\b/i.test(password)) {
+    console.log('Failed common words check');
+    return false;
+  }
+  if (!rules.patterns.allowKeyboardPatterns && /qwerty|asdf|zxcv/i.test(password)) {
+    console.log('Failed keyboard patterns check');
+    return false;
+  }
+  if (!rules.patterns.allowRepeatingChars && /(.)\1{2,}/.test(password)) {
+    console.log('Failed repeating chars check');
+    return false;
+  }
+  if (!rules.patterns.allowSequentialChars && /123|abc/i.test(password)) {
+    console.log('Failed sequential chars check');
+    return false;
+  }
+
+  // Excluded chars check
+  for (const char of rules.excludedChars) {
+    if (password.includes(char)) {
+      console.log('Failed excluded chars check:', char);
+      return false;
+    }
+  }
+
+  return true;
 }

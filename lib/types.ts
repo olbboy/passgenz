@@ -6,12 +6,29 @@ export interface PasswordAnalysis {
   timeToCrack: string;
   quantumResistant: boolean;
   weaknesses: string[];
-  breached: boolean;
-  breachCount?: number;
-  characterDistribution?: Record<string, number>;
-  patterns?: string[];
-  recommendations?: string[];
+  breached?: boolean;
   level?: 'low' | 'medium' | 'high' | 'very-high';
+  recommendations?: string[];
+}
+
+export interface PasswordOptions {
+  uppercase: boolean;
+  lowercase: boolean;
+  numbers: boolean;
+  symbols: boolean;
+  memorable: boolean;
+  quantumSafe: boolean;
+}
+
+export interface GenerationResult {
+  password: string;
+  analysis: PasswordAnalysis;
+}
+
+export interface GeneratorConfig {
+  length: number;
+  options: PasswordOptions;
+  context?: ServiceContext;
 }
 
 export interface PasswordMetadata {
@@ -28,33 +45,6 @@ export interface PasswordMetadata {
   };
   context?: string;
   tags: string[];
-}
-
-export interface GeneratorConfig {
-  length: number;
-  options: {
-    uppercase: boolean;
-    lowercase: boolean;
-    numbers: boolean;
-    symbols: boolean;
-    memorable?: boolean;
-    quantumSafe?: boolean;
-  };
-  context?: ServiceContext;
-}
-
-export interface GenerationResult {
-  password: string;
-  analysis: PasswordAnalysis;
-}
-
-export interface PasswordOptions {
-  uppercase: boolean;
-  lowercase: boolean;
-  numbers: boolean;
-  symbols: boolean;
-  memorable: boolean;
-  quantumSafe: boolean;
 }
 
 export interface HistoryMetadata {
@@ -110,5 +100,24 @@ export interface PasswordRequirements {
   recommendations: {
     implementation: string[];
     userGuidance: string[];
+  };
+}
+
+export interface PasswordRules {
+  minLength: number;
+  maxLength: number | null;
+  requiredCharTypes: {
+    uppercase: boolean;
+    lowercase: boolean;
+    numbers: boolean;
+    symbols: boolean;
+  };
+  excludedChars: string[];
+  minCharTypesRequired: number;
+  patterns: {
+    allowCommonWords: boolean;
+    allowKeyboardPatterns: boolean;
+    allowRepeatingChars: boolean;
+    allowSequentialChars: boolean;
   };
 } 
