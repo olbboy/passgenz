@@ -6,15 +6,12 @@ export interface PasswordAnalysis {
   timeToCrack: string;
   quantumResistant: boolean;
   weaknesses: string[];
-  breached?: boolean;
+  breached: boolean;
   breachCount?: number;
-  patterns?: {
-    hasCommonWords: boolean;
-    hasKeyboardPatterns: boolean;
-    hasRepeatingChars: boolean;
-    hasSequentialChars: boolean;
-  };
+  characterDistribution?: Record<string, number>;
+  patterns?: string[];
   recommendations?: string[];
+  level?: 'low' | 'medium' | 'high' | 'very-high';
 }
 
 export interface PasswordMetadata {
@@ -23,20 +20,10 @@ export interface PasswordMetadata {
     entropy: number;
     timeToCrack: string;
     weaknesses: string[];
-    breached?: boolean;
+    breached: boolean;
     breachCount?: number;
-    characterDistribution?: {
-      uppercase: number;
-      lowercase: number;
-      numbers: number;
-      symbols: number;
-    };
-    patterns?: {
-      hasCommonWords: boolean;
-      hasKeyboardPatterns: boolean;
-      hasRepeatingChars: boolean;
-      hasSequentialChars: boolean;
-    };
+    characterDistribution?: Record<string, number>;
+    patterns?: string[];
     recommendations?: string[];
   };
   context?: string;
@@ -76,22 +63,52 @@ export interface HistoryMetadata {
     entropy: number;
     timeToCrack: string;
     weaknesses: string[];
-    breached?: boolean;
+    breached: boolean;
     breachCount?: number;
-    characterDistribution?: {
-      uppercase: number;
-      lowercase: number;
-      numbers: number;
-      symbols: number;
-    };
-    patterns?: {
-      hasCommonWords: boolean;
-      hasKeyboardPatterns: boolean;
-      hasRepeatingChars: boolean;
-      hasSequentialChars: boolean;
-    };
+    characterDistribution?: Record<string, number>;
+    patterns?: string[];
     recommendations?: string[];
   };
   context?: string;
   tags: string[];
+}
+
+export interface PasswordRequirements {
+  platformType: {
+    type: string;
+    description: string;
+  };
+  passwordRules: {
+    length: {
+      min: number;
+      max: number | null;
+      description: string;
+    };
+    characterRequirements: {
+      requiredCombinations: {
+        count: number;
+        from: number;
+      };
+      allowedCharacterSets: Array<{
+        type: string;
+        required: boolean;
+        description: string;
+      }>;
+    };
+    customConstraints: Array<{
+      type: string;
+      description: string;
+      parameters?: Record<string, any>;
+    }>;
+  };
+  securityAssessment: {
+    level: 'low' | 'medium' | 'high' | 'very-high';
+    justification: string;
+    complianceStandards: string[];
+    vulnerabilityWarnings: string[];
+  };
+  recommendations: {
+    implementation: string[];
+    userGuidance: string[];
+  };
 } 

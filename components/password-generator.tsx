@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
 import { ContextAnalyzer, ServiceContext, PasswordRequirements } from '@/lib/context-analyzer'
 import { PatternGenerator } from '@/lib/pattern-generator'
 import { MemorableGenerator } from '@/lib/memorable-generator'
-import { PasswordAnalysis, GeneratorConfig, GenerationResult, PasswordMetadata } from '@/lib/types'
+import { PasswordAnalysis, GeneratorConfig, GenerationResult, PasswordMetadata, HistoryMetadata } from '@/lib/types'
 import { HistoryManagementService } from '@/lib/history-management'
 import { BreachDatabase } from '@/lib/breach-database'
 import { Input } from '@/components/ui/input'
@@ -92,22 +92,25 @@ export function PasswordGenerator() {
     }
   }, [usePattern])
 
-  const handleContextAnalysis = useCallback(() => {
-    if (!context) return;
-    
-    const requirements = contextAnalyzer.analyzeFromText(context);
-    setAnalyzedContext(requirements);
-    
-    // Update options based on requirements
-    setLength([requirements.minLength]);
+  const handleContextAnalysis = useCallback((requirements: PasswordRequirements) => {
+    // Cập nhật độ dài dựa trên yêu cầu mới
+    setLength([requirements.passwordRules.length.min]);
+
+    // Cập nhật các tùy chọn dựa trên yêu cầu ký tự
     setOptions(prev => ({
       ...prev,
-      uppercase: requirements.requiredChars.includes('uppercase'),
-      lowercase: requirements.requiredChars.includes('lowercase'),
-      numbers: requirements.requiredChars.includes('number'),
-      symbols: requirements.requiredChars.includes('symbol')
+      uppercase: requirements.passwordRules.characterRequirements.allowedCharacterSets
+        .some(set => set.type === 'uppercase' && set.required),
+      lowercase: requirements.passwordRules.characterRequirements.allowedCharacterSets
+        .some(set => set.type === 'lowercase' && set.required),
+      numbers: requirements.passwordRules.characterRequirements.allowedCharacterSets
+        .some(set => set.type === 'number' && set.required),
+      symbols: requirements.passwordRules.characterRequirements.allowedCharacterSets
+        .some(set => set.type === 'symbol' && set.required)
     }));
-  }, [context]);
+
+    setAnalyzedContext(requirements);
+  }, []);
 
   const validatePasswordForService = useCallback((password: string) => {
     if (!serviceUrl) return true;
@@ -115,19 +118,28 @@ export function PasswordGenerator() {
     const context = contextAnalyzer.analyzeContext(serviceUrl);
     const requirements = contextAnalyzer.suggestRequirements(context);
 
-    const meetsLength = password.length >= requirements.minLength;
-    const hasRequiredChars = requirements.requiredChars.every(type => {
-      switch (type) {
-        case 'uppercase': return /[A-Z]/.test(password);
-        case 'lowercase': return /[a-z]/.test(password);
-        case 'number': return /\d/.test(password);
-        case 'symbol': return /[!@#$%^&*()_+\-=[\]{};:,.<>?]/.test(password);
-        default: return true;
-      }
-    });
-    const noExcludedChars = !requirements.excludedChars?.some(char => 
-      password.includes(char)
-    );
+    // Kiểm tra độ dài
+    const meetsLength = password.length >= requirements.passwordRules.length.min;
+
+    // Kiểm tra các ký tự bắt buộc
+    const hasRequiredChars = requirements.passwordRules.characterRequirements.allowedCharacterSets
+      .filter(set => set.required)
+      .every(set => {
+        switch (set.type) {
+          case 'uppercase': return /[A-Z]/.test(password);
+          case 'lowercase': return /[a-z]/.test(password);
+          case 'number': return /\d/.test(password);
+          case 'symbol': return /[!@#$%^&*()_+\-=[\]{};:,.<>?]/.test(password);
+          default: return true;
+        }
+      });
+
+    // Kiểm tra các ký tự bị cấm
+    const noExcludedChars = !requirements.passwordRules.customConstraints
+      .filter(constraint => constraint.type === 'excluded-chars')
+      .some(constraint => 
+        constraint.parameters.chars.some((char: string) => password.includes(char))
+      );
 
     return meetsLength && hasRequiredChars && noExcludedChars;
   }, [serviceUrl]);
@@ -136,8 +148,53 @@ export function PasswordGenerator() {
     try {
       setIsGenerating(true);
       setError(null);
-      let result: GenerationResult;
-      if (usePattern && pattern) {
+      let result: GenerationResult | undefined;
+
+      if (mode === 'context' && analyzedContext) {
+        const contextOptions: PasswordOptions = {
+          uppercase: analyzedContext.passwordRules.characterRequirements.allowedCharacterSets
+            .some(set => set.type === 'uppercase' && set.required),
+          lowercase: analyzedContext.passwordRules.characterRequirements.allowedCharacterSets
+            .some(set => set.type === 'lowercase' && set.required),
+          numbers: analyzedContext.passwordRules.characterRequirements.allowedCharacterSets
+            .some(set => set.type === 'number' && set.required),
+          symbols: analyzedContext.passwordRules.characterRequirements.allowedCharacterSets
+            .some(set => set.type === 'symbol' && set.required),
+          memorable: false,
+          quantumSafe: analyzedContext.securityAssessment.level === 'very-high'
+        };
+
+        let attempts = 0;
+        const maxAttempts = 10;
+
+        while (attempts < maxAttempts) {
+          const generated = await generatePassword(
+            analyzedContext.passwordRules.length.min,
+            contextOptions
+          );
+          
+          if (validatePasswordAgainstContext(generated.password, analyzedContext)) {
+            result = {
+              password: generated.password,
+              analysis: {
+                ...generated.analysis,
+                breached: false,
+                level: analyzedContext.securityAssessment.level,
+                recommendations: [
+                  ...analyzedContext.recommendations.implementation,
+                  ...analyzedContext.recommendations.userGuidance
+                ]
+              }
+            };
+            break;
+          }
+          attempts++;
+        }
+
+        if (!result) {
+          throw new Error("Could not generate password meeting all requirements");
+        }
+      } else if (usePattern && pattern) {
         const generated = patternGenerator.generateFromPattern(pattern);
         const entropy = patternGenerator.getPatternStrength(pattern);
         result = {
@@ -149,7 +206,8 @@ export function PasswordGenerator() {
                      entropy > 40 ? 'medium' : 'weak',
             timeToCrack: calculateTimeToCrack(entropy),
             quantumResistant: entropy > 100,
-            weaknesses: []
+            weaknesses: [],
+            breached: false
           }
         };
       } else if (useMemorable) {
@@ -157,52 +215,82 @@ export function PasswordGenerator() {
         const baseResult = await generatePassword(generated.length, options);
         result = {
           password: generated,
-          analysis: baseResult.analysis
+          analysis: {
+            ...baseResult.analysis,
+            breached: false
+          }
         };
       } else {
-        result = await generatePassword(length[0], options);
+        const generated = await generatePassword(length[0], options);
+        result = {
+          password: generated.password,
+          analysis: {
+            ...generated.analysis,
+            breached: false
+          }
+        };
       }
 
       setPassword(result.password);
       setAnalysis(result.analysis);
 
       // Check breach database
-      const breach = await breachDb.checkPassword(result.password)
-      setBreachResult(breach)
+      const breach = await breachDb.checkPassword(result.password);
+      setBreachResult(breach);
 
-      // Validate against service requirements
-      if (serviceUrl && !validatePasswordForService(result.password)) {
+      // Validate against analyzed context
+      if (mode === 'context' && analyzedContext && !validatePasswordAgainstContext(result.password, analyzedContext)) {
         toast({
           title: 'Warning',
-          description: 'Generated password does not meet service requirements',
+          description: 'Generated password does not meet all analyzed requirements',
           variant: 'destructive'
         });
       }
 
-      // Save to history
+      // Save to history with updated metadata
       const metrics = analyzePassword(result.password);
+
+      // Convert patterns object to array of strings
+      const patternWarnings = Object.entries(metrics.patterns || {})
+        .filter(([_, hasPattern]) => hasPattern)
+        .map(([pattern]) => {
+          switch (pattern) {
+            case 'hasCommonWords':
+              return 'Contains common words';
+            case 'hasKeyboardPatterns':
+              return 'Contains keyboard patterns';
+            case 'hasRepeatingChars':
+              return 'Contains repeating characters';
+            case 'hasSequentialChars':
+              return 'Contains sequential characters';
+            default:
+              return pattern;
+          }
+        });
+
+      const historyEntry: HistoryMetadata = {
+        strength: result.analysis.strength === 'very-strong' ? 1 :
+                  result.analysis.strength === 'strong' ? 0.8 :
+                  result.analysis.strength === 'medium' ? 0.6 : 0.4,
+        analysis: {
+          entropy: result.analysis.entropy,
+          timeToCrack: result.analysis.timeToCrack,
+          weaknesses: result.analysis.weaknesses,
+          breached: breach.breached,
+          breachCount: breach.count,
+          characterDistribution: metrics.characterDistribution,
+          patterns: patternWarnings,
+          recommendations: metrics.recommendations || []
+        },
+        context: mode === 'context' ? JSON.stringify(analyzedContext) : undefined,
+        tags: ['generated']
+      };
 
       await historyService.addEntry({
         value: result.password,
         feature: 'password',
-        metadata: {
-          strength: result.analysis.strength === 'very-strong' ? 1 :
-                    result.analysis.strength === 'strong' ? 0.8 :
-                    result.analysis.strength === 'medium' ? 0.6 : 0.4,
-          analysis: {
-            entropy: result.analysis.entropy,
-            timeToCrack: result.analysis.timeToCrack,
-            weaknesses: result.analysis.weaknesses,
-            breached: breach.breached,
-            breachCount: breach.count,
-            characterDistribution: metrics.characterDistribution,
-            patterns: metrics.patterns,
-            recommendations: metrics.recommendations
-          },
-          context: serviceUrl || undefined,
-          tags: ['generated']
-        }
-      })
+        metadata: historyEntry
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate password');
       toast({
@@ -391,4 +479,57 @@ export function PasswordGenerator() {
       </CardContent>
     </Card>
   )
+}
+
+// Helper function to validate password against analyzed context
+function validatePasswordAgainstContext(password: string, context: PasswordRequirements): boolean {
+    // Kiểm tra độ dài
+    if (password.length < context.passwordRules.length.min) return false;
+    if (context.passwordRules.length.max && password.length > context.passwordRules.length.max) return false;
+
+    // Đếm số loại ký tự được sử dụng
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumbers = /[0-9]/.test(password);
+    const hasSymbols = /[!@#$%^&*()_+\-=[\]{};:,.<>?]/.test(password);
+
+    // Kiểm tra các yêu cầu bắt buộc
+    const requiredSets = context.passwordRules.characterRequirements.allowedCharacterSets
+        .filter(set => set.required);
+
+    for (const set of requiredSets) {
+        switch (set.type) {
+            case 'uppercase':
+                if (!hasUppercase) return false;
+                break;
+            case 'lowercase':
+                if (!hasLowercase) return false;
+                break;
+            case 'number':
+                if (!hasNumbers) return false;
+                break;
+            case 'symbol':
+                if (!hasSymbols) return false;
+                break;
+        }
+    }
+
+    // Kiểm tra số lượng loại ký tự tối thiểu
+    const { count: requiredCount } = context.passwordRules.characterRequirements.requiredCombinations;
+    if (requiredCount) {
+        const usedTypes = [hasUppercase, hasLowercase, hasNumbers, hasSymbols]
+            .filter(Boolean).length;
+        if (usedTypes < requiredCount) return false;
+    }
+
+    // Kiểm tra các ràng buộc tùy chỉnh
+    for (const constraint of context.passwordRules.customConstraints) {
+        if (constraint.type === 'excluded-chars' && constraint.parameters.chars) {
+            for (const char of constraint.parameters.chars) {
+                if (password.includes(char)) return false;
+            }
+        }
+    }
+
+    return true;
 }

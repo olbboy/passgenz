@@ -11,11 +11,52 @@ export interface ServiceContext {
 }
 
 export interface PasswordRequirements {
-  minLength: number;
-  maxLength?: number;
-  requiredChars: ('uppercase' | 'lowercase' | 'number' | 'symbol')[];
-  excludedChars?: string[];
-  securityLevel: 'high' | 'medium' | 'low';
+  platformType: {
+    type: string;
+    description: string;
+  };
+  passwordRules: {
+    length: {
+      min: number;
+      max: number | null;
+      description: string;
+    };
+    characterRequirements: {
+      requiredCombinations: {
+        count: number | null;
+        from: number | null;
+      };
+      allowedCharacterSets: Array<{
+        type: string;
+        characters: string | null;
+        required: boolean;
+        description: string;
+      }>;
+    };
+    historyPolicy: {
+      enabled: boolean;
+      preventReuse: number | null;
+      timeframe: string | null;
+    };
+    customConstraints: Array<{
+      type: string;
+      description: string;
+      parameters: Record<string, any>;
+    }>;
+  };
+  securityAssessment: {
+    level: 'low' | 'medium' | 'high' | 'very-high';
+    justification: string;
+    complianceStandards: string[];
+    securityConsiderations: string[];
+    vulnerabilityWarnings: string[];
+    strengthAssessment: string;
+  };
+  recommendations: {
+    implementation: string[];
+    userGuidance: string[];
+    securityEnhancements: string[];
+  };
 }
 
 export class ContextAnalyzer {
@@ -83,36 +124,146 @@ export class ContextAnalyzer {
   }
 
   suggestRequirements(context: ServiceContext): PasswordRequirements {
-    const baseRequirements = {
-      minLength: 12,
-      securityLevel: 'medium' as const,
-      requiredChars: ['uppercase', 'lowercase', 'number', 'symbol'] as Array<'uppercase' | 'lowercase' | 'number' | 'symbol'>
+    const baseRequirements: PasswordRequirements = {
+      platformType: {
+        type: 'general',
+        description: 'General platform'
+      },
+      passwordRules: {
+        length: {
+          min: 12,
+          max: null,
+          description: '12 characters minimum'
+        },
+        characterRequirements: {
+          requiredCombinations: {
+            count: null,
+            from: null
+          },
+          allowedCharacterSets: [
+            {
+              type: 'uppercase',
+              characters: null,
+              required: true,
+              description: 'Uppercase letters'
+            },
+            {
+              type: 'lowercase',
+              characters: null,
+              required: true,
+              description: 'Lowercase letters'
+            },
+            {
+              type: 'number',
+              characters: null,
+              required: true,
+              description: 'Numbers'
+            },
+            {
+              type: 'symbol',
+              characters: null,
+              required: true,
+              description: 'Symbols'
+            }
+          ]
+        },
+        historyPolicy: {
+          enabled: false,
+          preventReuse: null,
+          timeframe: null
+        },
+        customConstraints: []
+      },
+      securityAssessment: {
+        level: 'medium',
+        justification: '',
+        complianceStandards: [],
+        securityConsiderations: [],
+        vulnerabilityWarnings: [],
+        strengthAssessment: ''
+      },
+      recommendations: {
+        implementation: [],
+        userGuidance: [],
+        securityEnhancements: []
+      }
     };
 
     switch (context.securityLevel) {
       case 'high':
         return {
           ...baseRequirements,
-          minLength: Math.max(baseRequirements.minLength, context.requirements?.minLength || 0),
-          securityLevel: 'high',
-          requiredChars: ['uppercase', 'lowercase', 'number', 'symbol'],
-          excludedChars: context.requirements?.excludedChars
+          platformType: {
+            type: 'financial',
+            description: 'Financial platform'
+          },
+          passwordRules: {
+            ...baseRequirements.passwordRules,
+            length: {
+              ...baseRequirements.passwordRules.length,
+              min: Math.max(baseRequirements.passwordRules.length.min, context.requirements?.minLength || 0)
+            },
+            characterRequirements: {
+              ...baseRequirements.passwordRules.characterRequirements,
+              allowedCharacterSets: [
+                ...baseRequirements.passwordRules.characterRequirements.allowedCharacterSets,
+                {
+                  type: 'symbol',
+                  characters: null,
+                  required: true,
+                  description: 'Symbols'
+                }
+              ]
+            }
+          }
         };
 
       case 'medium':
         return {
           ...baseRequirements,
-          minLength: Math.max(8, context.requirements?.minLength || 0),
-          securityLevel: 'medium',
-          requiredChars: ['uppercase', 'lowercase', 'number']
+          passwordRules: {
+            ...baseRequirements.passwordRules,
+            length: {
+              ...baseRequirements.passwordRules.length,
+              min: Math.max(8, context.requirements?.minLength || 0)
+            },
+            characterRequirements: {
+              ...baseRequirements.passwordRules.characterRequirements,
+              allowedCharacterSets: [
+                ...baseRequirements.passwordRules.characterRequirements.allowedCharacterSets,
+                {
+                  type: 'symbol',
+                  characters: null,
+                  required: true,
+                  description: 'Symbols'
+                }
+              ]
+            }
+          }
         };
 
       case 'low':
         return {
           ...baseRequirements,
-          minLength: Math.max(6, context.requirements?.minLength || 0),
-          securityLevel: 'low',
-          requiredChars: ['lowercase', 'number']
+          passwordRules: {
+            ...baseRequirements.passwordRules,
+            length: {
+              ...baseRequirements.passwordRules.length,
+              min: Math.max(6, context.requirements?.minLength || 0)
+            },
+            characterRequirements: {
+              ...baseRequirements.passwordRules.characterRequirements,
+              allowedCharacterSets: [
+                ...baseRequirements.passwordRules.characterRequirements.allowedCharacterSets,
+                {
+                  type: 'symbol',
+                  characters: null,
+                  required: true,
+                  description: 'Symbols'
+                }
+              ]
+            }
+          }
         };
 
       default:
@@ -158,37 +309,69 @@ export class ContextAnalyzer {
   }
 
   analyzeFromText(text: string): PasswordRequirements {
-    const requirements: PasswordRequirements = {
-      minLength: 12,
-      requiredChars: ['lowercase'],
-      excludedChars: [],
-      securityLevel: 'medium'
+    return {
+      platformType: {
+        type: 'general',
+        description: 'General platform'
+      },
+      passwordRules: {
+        length: {
+          min: 12,
+          max: null,
+          description: '12 characters minimum'
+        },
+        characterRequirements: {
+          requiredCombinations: {
+            count: null,
+            from: null
+          },
+          allowedCharacterSets: [
+            {
+              type: 'uppercase',
+              characters: null,
+              required: true,
+              description: 'Uppercase letters'
+            },
+            {
+              type: 'lowercase',
+              characters: null,
+              required: true,
+              description: 'Lowercase letters'
+            },
+            {
+              type: 'number',
+              characters: null,
+              required: true,
+              description: 'Numbers'
+            },
+            {
+              type: 'symbol',
+              characters: null,
+              required: true,
+              description: 'Symbols'
+            }
+          ]
+        },
+        historyPolicy: {
+          enabled: false,
+          preventReuse: null,
+          timeframe: null
+        },
+        customConstraints: []
+      },
+      securityAssessment: {
+        level: 'medium',
+        justification: '',
+        complianceStandards: [],
+        securityConsiderations: [],
+        vulnerabilityWarnings: [],
+        strengthAssessment: ''
+      },
+      recommendations: {
+        implementation: [],
+        userGuidance: [],
+        securityEnhancements: []
+      }
     };
-
-    const lowercaseText = text.toLowerCase();
-
-    // Analyze security level
-    if (lowercaseText.includes('strong') || lowercaseText.includes('secure')) {
-      requirements.securityLevel = 'high';
-      requirements.minLength = 16;
-      requirements.requiredChars = ['uppercase', 'lowercase', 'number', 'symbol'];
-    } else if (lowercaseText.includes('basic') || lowercaseText.includes('simple')) {
-      requirements.securityLevel = 'low';
-      requirements.minLength = 8;
-      requirements.requiredChars = ['lowercase', 'number'];
-    }
-
-    // Extract specific requirements
-    if (lowercaseText.includes('uppercase')) {
-      requirements.requiredChars.push('uppercase');
-    }
-    if (lowercaseText.includes('number')) {
-      requirements.requiredChars.push('number');
-    }
-    if (lowercaseText.includes('symbol')) {
-      requirements.requiredChars.push('symbol');
-    }
-
-    return requirements;
   }
 } 
