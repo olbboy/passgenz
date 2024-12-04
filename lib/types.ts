@@ -92,6 +92,13 @@ export interface HistoryMetadata {
   favorite?: boolean;
 }
 
+export interface AllowedCharacterSet {
+  type: string;
+  required: boolean;
+  description: string;
+  characters?: string;
+}
+
 export interface PasswordRequirements {
   platformType: {
     type: string;
@@ -108,11 +115,7 @@ export interface PasswordRequirements {
         count: number;
         from: number;
       };
-      allowedCharacterSets: Array<{
-        type: string;
-        required: boolean;
-        description: string;
-      }>;
+      allowedCharacterSets: AllowedCharacterSet[];
     };
     customConstraints: Array<{
       type: string;

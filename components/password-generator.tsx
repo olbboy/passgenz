@@ -221,10 +221,16 @@ export function PasswordGenerator() {
 
     // Kiểm tra các ký tự bị cấm
     const noExcludedChars = !requirements.passwordRules.customConstraints
-      .filter(constraint => constraint.type === 'excluded-chars')
-      .some(constraint => 
-        constraint.parameters.chars.some((char: string) => password.includes(char))
-      );
+      .filter(constraint => {
+        if (constraint.type !== 'excluded-chars') return false;
+        if (!constraint.parameters?.chars) return false;
+        return true;
+      })
+      .some(constraint => {
+        const chars = constraint.parameters?.chars as string[] | undefined;
+        if (!chars) return false;
+        return chars.some((char: string) => password.includes(char));
+      });
 
     return meetsLength && hasRequiredChars && noExcludedChars;
   }, [serviceUrl]);
@@ -247,12 +253,12 @@ export function PasswordGenerator() {
                 ...analyzedContext,
                 passwordRules: {
                   ...analyzedContext.passwordRules,
-                  patterns: {
-                    allowCommonWords: true,
-                    allowKeyboardPatterns: true,
-                    allowRepeatingChars: true,
-                    allowSequentialChars: true,
-                    ...analyzedContext.passwordRules.patterns
+                  characterRequirements: {
+                    ...analyzedContext.passwordRules.characterRequirements,
+                    requiredCombinations: {
+                      count: Number(analyzedContext.passwordRules.characterRequirements.requiredCombinations.count) || 1,
+                      from: Number(analyzedContext.passwordRules.characterRequirements.requiredCombinations.from) || 4
+                    }
                   }
                 }
               }
@@ -553,9 +559,10 @@ function validatePasswordAgainstContext(password: string, context: PasswordRequi
 
     // Kiểm tra các ràng buộc tùy chỉnh
     for (const constraint of context.passwordRules.customConstraints) {
-        if (constraint.type === 'excluded-chars' && constraint.parameters.chars) {
-            for (const char of constraint.parameters.chars) {
-                if (password.includes(char)) return false;
+        const excludedChars = constraint.parameters?.chars as string[] | undefined;
+        if (constraint.type === 'excluded-chars' && Array.isArray(excludedChars)) {
+            if (excludedChars.some((char: string) => password.includes(char))) {
+                return false;
             }
         }
     }

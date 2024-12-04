@@ -1,13 +1,10 @@
+import { AllowedCharacterSet } from './types';
+
 export interface ServiceContext {
-  domain: string;
   type: 'financial' | 'social' | 'email' | 'general';
-  securityLevel: 'high' | 'medium' | 'low';
-  requirements?: {
-    minLength?: number;
-    requiredChars?: string[];
-    maxLength?: number;
-    excludedChars?: string[];
-  };
+  domain?: string;
+  securityLevel?: 'low' | 'medium' | 'high' | 'very-high';
+  requirements: PasswordRequirements;
 }
 
 export interface PasswordRequirements {
@@ -23,39 +20,37 @@ export interface PasswordRequirements {
     };
     characterRequirements: {
       requiredCombinations: {
-        count: number | null;
-        from: number | null;
+        count: number;
+        from: number;
       };
       allowedCharacterSets: Array<{
         type: string;
-        characters: string | null;
         required: boolean;
         description: string;
+        characters?: string;
       }>;
-    };
-    historyPolicy: {
-      enabled: boolean;
-      preventReuse: number | null;
-      timeframe: string | null;
     };
     customConstraints: Array<{
       type: string;
       description: string;
-      parameters: Record<string, any>;
+      parameters?: Record<string, any>;
     }>;
+    patterns: {
+      allowCommonWords: boolean;
+      allowKeyboardPatterns: boolean;
+      allowRepeatingChars: boolean;
+      allowSequentialChars: boolean;
+    };
   };
   securityAssessment: {
     level: 'low' | 'medium' | 'high' | 'very-high';
     justification: string;
     complianceStandards: string[];
-    securityConsiderations: string[];
     vulnerabilityWarnings: string[];
-    strengthAssessment: string;
   };
   recommendations: {
     implementation: string[];
     userGuidance: string[];
-    securityEnhancements: string[];
   };
 }
 
@@ -66,8 +61,66 @@ export class ContextAnalyzer {
       type: 'email',
       securityLevel: 'high',
       requirements: {
-        minLength: 8,
-        requiredChars: ['uppercase', 'lowercase', 'number']
+        platformType: {
+          type: 'email',
+          description: 'Email Service'
+        },
+        passwordRules: {
+          length: {
+            min: 8,
+            max: null,
+            description: '8 characters minimum'
+          },
+          characterRequirements: {
+            requiredCombinations: {
+              count: 3,
+              from: 4
+            },
+            allowedCharacterSets: [
+              {
+                type: 'uppercase',
+                required: true,
+                description: 'Uppercase letters',
+                characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+              },
+              {
+                type: 'lowercase',
+                required: true,
+                description: 'Lowercase letters',
+                characters: 'abcdefghijklmnopqrstuvwxyz'
+              },
+              {
+                type: 'number',
+                required: true,
+                description: 'Numbers',
+                characters: '0123456789'
+              },
+              {
+                type: 'symbol',
+                required: true,
+                description: 'Symbols',
+                characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+              }
+            ]
+          },
+          customConstraints: [],
+          patterns: {
+            allowCommonWords: false,
+            allowKeyboardPatterns: false,
+            allowRepeatingChars: false,
+            allowSequentialChars: false
+          }
+        },
+        securityAssessment: {
+          level: 'high',
+          justification: 'Email security is critical',
+          complianceStandards: [],
+          vulnerabilityWarnings: []
+        },
+        recommendations: {
+          implementation: [],
+          userGuidance: []
+        }
       }
     }],
     ['facebook.com', {
@@ -75,8 +128,52 @@ export class ContextAnalyzer {
       type: 'social',
       securityLevel: 'medium',
       requirements: {
-        minLength: 6,
-        requiredChars: ['lowercase', 'number']
+        platformType: {
+          type: 'social',
+          description: 'Social Media Platform'
+        },
+        passwordRules: {
+          length: {
+            min: 6,
+            max: null,
+            description: '6 characters minimum'
+          },
+          characterRequirements: {
+            requiredCombinations: {
+              count: 2,
+              from: 4
+            },
+            allowedCharacterSets: [
+              {
+                type: 'lowercase',
+                required: true,
+                description: 'Lowercase letters'
+              },
+              {
+                type: 'number',
+                required: true,
+                description: 'Numbers'
+              }
+            ]
+          },
+          customConstraints: [],
+          patterns: {
+            allowCommonWords: false,
+            allowKeyboardPatterns: false,
+            allowRepeatingChars: false,
+            allowSequentialChars: false
+          }
+        },
+        securityAssessment: {
+          level: 'medium',
+          justification: 'Basic security requirements',
+          complianceStandards: [],
+          vulnerabilityWarnings: []
+        },
+        recommendations: {
+          implementation: [],
+          userGuidance: []
+        }
       }
     }],
     ['bankofamerica.com', {
@@ -84,12 +181,105 @@ export class ContextAnalyzer {
       type: 'financial',
       securityLevel: 'high',
       requirements: {
-        minLength: 12,
-        requiredChars: ['uppercase', 'lowercase', 'number', 'symbol'],
-        excludedChars: ['<', '>', '"', "'"]
+        platformType: {
+          type: 'financial',
+          description: 'Banking Platform'
+        },
+        passwordRules: {
+          length: {
+            min: 12,
+            max: null,
+            description: '12 characters minimum'
+          },
+          characterRequirements: {
+            requiredCombinations: {
+              count: 4,
+              from: 4
+            },
+            allowedCharacterSets: [
+              {
+                type: 'uppercase',
+                required: true,
+                description: 'Uppercase letters',
+                characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+              },
+              {
+                type: 'lowercase',
+                required: true,
+                description: 'Lowercase letters',
+                characters: 'abcdefghijklmnopqrstuvwxyz'
+              },
+              {
+                type: 'number',
+                required: true,
+                description: 'Numbers',
+                characters: '0123456789'
+              },
+              {
+                type: 'symbol',
+                required: true,
+                description: 'Symbols',
+                characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+              }
+            ]
+          },
+          customConstraints: [
+            {
+              type: 'excluded-chars',
+              description: 'Excluded characters',
+              parameters: {
+                chars: ['<', '>', '"', "'"]
+              }
+            }
+          ],
+          patterns: {
+            allowCommonWords: false,
+            allowKeyboardPatterns: false,
+            allowRepeatingChars: false,
+            allowSequentialChars: false
+          }
+        },
+        securityAssessment: {
+          level: 'high',
+          justification: 'Financial security requirements',
+          complianceStandards: [],
+          vulnerabilityWarnings: []
+        },
+        recommendations: {
+          implementation: [],
+          userGuidance: []
+        }
       }
     }]
   ]);
+
+  // Định nghĩa character sets mặc định ở cấp class
+  private readonly defaultCharacterSets: AllowedCharacterSet[] = [
+    {
+      type: 'uppercase',
+      required: true,
+      description: 'Uppercase letters',
+      characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    },
+    {
+      type: 'lowercase',
+      required: true,
+      description: 'Lowercase letters',
+      characters: 'abcdefghijklmnopqrstuvwxyz'
+    },
+    {
+      type: 'number',
+      required: true,
+      description: 'Numbers',
+      characters: '0123456789'
+    },
+    {
+      type: 'symbol',
+      required: true,
+      description: 'Symbols',
+      characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+    }
+  ];
 
   analyzeContext(url: string): ServiceContext {
     try {
@@ -137,55 +327,28 @@ export class ContextAnalyzer {
         },
         characterRequirements: {
           requiredCombinations: {
-            count: null,
-            from: null
+            count: 3,
+            from: 4
           },
-          allowedCharacterSets: [
-            {
-              type: 'uppercase',
-              characters: null,
-              required: true,
-              description: 'Uppercase letters'
-            },
-            {
-              type: 'lowercase',
-              characters: null,
-              required: true,
-              description: 'Lowercase letters'
-            },
-            {
-              type: 'number',
-              characters: null,
-              required: true,
-              description: 'Numbers'
-            },
-            {
-              type: 'symbol',
-              characters: null,
-              required: true,
-              description: 'Symbols'
-            }
-          ]
+          allowedCharacterSets: this.defaultCharacterSets
         },
-        historyPolicy: {
-          enabled: false,
-          preventReuse: null,
-          timeframe: null
-        },
-        customConstraints: []
+        customConstraints: [],
+        patterns: {
+          allowCommonWords: false,
+          allowKeyboardPatterns: false,
+          allowRepeatingChars: false,
+          allowSequentialChars: false
+        }
       },
       securityAssessment: {
         level: 'medium',
         justification: '',
         complianceStandards: [],
-        securityConsiderations: [],
-        vulnerabilityWarnings: [],
-        strengthAssessment: ''
+        vulnerabilityWarnings: []
       },
       recommendations: {
         implementation: [],
-        userGuidance: [],
-        securityEnhancements: []
+        userGuidance: []
       }
     };
 
@@ -201,17 +364,20 @@ export class ContextAnalyzer {
             ...baseRequirements.passwordRules,
             length: {
               ...baseRequirements.passwordRules.length,
-              min: Math.max(baseRequirements.passwordRules.length.min, context.requirements?.minLength || 0)
+              min: Math.max(
+                baseRequirements.passwordRules.length.min,
+                context.requirements.passwordRules.length.min
+              )
             },
             characterRequirements: {
               ...baseRequirements.passwordRules.characterRequirements,
               allowedCharacterSets: [
-                ...baseRequirements.passwordRules.characterRequirements.allowedCharacterSets,
+                ...this.defaultCharacterSets,
                 {
                   type: 'symbol',
-                  characters: null,
                   required: true,
-                  description: 'Symbols'
+                  description: 'Symbols',
+                  characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
                 }
               ]
             }
@@ -225,17 +391,20 @@ export class ContextAnalyzer {
             ...baseRequirements.passwordRules,
             length: {
               ...baseRequirements.passwordRules.length,
-              min: Math.max(8, context.requirements?.minLength || 0)
+              min: Math.max(
+                baseRequirements.passwordRules.length.min,
+                context.requirements.passwordRules.length.min
+              )
             },
             characterRequirements: {
               ...baseRequirements.passwordRules.characterRequirements,
               allowedCharacterSets: [
-                ...baseRequirements.passwordRules.characterRequirements.allowedCharacterSets,
+                ...this.defaultCharacterSets,
                 {
                   type: 'symbol',
-                  characters: null,
                   required: true,
-                  description: 'Symbols'
+                  description: 'Symbols',
+                  characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
                 }
               ]
             }
@@ -249,17 +418,20 @@ export class ContextAnalyzer {
             ...baseRequirements.passwordRules,
             length: {
               ...baseRequirements.passwordRules.length,
-              min: Math.max(6, context.requirements?.minLength || 0)
+              min: Math.max(
+                baseRequirements.passwordRules.length.min,
+                context.requirements.passwordRules.length.min
+              )
             },
             characterRequirements: {
               ...baseRequirements.passwordRules.characterRequirements,
               allowedCharacterSets: [
-                ...baseRequirements.passwordRules.characterRequirements.allowedCharacterSets,
+                ...this.defaultCharacterSets,
                 {
                   type: 'symbol',
-                  characters: null,
                   required: true,
-                  description: 'Symbols'
+                  description: 'Symbols',
+                  characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
                 }
               ]
             }
@@ -288,31 +460,11 @@ export class ContextAnalyzer {
     return 'general';
   }
 
-  private getDefaultRequirements(securityLevel: ServiceContext['securityLevel']) {
-    switch (securityLevel) {
-      case 'high':
-        return {
-          minLength: 12,
-          requiredChars: ['uppercase', 'lowercase', 'number', 'symbol']
-        };
-      case 'medium':
-        return {
-          minLength: 8,
-          requiredChars: ['uppercase', 'lowercase', 'number']
-        };
-      case 'low':
-        return {
-          minLength: 6,
-          requiredChars: ['lowercase', 'number']
-        };
-    }
-  }
-
-  analyzeFromText(text: string): PasswordRequirements {
-    return {
+  private getDefaultRequirements(securityLevel: ServiceContext['securityLevel']): PasswordRequirements {
+    const baseRequirements: PasswordRequirements = {
       platformType: {
         type: 'general',
-        description: 'General platform'
+        description: 'General Service'
       },
       passwordRules: {
         length: {
@@ -322,56 +474,71 @@ export class ContextAnalyzer {
         },
         characterRequirements: {
           requiredCombinations: {
-            count: null,
-            from: null
+            count: 3,
+            from: 4
           },
-          allowedCharacterSets: [
-            {
-              type: 'uppercase',
-              characters: null,
-              required: true,
-              description: 'Uppercase letters'
-            },
-            {
-              type: 'lowercase',
-              characters: null,
-              required: true,
-              description: 'Lowercase letters'
-            },
-            {
-              type: 'number',
-              characters: null,
-              required: true,
-              description: 'Numbers'
-            },
-            {
-              type: 'symbol',
-              characters: null,
-              required: true,
-              description: 'Symbols'
-            }
-          ]
+          allowedCharacterSets: this.defaultCharacterSets
         },
-        historyPolicy: {
-          enabled: false,
-          preventReuse: null,
-          timeframe: null
-        },
-        customConstraints: []
+        customConstraints: [],
+        patterns: {
+          allowCommonWords: false,
+          allowKeyboardPatterns: false,
+          allowRepeatingChars: false,
+          allowSequentialChars: false
+        }
       },
       securityAssessment: {
-        level: 'medium',
+        level: securityLevel || 'medium',
         justification: '',
         complianceStandards: [],
-        securityConsiderations: [],
-        vulnerabilityWarnings: [],
-        strengthAssessment: ''
+        vulnerabilityWarnings: []
       },
       recommendations: {
         implementation: [],
-        userGuidance: [],
-        securityEnhancements: []
+        userGuidance: []
       }
     };
+
+    switch (securityLevel) {
+      case 'high':
+        return {
+          ...baseRequirements,
+          passwordRules: {
+            ...baseRequirements.passwordRules,
+            length: {
+              ...baseRequirements.passwordRules.length,
+              min: 12
+            }
+          }
+        };
+      case 'medium':
+        return {
+          ...baseRequirements,
+          passwordRules: {
+            ...baseRequirements.passwordRules,
+            length: {
+              ...baseRequirements.passwordRules.length,
+              min: 8
+            }
+          }
+        };
+      case 'low':
+        return {
+          ...baseRequirements,
+          passwordRules: {
+            ...baseRequirements.passwordRules,
+            length: {
+              ...baseRequirements.passwordRules.length,
+              min: 6
+            }
+          }
+        };
+      default:
+        return baseRequirements;
+    }
+  }
+
+  analyzeFromText(text: string): PasswordRequirements {
+    return this.getDefaultRequirements('medium');
   }
 } 

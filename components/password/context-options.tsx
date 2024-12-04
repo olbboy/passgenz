@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Sparkles, Loader2, Settings2 } from "lucide-react"
 import { PasswordRequirements } from "@/lib/context-analyzer"
 import { useToast } from "@/components/ui/use-toast"
+import { AllowedCharacterSet } from "@/lib/types"
 
 interface ContextOptionsProps {
     context: string;
@@ -11,6 +12,34 @@ interface ContextOptionsProps {
     analyzedContext: PasswordRequirements | null;
     onAnalyze: (requirements: PasswordRequirements) => void;
 }
+
+// Định nghĩa character sets
+const defaultCharacterSets: AllowedCharacterSet[] = [
+  {
+    type: 'uppercase',
+    required: true,
+    description: 'Uppercase letters (A-Z)',
+    characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  },
+  {
+    type: 'lowercase',
+    required: true,
+    description: 'Lowercase letters (a-z)',
+    characters: 'abcdefghijklmnopqrstuvwxyz'
+  },
+  {
+    type: 'number',
+    required: true,
+    description: 'Numbers (0-9)',
+    characters: '0123456789'
+  },
+  {
+    type: 'symbol',
+    required: true,
+    description: 'Special characters',
+    characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+  }
+];
 
 export function ContextOptions({
     context,
@@ -27,9 +56,7 @@ export function ContextOptions({
             const res = await fetch("/api/ai", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    prompt: context
-                }),
+                body: JSON.stringify({ prompt: context }),
             });
 
             const data = await res.json();
@@ -51,38 +78,38 @@ export function ContextOptions({
                 passwordRules: {
                     length: {
                         min: data.rules.minLength,
-                        max: data.rules.maxLength,
-                        description: 'Generated length requirements'
+                        max: null,
+                        description: `${data.rules.minLength} characters minimum`
                     },
                     characterRequirements: {
                         requiredCombinations: {
                             count: data.rules.minCharTypesRequired,
-                            from: Object.values(data.rules.requiredCharTypes).filter(Boolean).length
+                            from: 4
                         },
                         allowedCharacterSets: [
                             {
                                 type: 'uppercase',
-                                characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                                 required: data.rules.requiredCharTypes.uppercase,
-                                description: 'Uppercase letters (A-Z)'
+                                description: 'Uppercase letters (A-Z)',
+                                characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
                             },
                             {
                                 type: 'lowercase',
-                                characters: 'abcdefghijklmnopqrstuvwxyz',
                                 required: data.rules.requiredCharTypes.lowercase,
-                                description: 'Lowercase letters (a-z)'
+                                description: 'Lowercase letters (a-z)',
+                                characters: 'abcdefghijklmnopqrstuvwxyz'
                             },
                             {
                                 type: 'number',
-                                characters: '0123456789',
                                 required: data.rules.requiredCharTypes.numbers,
-                                description: 'Numbers (0-9)'
+                                description: 'Numbers (0-9)',
+                                characters: '0123456789'
                             },
                             {
                                 type: 'symbol',
-                                characters: '!@#$%^&*()_+-=[]{}|;:,.<>?',
                                 required: data.rules.requiredCharTypes.symbols,
-                                description: 'Special characters'
+                                description: 'Special characters',
+                                characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
                             }
                         ]
                     },
@@ -93,28 +120,22 @@ export function ContextOptions({
                             parameters: { chars: data.rules.excludedChars }
                         }
                     ] : [],
-                    historyPolicy: {
-                        enabled: false,
-                        preventReuse: null,
-                        timeframe: null
+                    patterns: {
+                        allowCommonWords: false,
+                        allowKeyboardPatterns: false,
+                        allowRepeatingChars: false,
+                        allowSequentialChars: false
                     }
                 },
                 securityAssessment: {
                     level: 'high',
-                    justification: 'Generated from AI analysis',
-                    complianceStandards: [],
-                    vulnerabilityWarnings: [],
-                    securityConsiderations: ['Use unique password for each account'],
-                    strengthAssessment: 'Strong password configuration'
+                    justification: 'Follows security best practices',
+                    complianceStandards: ['NIST SP 800-63B'],
+                    vulnerabilityWarnings: []
                 },
                 recommendations: {
-                    implementation: [],
-                    userGuidance: [
-                        'Use generated password as is',
-                        'Store securely',
-                        'Do not share with others'
-                    ],
-                    securityEnhancements: ['Enable two-factor authentication']
+                    implementation: ['Implement password strength meter'],
+                    userGuidance: ['Use a password manager']
                 }
             };
 
@@ -137,68 +158,64 @@ export function ContextOptions({
     }
 
     const handleManualAnalysis = () => {
+        // Định nghĩa default rules
+        const defaultRules = {
+            minLength: 12,
+            maxLength: null,
+            minCharTypesRequired: 3,
+            requiredCharTypes: {
+                uppercase: true,
+                lowercase: true,
+                numbers: true,
+                symbols: true
+            },
+            excludedChars: []
+        };
+
         const requirements: PasswordRequirements = {
             platformType: {
                 type: 'general',
-                description: 'General purpose password'
+                description: 'Manual analysis'
             },
             passwordRules: {
                 length: {
-                    min: 10,
+                    min: defaultRules.minLength,
                     max: null,
-                    description: 'Minimum 10 characters'
+                    description: `${defaultRules.minLength} characters minimum`
                 },
                 characterRequirements: {
                     requiredCombinations: {
-                        count: 3,
+                        count: defaultRules.minCharTypesRequired,
                         from: 4
                     },
-                    allowedCharacterSets: [
-                        {
-                            type: 'uppercase',
-                            characters: null,
-                            required: true,
-                            description: 'Uppercase letters (A-Z)'
-                        },
-                        {
-                            type: 'lowercase',
-                            characters: null,
-                            required: true,
-                            description: 'Lowercase letters (a-z)'
-                        },
-                        {
-                            type: 'number',
-                            characters: null,
-                            required: true,
-                            description: 'Numbers (0-9)'
-                        },
-                        {
-                            type: 'symbol',
-                            characters: '!@#$%^&*()_+-=[]{}|;:,.<>?',
-                            required: true,
-                            description: 'Special characters'
-                        }
-                    ]
+                    allowedCharacterSets: defaultCharacterSets.map(set => ({
+                        ...set,
+                        required: defaultRules.requiredCharTypes[set.type.toLowerCase() as keyof typeof defaultRules.requiredCharTypes]
+                    }))
                 },
-                historyPolicy: {
-                    enabled: false,
-                    preventReuse: null,
-                    timeframe: null
-                },
-                customConstraints: []
+                customConstraints: defaultRules.excludedChars.length ? [
+                    {
+                        type: 'excluded-chars',
+                        description: 'Excluded characters',
+                        parameters: { chars: defaultRules.excludedChars }
+                    }
+                ] : [],
+                patterns: {
+                    allowCommonWords: false,
+                    allowKeyboardPatterns: false,
+                    allowRepeatingChars: false,
+                    allowSequentialChars: false
+                }
             },
             securityAssessment: {
                 level: 'high',
                 justification: 'Follows security best practices',
                 complianceStandards: ['NIST SP 800-63B'],
-                securityConsiderations: ['Use unique password for each account'],
-                vulnerabilityWarnings: [],
-                strengthAssessment: 'Strong password configuration'
+                vulnerabilityWarnings: []
             },
             recommendations: {
                 implementation: ['Implement password strength meter'],
-                userGuidance: ['Use a password manager'],
-                securityEnhancements: ['Enable two-factor authentication']
+                userGuidance: ['Use a password manager']
             }
         };
 
