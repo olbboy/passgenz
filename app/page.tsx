@@ -2,6 +2,7 @@ import { GeneratorTabs } from '@/components/generator-tabs'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from "@/components/ui/button"
 import { Github } from "lucide-react"
+import { GuideDrawer } from '@/components/guide/guide-drawer'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Suspense } from 'react'
@@ -28,6 +29,7 @@ export default function Home() {
               </Suspense>
             </div>
             <div className="flex items-center gap-2">
+              <GuideDrawer />
               <Link 
                 href="https://github.com/olbboy/passgenz" 
                 target="_blank" 

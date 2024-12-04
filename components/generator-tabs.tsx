@@ -5,10 +5,10 @@ import { PasswordGenerator } from "./password-generator"
 import { PinGenerator } from "./pin-generator"
 import { SecretGenerator } from "./secret-generator"
 import { IdGenerator } from "./id-generator"
-import { HistoryDrawer } from "./history-drawer"
 import { Button } from "./ui/button"
 import { History } from "lucide-react"
 import { useState } from "react"
+import { HistoryDrawer } from "./history-drawer"
 
 export function GeneratorTabs() {
   const [showHistory, setShowHistory] = useState(false)
@@ -17,7 +17,7 @@ export function GeneratorTabs() {
     <div className="relative">
       <Tabs defaultValue="password" className="w-full">
         <div className="flex items-center justify-between mb-4">
-          <TabsList>
+          <TabsList className="flex-1 grid grid-cols-4">
             <TabsTrigger value="password">Password</TabsTrigger>
             <TabsTrigger value="pin">PIN</TabsTrigger>
             <TabsTrigger value="secret">Secret</TabsTrigger>
@@ -28,8 +28,9 @@ export function GeneratorTabs() {
             variant="outline"
             size="icon"
             onClick={() => setShowHistory(true)}
+            className="ml-2"
           >
-            <History className={`h-4 w-4 ${showHistory ? 'text-primary' : ''}`} />
+            <History className="h-4 w-4" />
           </Button>
         </div>
 
