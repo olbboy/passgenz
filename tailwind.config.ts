@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { fontFamily } from "tailwindcss/defaultTheme";
 
 const config: Config = {
     darkMode: ["class"],
@@ -17,6 +18,11 @@ const config: Config = {
             },
         },
         extend: {
+            fontFamily: {
+                sans: ["var(--font-inter)", ...fontFamily.sans],
+                mono: ["var(--font-jetbrains-mono)", ...fontFamily.mono],
+                display: ["var(--font-cal-sans)", ...fontFamily.sans],
+            },
             colors: {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
@@ -52,13 +58,8 @@ const config: Config = {
                     foreground: "hsl(var(--card-foreground))",
                 },
             },
-            borderRadius: {
-                lg: "var(--radius)",
-                md: "calc(var(--radius) - 2px)",
-                sm: "calc(var(--radius) - 4px)",
-            },
         },
     },
-    plugins: [],
+    plugins: [require("tailwindcss-animate")],
 }
 export default config;

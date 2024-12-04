@@ -112,9 +112,9 @@ Rules:
     }
 
   } catch (error) {
-    console.error('AI Analysis Error:', error);
+    console.error('PassGenz AI Error:', error);
     return NextResponse.json({ 
-      error: error instanceof Error ? error.message : "Failed to analyze requirements",
+      error: error instanceof Error ? error.message : "PassGenz AI service failed",
       status: 'error'
     }, { status: 500 });
   }

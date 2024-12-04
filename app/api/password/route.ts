@@ -57,9 +57,9 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
-    console.error('Rules Generation Error:', error);
+    console.error('PassGenz Rules Generation Error:', error);
     return NextResponse.json({ 
-      error: error instanceof Error ? error.message : "Failed to generate rules",
+      error: error instanceof Error ? error.message : "PassGenz failed to generate rules",
       status: 'error'
     }, { status: 500 });
   }

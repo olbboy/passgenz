@@ -1,14 +1,14 @@
 <div align="center">
 
-![password-generator](/public/logo.png)
+![passgenz](/public/logo.png)
 
-# 🔐 Advanced Password Generator
+# 🔐 PassGenz - Advanced Password Generator
 
 #### 🚀 Next-Generation Secure Password Generation Solution
 
-English · [Documentation](https://docs.example.com) · [Live Demo](https://demo.example.com)
+English · [Documentation](https://passgenz.com/docs) · [Live Demo](https://passgenz.com)
 
-<img alt="Password Generator Preview" src="./screenshots/preview.png" width="100%" style="border-radius: 8px">
+<img alt="PassGenz Preview" src="./screenshots/preview.png" width="100%" style="border-radius: 8px">
 
 </div>
 
