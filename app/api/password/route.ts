@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { PasswordRequirements, PasswordRules } from "@/lib/types";
+import { generatePatternFromRequirements } from "@/lib/utils";
 
 // Add interfaces for type safety
 interface CharacterSet {
@@ -16,6 +17,8 @@ interface Constraint {
 }
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+export const runtime = 'edge';
 
 export async function POST(request: Request) {
   try {
