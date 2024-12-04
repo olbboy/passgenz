@@ -186,7 +186,7 @@ export async function generatePassword(config: GeneratorConfig): Promise<Generat
   }
 }
 
-async function generatePin(
+export async function generatePin(
   length: number,
   type: 'numeric' | 'alphanumeric' | 'extended'
 ): Promise<{ pin: string; analysis: PasswordAnalysis }> {
@@ -214,7 +214,7 @@ async function generatePin(
   };
 }
 
-async function generateId(
+export async function generateId(
   format: 'uuid' | 'nanoid' | 'custom',
   prefix?: string
 ): Promise<{ id: string; analysis: PasswordAnalysis }> {
@@ -247,7 +247,7 @@ async function generateId(
   };
 }
 
-async function generateSecret(
+export async function generateSecret(
   format: 'hex' | 'base64'
 ): Promise<{ secret: string; analysis: PasswordAnalysis }> {
   const generator = QuantumSafeGenerator.getInstance();

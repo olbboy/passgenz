@@ -243,7 +243,19 @@ export function PasswordGenerator() {
               type: analyzedContext.platformType.type as 'financial' | 'social' | 'email' | 'general',
               domain: analyzedContext.platformType.description,
               securityLevel: analyzedContext.securityAssessment.level,
-              requirements: analyzedContext
+              requirements: {
+                ...analyzedContext,
+                passwordRules: {
+                  ...analyzedContext.passwordRules,
+                  patterns: {
+                    allowCommonWords: true,
+                    allowKeyboardPatterns: true,
+                    allowRepeatingChars: true,
+                    allowSequentialChars: true,
+                    ...analyzedContext.passwordRules.patterns
+                  }
+                }
+              }
             }
           : undefined
       };
