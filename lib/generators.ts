@@ -1,5 +1,13 @@
 import { webcrypto } from 'crypto';
-import { PasswordOptions, GenerationResult, PasswordAnalysis } from './types';
+import { PasswordOptions, GenerationResult, PasswordAnalysis, GeneratorConfig } from './types';
+
+// Dictionary cho memorable passwords
+const dictionary = [
+  'apple', 'banana', 'orange', 'grape', 'lemon',
+  'book', 'paper', 'pencil', 'desk', 'chair',
+  'cloud', 'river', 'ocean', 'mountain', 'forest',
+  // ... thêm nhiều từ nữa
+];
 
 // Shared utilities
 const charsets = {
@@ -101,58 +109,81 @@ class QuantumSafeGenerator {
   }
 }
 
-// Export all functions
-export { generatePassword, generatePin, generateId, generateSecret };
+// Export trực tiếp từ function declarations
+export async function generatePassword(config: GeneratorConfig): Promise<GenerationResult> {
+  const { mode, length, options, memorableOptions, pattern } = config;
 
-// Implement functions
-async function generatePassword(length: number, options: PasswordOptions): Promise<GenerationResult> {
-  // Define character sets
-  const charSets = {
-    uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-    lowercase: 'abcdefghijklmnopqrstuvwxyz',
-    numbers: '0123456789',
-    symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
-  };
+  try {
+    let password = '';
 
-  // Create array of enabled character sets
-  const enabledSets = [];
-  if (options.uppercase) enabledSets.push(charSets.uppercase);
-  if (options.lowercase) enabledSets.push(charSets.lowercase);
-  if (options.numbers) enabledSets.push(charSets.numbers);
-  if (options.symbols) enabledSets.push(charSets.symbols);
+    switch (mode) {
+      case 'memorable':
+        if (memorableOptions) {
+          const words = Array(memorableOptions.wordCount)
+            .fill(null)
+            .map(() => {
+              const word = dictionary[Math.floor(Math.random() * dictionary.length)];
+              return memorableOptions.capitalize 
+                ? word.charAt(0).toUpperCase() + word.slice(1) 
+                : word;
+            });
 
-  if (!enabledSets.length) {
-    throw new Error('Please select at least one character type');
+          password = words.join(memorableOptions.includeSeparators ? '-' : '');
+          if (memorableOptions.includeNumbers) {
+            password += Math.floor(Math.random() * 900 + 100); // Add 3 random digits
+          }
+        }
+        break;
+
+      case 'pattern':
+        if (pattern) {
+          password = pattern.split('').map((char: string) => {
+            switch (char) {
+              case 'L': return getRandomChar(charsets.uppercase);
+              case 'l': return getRandomChar(charsets.lowercase);
+              case 'd': return getRandomChar(charsets.numbers);
+              case 's': return getRandomChar(charsets.symbols);
+              default: return char;
+            }
+          }).join('');
+        }
+        break;
+
+      case 'basic':
+      default:
+        // Create array of enabled character sets
+        const enabledSets = [];
+        if (options.uppercase) enabledSets.push(charsets.uppercase);
+        if (options.lowercase) enabledSets.push(charsets.lowercase);
+        if (options.numbers) enabledSets.push(charsets.numbers);
+        if (options.symbols) enabledSets.push(charsets.symbols);
+
+        if (!enabledSets.length) {
+          throw new Error('Please select at least one character type');
+        }
+
+        // Ensure at least one character from each enabled set
+        password = enabledSets.map(set => getRandomChar(set)).join('');
+
+        // Fill remaining length with random characters
+        const allChars = enabledSets.join('');
+        while (password.length < length) {
+          password += getRandomChar(allChars);
+        }
+
+        // Shuffle the password
+        password = shuffleString(password);
+        break;
+    }
+
+    return {
+      password,
+      analysis: analyzePassword(password)
+    };
+
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Failed to generate password');
   }
-
-  // Ensure at least one character from each enabled set
-  let password = '';
-  enabledSets.forEach(set => {
-    const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % set.length;
-    password += set[randomIndex];
-  });
-
-  // Fill remaining length with random characters from all enabled sets
-  const allChars = enabledSets.join('');
-  const remainingLength = length - password.length;
-  const randomValues = crypto.getRandomValues(new Uint32Array(remainingLength));
-  
-  for (let i = 0; i < remainingLength; i++) {
-    password += allChars[randomValues[i] % allChars.length];
-  }
-
-  // Shuffle the password
-  const shuffled = password.split('');
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  password = shuffled.join('');
-
-  return {
-    password,
-    analysis: analyzePassword(password)
-  };
 }
 
 async function generatePin(
@@ -235,4 +266,18 @@ async function generateSecret(
     secret,
     analysis: analyzePassword(secret)
   };
+}
+
+// Helper functions
+function getRandomChar(chars: string): string {
+  return chars[Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] % chars.length)];
+}
+
+function shuffleString(str: string): string {
+  const arr = str.split('');
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.join('');
 } 

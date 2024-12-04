@@ -1,5 +1,3 @@
-import { ServiceContext } from './context-analyzer'
-
 export interface PasswordAnalysis {
   entropy: number;
   strength: 'weak' | 'medium' | 'strong' | 'very-strong';
@@ -38,9 +36,17 @@ export interface GenerationResult {
 }
 
 export interface GeneratorConfig {
+  mode: 'basic' | 'context' | 'pattern' | 'memorable';
   length: number;
   options: PasswordOptions;
   context?: ServiceContext;
+  memorableOptions?: {
+    wordCount: number;
+    capitalize: boolean;
+    includeNumbers: boolean;
+    includeSeparators: boolean;
+  };
+  pattern?: string;
 }
 
 export interface PasswordMetadata {
@@ -149,4 +155,11 @@ export interface PasswordRules {
     allowRepeatingChars: boolean;
     allowSequentialChars: boolean;
   };
+}
+
+export interface ServiceContext {
+  type: 'financial' | 'social' | 'email' | 'general';
+  domain?: string;
+  securityLevel?: 'low' | 'medium' | 'high' | 'very-high';
+  requirements: PasswordRequirements;
 } 

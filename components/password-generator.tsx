@@ -230,173 +230,38 @@ export function PasswordGenerator() {
   }, [serviceUrl]);
 
   const handleGeneratePassword = async () => {
+    setIsGenerating(true);
     try {
-      setIsGenerating(true);
-      setError(null);
-      let result: GenerationResult | undefined;
-
-      if (mode === 'context' && analyzedContext) {
-        try {
-          // Get password rules from AI analysis
-          const res = await fetch('/api/password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ requirements: analyzedContext })
-          });
-
-          const data = await res.json();
-          console.log('API Response:', data);
-          
-          if (!res.ok || data.error) {
-            console.error('API Error:', data.error);
-            throw new Error(data.error || 'Failed to generate rules');
-          }
-
-          // Use rules to generate password
-          const rules = data.rules;
-          console.log('Generated Rules:', rules);
-
-          // Map rules to options
-          const contextOptions: PasswordOptions = {
-            uppercase: true,  // Always enable all character types
-            lowercase: true,  // and let validatePasswordAgainstRules
-            numbers: true,    // handle the validation
-            symbols: true,
-            memorable: !rules.patterns.allowCommonWords,
-            quantumSafe: analyzedContext.securityAssessment.level === 'very-high'
-          };
-
-          let attempts = 0;
-          const maxAttempts = 10;
-          let validPassword = false;
-          
-          while (attempts < maxAttempts && !validPassword) {
-            // Generate base password
-            const generated = await generatePassword(
-              Math.max(rules.minLength, 12), // Tăng độ dài tối thiểu
-              contextOptions
-            );
-
-            // Ensure required character types
-            let enhancedPassword = generated.password;
-            if (!/[A-Z]/.test(enhancedPassword) && rules.requiredCharTypes.uppercase) {
-              enhancedPassword = 'A' + enhancedPassword.slice(1);
+      const config: GeneratorConfig = {
+        mode,
+        length: length[0],
+        options: options,
+        memorableOptions: mode === 'memorable' ? memorableOptions : undefined,
+        pattern: mode === 'pattern' ? pattern : undefined,
+        context: mode === 'context' && analyzedContext 
+          ? {
+              type: analyzedContext.platformType.type as 'financial' | 'social' | 'email' | 'general',
+              domain: analyzedContext.platformType.description,
+              securityLevel: analyzedContext.securityAssessment.level,
+              requirements: analyzedContext
             }
-            if (!/[a-z]/.test(enhancedPassword) && rules.requiredCharTypes.lowercase) {
-              enhancedPassword = enhancedPassword.slice(0, -1) + 'a';
-            }
-            if (!/[0-9]/.test(enhancedPassword) && rules.requiredCharTypes.numbers) {
-              enhancedPassword = enhancedPassword.slice(0, -2) + '1';
-            }
-            if (!/[!@#$%^&*()_+\-=[\]{};:,.<>?]/.test(enhancedPassword) && rules.requiredCharTypes.symbols) {
-              enhancedPassword = enhancedPassword.slice(0, -3) + '@';
-            }
+          : undefined
+      };
 
-            // Validate enhanced password
-            const isValid = validatePasswordAgainstRules(enhancedPassword, rules);
-            if (isValid) {
-              result = {
-                password: enhancedPassword,
-                analysis: {
-                  ...generated.analysis,
-                  breached: false,
-                  level: analyzedContext.securityAssessment.level,
-                  recommendations: [
-                    ...analyzedContext.recommendations.implementation,
-                    ...analyzedContext.recommendations.userGuidance
-                  ]
-                }
-              };
-              validPassword = true;
-            }
-            attempts++;
-          }
+      const result = await generatePassword(config);
+      setPassword(result.password);
+      setAnalysis(result.analysis);
+      
+      // Check for breaches
+      const breachCheck = await breachDb.checkPassword(result.password);
+      setBreachResult(breachCheck);
 
-          if (!validPassword) {
-            throw new Error("Could not generate password meeting all requirements");
-          }
-
-        } catch (err) {
-          throw new Error(err instanceof Error ? err.message : "Failed to generate password");
-        }
-      } else if (usePattern && pattern) {
-        const generated = patternGenerator.generateFromPattern(pattern);
-        const entropy = patternGenerator.getPatternStrength(pattern);
-        result = {
-          password: generated,
-          analysis: {
-            entropy,
-            strength: entropy > 80 ? 'very-strong' : 
-                     entropy > 60 ? 'strong' :
-                     entropy > 40 ? 'medium' : 'weak',
-            timeToCrack: calculateTimeToCrack(entropy),
-            quantumResistant: entropy > 100,
-            weaknesses: [],
-            breached: false
-          }
-        } as GenerationResult;
-      } else if (useMemorable) {
-        const generated = memorableGenerator.generateMemorable(memorableOptions);
-        const baseResult = await generatePassword(generated.length, options);
-        result = {
-          password: generated,
-          analysis: {
-            ...baseResult.analysis,
-            breached: false
-          }
-        } as GenerationResult;
-      } else {
-        const generated = await generatePassword(length[0], options);
-        result = {
-          password: generated.password,
-          analysis: {
-            ...generated.analysis,
-            breached: false
-          }
-        } as GenerationResult;
-      }
-
-      if (result) {
-        setPassword(result.password);
-        setAnalysis(result.analysis);
-
-        // Check breach database
-        const breach = await breachDb.checkPassword(result.password);
-        setBreachResult(breach);
-
-        // Convert pattern warnings to structured format
-        const patternWarnings = convertPatternWarnings(result.analysis.weaknesses);
-
-        // Create history entry
-        const historyEntry: HistoryMetadata = {
-          strength: result.analysis.entropy,
-          analysis: {
-            entropy: result.analysis.entropy,
-            timeToCrack: result.analysis.timeToCrack,
-            weaknesses: result.analysis.weaknesses,
-            breached: breach.breached,
-            breachCount: breach.count,
-            characterDistribution: result.analysis.characterDistribution,
-            patterns: patternWarnings,  // Use converted pattern warnings
-            recommendations: result.analysis.recommendations || []
-          },
-          context: mode === 'context' ? JSON.stringify(analyzedContext) : undefined,
-          tags: []
-        };
-
-        // Add to history
-        await historyService.addEntry({
-          value: result.password,
-          feature: 'password',
-          metadata: historyEntry
-        });
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate password');
+    } catch (error) {
+      console.error('Generation error:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: err instanceof Error ? err.message : 'Failed to generate password',
+        description: error instanceof Error ? error.message : 'Failed to generate password'
       });
     } finally {
       setIsGenerating(false);
