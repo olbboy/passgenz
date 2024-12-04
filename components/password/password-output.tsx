@@ -96,82 +96,118 @@ export function PasswordOutput({
 
   return (
     <motion.div className="space-y-6">
-      {/* Password Display */}
-      <motion.div className="relative">
-        <div className="flex items-center space-x-4 bg-secondary p-6 rounded-lg shadow-sm group">
-          <span className="text-2xl font-mono flex-1 tracking-wider select-all">
+      {/* Password Display - Cải thiện UI */}
+      <motion.div 
+        className="relative"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="flex items-center space-x-4 bg-secondary/80 backdrop-blur-sm p-6 rounded-lg shadow-sm group hover:shadow-md transition-all duration-300">
+          <span className={cn(
+            "text-xl sm:text-2xl font-mono flex-1 tracking-wider select-all break-all",
+            !password && "text-muted-foreground text-lg sm:text-xl"
+          )}>
             {password || 'Click generate to create password'}
           </span>
-          <div className="flex gap-2">
-            <TooltipProvider>
+          <div className="flex gap-2 shrink-0">
+            <TooltipProvider delayDuration={300}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button 
                     variant="outline" 
                     size="icon"
                     onClick={onGenerate}
-                    className="hover:bg-primary hover:text-primary-foreground"
+                    className="hover:bg-primary hover:text-primary-foreground transition-colors"
                     aria-label="Generate new password"
                   >
                     <RefreshCw className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Generate new password</TooltipContent>
+                <TooltipContent side="top" className="text-xs">
+                  Generate new password (Ctrl/⌘ + G)
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
 
-            <TooltipProvider>
+            <TooltipProvider delayDuration={300}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button 
                     variant="outline" 
                     size="icon"
                     onClick={onCopy}
-                    className="hover:bg-primary hover:text-primary-foreground"
+                    disabled={!password}
+                    className={cn(
+                      "hover:bg-primary hover:text-primary-foreground transition-colors",
+                      !password && "opacity-50 cursor-not-allowed"
+                    )}
                     aria-label="Copy password"
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Copy to clipboard</TooltipContent>
+                <TooltipContent side="top" className="text-xs">
+                  Copy to clipboard (Ctrl/⌘ + C)
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
         </div>
       </motion.div>
 
-      {/* Strength Indicator - Thêm visual feedback */}
-      <div className="relative pt-4">
-        <div className="absolute -top-2 left-0 right-0 flex justify-between text-sm font-medium">
-          <span className="text-red-500">Weak</span>
-          <span className="text-yellow-500">Medium</span>
-          <span className="text-green-500">Strong</span>
-        </div>
-        <Progress 
-          value={analysis?.entropy ? Number(analysis.entropy.toFixed(2)) : 0} 
-          className="h-4 rounded-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 transition-all duration-500" 
-        />
-        <div className="mt-2 text-center text-sm font-medium">
-          {analysis?.strength && (
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={cn(
-                analysis.strength === 'very-strong' && "text-green-500",
-                analysis.strength === 'strong' && "text-blue-500",
-                analysis.strength === 'medium' && "text-yellow-500",
-                analysis.strength === 'weak' && "text-red-500"
-              )}
-            >
-              {analysis.strength.toUpperCase()}
-            </motion.span>
-          )}
-        </div>
-      </div>
+      {/* Strength Indicator - Cải thiện visual feedback */}
+      {password && (
+        <motion.div 
+          className="relative pt-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="absolute -top-2 left-0 right-0 flex justify-between text-xs sm:text-sm text-muted-foreground">
+            <span>Weak</span>
+            <span>Medium</span>
+            <span>Strong</span>
+          </div>
+          <Progress 
+            value={analysis?.entropy ? Math.min(Number(analysis.entropy.toFixed(2)), 100) : 0} 
+            className={cn(
+              "h-3 rounded-full transition-all duration-500",
+              analysis?.strength === 'very-strong' && "bg-gradient-to-r from-green-500 to-emerald-500",
+              analysis?.strength === 'strong' && "bg-gradient-to-r from-blue-500 to-cyan-500",
+              analysis?.strength === 'medium' && "bg-gradient-to-r from-yellow-500 to-orange-500",
+              analysis?.strength === 'weak' && "bg-gradient-to-r from-red-500 to-rose-500"
+            )}
+          />
+          <div className="mt-2 text-center text-sm font-medium">
+            {analysis?.strength && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center justify-center gap-2"
+              >
+                <span className={cn(
+                  "px-3 py-1 rounded-full text-xs font-semibold",
+                  analysis.strength === 'very-strong' && "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+                  analysis.strength === 'strong' && "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+                  analysis.strength === 'medium' && "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
+                  analysis.strength === 'weak' && "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                )}>
+                  {analysis.strength.toUpperCase()}
+                </span>
+                {analysis.timeToCrack && (
+                  <span className="text-xs text-muted-foreground">
+                    {analysis.timeToCrack}
+                  </span>
+                )}
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
+      )}
 
-      {/* Detailed Analysis - Cải thiện layout và visual */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {metrics && (
+      {/* Distribution và Security Checks - Responsive Grid */}
+      {metrics && password && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <AnimatePresence mode="wait">
             {/* Character Distribution */}
             <motion.div
@@ -239,50 +275,64 @@ export function PasswordOutput({
               </Card>
             </motion.div>
           </AnimatePresence>
+        </div>
+      )}
+
+      {/* Recommendations với animation tốt hơn */}
+      <AnimatePresence>
+        {metrics?.recommendations?.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Alert variant="warning" className="bg-yellow-50/50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-900/50">
+              <Lightbulb className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+              <AlertTitle className="text-yellow-800 dark:text-yellow-200">Recommendations</AlertTitle>
+              <AlertDescription>
+                <ul className="space-y-2 mt-2">
+                  {metrics.recommendations.map((rec, index) => (
+                    <motion.li 
+                      key={`rec-${index}`}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-center gap-2 text-yellow-700 dark:text-yellow-300"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
+                      {rec}
+                    </motion.li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
 
-      {/* Recommendations */}
-      {metrics && metrics.recommendations?.length > 0 && (
-        <motion.div>
-          <Alert variant="warning">
-            <AlertTitle>Recommendations</AlertTitle>
-            <AlertDescription>
-              <ul>
-                {metrics.recommendations.map((rec, index) => (
-                  <motion.li 
-                    key={`rec-${index}`}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    {rec}
-                  </motion.li>
-                ))}
-              </ul>
-            </AlertDescription>
-          </Alert>
-        </motion.div>
-      )}
-
-      {/* Breach Info */}
-      {breachResult?.breached && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <Alert variant="destructive" className="bg-red-500/10">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Password Compromised</AlertTitle>
-            <AlertDescription className="flex items-center gap-2">
-              <span>Found in {breachResult.count?.toLocaleString()} data breaches</span>
-              <Button variant="link" size="sm" className="text-red-500 h-auto p-0">
-                Learn More
-              </Button>
-            </AlertDescription>
-          </Alert>
-        </motion.div>
-      )}
+      {/* Breach Info với animation mượt hơn */}
+      <AnimatePresence>
+        {breachResult?.breached && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Alert variant="destructive" className="bg-red-50/50 dark:bg-red-900/20 border-red-200 dark:border-red-900/50">
+              <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+              <AlertTitle className="text-red-800 dark:text-red-200">Password Compromised</AlertTitle>
+              <AlertDescription className="flex items-center gap-2 text-red-700 dark:text-red-300">
+                <span>Found in {breachResult.count?.toLocaleString()} data breaches</span>
+                <Button variant="link" size="sm" className="text-red-600 dark:text-red-400 h-auto p-0 hover:text-red-800 dark:hover:text-red-200">
+                  Learn More
+                </Button>
+              </AlertDescription>
+            </Alert>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 } 
