@@ -389,38 +389,65 @@ export function PasswordGenerator() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [password]);
 
+  const tabItems = [
+    { 
+      value: 'basic', 
+      icon: <Settings2 className="h-4 w-4" />, 
+      label: 'Basic',
+      shortLabel: 'Basic' // Short label for mobile
+    },
+    { 
+      value: 'context', 
+      icon: <Sparkles className="h-4 w-4" />, 
+      label: 'AI Context',
+      shortLabel: 'AI' // Shortened for mobile
+    },
+    { 
+      value: 'pattern', 
+      icon: <Hash className="h-4 w-4" />, 
+      label: 'Pattern',
+      shortLabel: 'Pattern'
+    },
+    { 
+      value: 'memorable', 
+      icon: <Brain className="h-4 w-4" />, 
+      label: 'Memorable',
+      shortLabel: 'Memo' // Shortened for mobile
+    }
+  ];
+
   return (
     <Card>
       <CardHeader className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <CardTitle>Password Generator</CardTitle>
-          <Tabs 
-            value={mode} 
-            onValueChange={(value) => handleModeChange(value as GenerationMode)}
-            className="w-full sm:w-auto"
-          >
-            <TabsList className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 p-1 bg-muted rounded-lg">
-              {[
-                { value: 'basic', icon: <Settings2 className="h-4 w-4" />, label: 'Basic' },
-                { value: 'context', icon: <Sparkles className="h-4 w-4" />, label: 'AI Context' },
-                { value: 'pattern', icon: <Hash className="h-4 w-4" />, label: 'Pattern' },
-                { value: 'memorable', icon: <Brain className="h-4 w-4" />, label: 'Memorable' }
-              ].map(tab => (
-                <TabsTrigger 
-                  key={tab.value}
-                  value={tab.value}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-md transition-all",
-                    "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
-                    "hover:bg-background/50"
-                  )}
-                >
-                  {tab.icon}
-                  <span className="hidden sm:inline">{tab.label}</span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+        <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+          <CardTitle className="text-xl sm:text-2xl">Password Generator</CardTitle>
+          <div className="w-full sm:w-auto">
+            <Tabs 
+              value={mode} 
+              onValueChange={(value) => handleModeChange(value as GenerationMode)}
+              className="w-full sm:w-auto"
+            >
+              <TabsList className="grid w-full grid-cols-4 p-1 bg-muted rounded-lg h-auto">
+                {tabItems.map(tab => (
+                  <TabsTrigger 
+                    key={tab.value}
+                    value={tab.value}
+                    className={cn(
+                      "flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md transition-all",
+                      "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
+                      "hover:bg-background/50",
+                      "text-xs sm:text-sm", // Responsive text size
+                      "h-auto min-h-[2.5rem]" // Ensure consistent height
+                    )}
+                  >
+                    {tab.icon}
+                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span className="inline sm:hidden">{tab.shortLabel}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
       </CardHeader>
 

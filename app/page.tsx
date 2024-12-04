@@ -1,7 +1,9 @@
 import { GeneratorTabs } from '@/components/generator-tabs'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { ShieldCheck } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ShieldCheck, Github } from "lucide-react"
+import Link from 'next/link'
 import Image from 'next/image'
 import { Suspense } from 'react'
 import { MatrixHeaderWrapper } from '@/components/matrix-header-wrapper'
@@ -25,7 +27,18 @@ export default function Home() {
                 <MatrixHeaderWrapper />
               </Suspense>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <Link 
+                href="https://github.com/olbboy/passgenz" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button variant="outline" size="icon" className="w-9 h-9">
+                  <Github className="h-5 w-5" />
+                </Button>
+              </Link>
+              <ThemeToggle />
+            </div>
           </div>
           <Alert
             variant="default"
