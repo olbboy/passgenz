@@ -9,6 +9,18 @@ export interface PasswordAnalysis {
   breached?: boolean;
   level?: 'low' | 'medium' | 'high' | 'very-high';
   recommendations?: string[];
+  patterns?: {
+    hasCommonWords: boolean;
+    hasKeyboardPatterns: boolean;
+    hasRepeatingChars: boolean;
+    hasSequentialChars: boolean;
+  };
+  characterDistribution?: {
+    uppercase: number;
+    lowercase: number;
+    numbers: number;
+    symbols: number;
+  };
 }
 
 export interface PasswordOptions {
@@ -40,7 +52,12 @@ export interface PasswordMetadata {
     breached: boolean;
     breachCount?: number;
     characterDistribution?: Record<string, number>;
-    patterns?: string[];
+    patterns?: {
+      hasCommonWords: boolean;
+      hasKeyboardPatterns: boolean;
+      hasRepeatingChars: boolean;
+      hasSequentialChars: boolean;
+    };
     recommendations?: string[];
   };
   context?: string;
@@ -56,11 +73,17 @@ export interface HistoryMetadata {
     breached: boolean;
     breachCount?: number;
     characterDistribution?: Record<string, number>;
-    patterns?: string[];
+    patterns?: {
+      hasCommonWords: boolean;
+      hasKeyboardPatterns: boolean;
+      hasRepeatingChars: boolean;
+      hasSequentialChars: boolean;
+    };
     recommendations?: string[];
   };
   context?: string;
   tags: string[];
+  favorite?: boolean;
 }
 
 export interface PasswordRequirements {
@@ -90,6 +113,12 @@ export interface PasswordRequirements {
       description: string;
       parameters?: Record<string, any>;
     }>;
+    patterns: {
+      allowCommonWords: boolean;
+      allowKeyboardPatterns: boolean;
+      allowRepeatingChars: boolean;
+      allowSequentialChars: boolean;
+    };
   };
   securityAssessment: {
     level: 'low' | 'medium' | 'high' | 'very-high';

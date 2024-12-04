@@ -19,22 +19,51 @@ export function IdGenerator() {
   const [format, setFormat] = useState<'uuid' | 'nanoid' | 'custom'>('uuid')
   const [prefix, setPrefix] = useState('')
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
   const historyService = HistoryManagementService.getInstance()
 
   const handleGenerateId = async () => {
-    const result = await generateId(format, prefix)
-    setId(result.id)
-    setAnalysis(result.analysis)
+    try {
+      setIsGenerating(true);
+      const result = await generateId(format, prefix);
 
-    // Save to history
-    await historyService.addEntry({
-      value: result.id,
-      feature: 'id',
-      metadata: {
-        tags: ['generated', format]
-      }
-    })
-  }
+      // Create history entry with full metadata
+      await historyService.addEntry({
+        value: result.id,
+        feature: 'id',
+        metadata: {
+          strength: result.analysis.entropy / 100, // Convert entropy to 0-1 scale
+          analysis: {
+            entropy: result.analysis.entropy,
+            timeToCrack: result.analysis.timeToCrack,
+            weaknesses: result.analysis.weaknesses,
+            breached: false,
+            characterDistribution: result.analysis.characterDistribution,
+            patterns: result.analysis.patterns,
+            recommendations: [
+              'Store securely',
+              'Do not share unnecessarily',
+              'Use for identification only'
+            ]
+          },
+          tags: ['generated', format],
+          context: prefix ? `Prefix: ${prefix}` : undefined
+        }
+      });
+
+      setId(result.id);
+      setAnalysis(result.analysis);
+      
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: err instanceof Error ? err.message : 'Failed to generate ID'
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const copyToClipboard = async () => {
     if (!id) return
@@ -94,8 +123,12 @@ export function IdGenerator() {
             />
           </div>
 
-          <Button className="w-full" onClick={handleGenerateId}>
-            Generate ID
+          <Button 
+            className="w-full" 
+            onClick={handleGenerateId}
+            disabled={isGenerating}
+          >
+            {isGenerating ? 'Generating...' : 'Generate ID'}
           </Button>
         </div>
       </CardContent>

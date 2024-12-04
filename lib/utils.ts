@@ -1,8 +1,8 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { PasswordRequirements } from '@/lib/context-analyzer'
+import { PasswordRequirements } from './types'
 
-export function cn(...inputs: ClassValue[]) {
+export function cn(...inputs: any[]) {
   return twMerge(clsx(inputs))
 }
 
@@ -23,36 +23,70 @@ export const charsets = {
 
 export function generatePatternFromRequirements(requirements: PasswordRequirements): string {
   const patternMap = {
-    uppercase: 'L',
-    lowercase: 'l',
-    number: 'd',
-    symbol: 's'
+    uppercase: '[A-Z]',
+    lowercase: '[a-z]',
+    number: '[0-9]',
+    symbol: '[!@#$%^&*()_+\\-=\\[\\]{};:,.<>?]'
   } as const;
 
   let pattern = '';
-  requirements.requiredChars.forEach((char: 'uppercase' | 'lowercase' | 'number' | 'symbol') => {
-    pattern += patternMap[char];
+  const requiredTypes = requirements.passwordRules.characterRequirements.allowedCharacterSets
+    .filter(set => set.required)
+    .map(set => set.type as keyof typeof patternMap);
+
+  requiredTypes.forEach(type => {
+    if (patternMap[type]) {
+      pattern += patternMap[type];
+    }
   });
 
-  // Pad to minimum length if needed
-  while (pattern.length < requirements.minLength) {
-    pattern += 'l'; // Pad with lowercase
+  const { min, max } = requirements.passwordRules.length;
+  pattern = `.{${min},${max || ''}}`;
+
+  const excludedChars = requirements.passwordRules.customConstraints
+    .filter(constraint => constraint.type === 'excluded-chars')
+    .flatMap(constraint => constraint.parameters?.chars || []);
+
+  if (excludedChars.length > 0) {
+    pattern = `(?!.*[${excludedChars.join('')}])${pattern}`;
+  }
+
+  if (!requirements.passwordRules.patterns.allowCommonWords) {
+    pattern = `(?!.*(?:password|admin|user))${pattern}`;
+  }
+  if (!requirements.passwordRules.patterns.allowKeyboardPatterns) {
+    pattern = `(?!.*(?:qwerty|asdf|zxcv))${pattern}`;
+  }
+  if (!requirements.passwordRules.patterns.allowRepeatingChars) {
+    pattern = `(?!.*(.)\\1{2,})${pattern}`;
+  }
+  if (!requirements.passwordRules.patterns.allowSequentialChars) {
+    pattern = `(?!.*(?:123|abc))${pattern}`;
   }
 
   return pattern;
 }
 
 export function calculateTimeToCrack(entropy: number): string {
-  const secondsToHuman = (seconds: number): string => {
-    if (seconds < 60) return `${Math.round(seconds)} seconds`;
-    if (seconds < 3600) return `${Math.round(seconds / 60)} minutes`;
-    if (seconds < 86400) return `${Math.round(seconds / 3600)} hours`;
-    if (seconds < 31536000) return `${Math.round(seconds / 86400)} days`;
-    return `${Math.round(seconds / 31536000)} years`;
-  };
+  const secondsPerGuess = 0.001; // Assume 1000 guesses per second
+  const combinations = Math.pow(2, entropy);
+  const seconds = combinations * secondsPerGuess;
 
-  // 2^entropy is the number of guesses needed
-  // Assume 1 billion guesses per second for modern hardware
-  const seconds = Math.pow(2, entropy) / 1_000_000_000;
-  return secondsToHuman(seconds);
+  if (seconds > 31536000 * 100) return '> 100 years';
+  if (seconds > 31536000) return '> 1 year';
+  if (seconds > 86400 * 30) return '> 1 month';
+  if (seconds > 86400) return '> 1 day';
+  if (seconds > 3600) return '> 1 hour';
+  if (seconds > 60) return '> 1 minute';
+  return '< 1 minute';
+}
+
+export function validatePasswordAgainstPattern(password: string, pattern: string): boolean {
+  try {
+    const regex = new RegExp(`^${pattern}$`);
+    return regex.test(password);
+  } catch (error) {
+    console.error('Invalid pattern:', error);
+    return false;
+  }
 }

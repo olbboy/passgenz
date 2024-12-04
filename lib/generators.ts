@@ -32,7 +32,26 @@ function analyzePassword(password: string): PasswordAnalysis {
 
   const entropy = Math.log2(Math.pow(charsetSize, length));
   
-  const analysis: PasswordAnalysis = {
+  // Build weaknesses array
+  const weaknesses: string[] = [];
+  if (length < 12) weaknesses.push('Length too short');
+  if (!hasUpper) weaknesses.push('No uppercase letters');
+  if (!hasLower) weaknesses.push('No lowercase letters');
+  if (!hasNumber) weaknesses.push('No numbers');
+  if (!hasSymbol) weaknesses.push('No special characters');
+
+  // Check for patterns
+  const hasCommonWords = /\b(password|admin|user|login)\b/i.test(password);
+  const hasKeyboardPatterns = /qwerty|asdf|zxcv/i.test(password);
+  const hasRepeatingChars = /(.)\1{2,}/.test(password);
+  const hasSequentialChars = /(abc|123|xyz)/i.test(password);
+
+  if (hasCommonWords) weaknesses.push('Contains common words');
+  if (hasKeyboardPatterns) weaknesses.push('Contains keyboard patterns');
+  if (hasRepeatingChars) weaknesses.push('Contains repeating characters');
+  if (hasSequentialChars) weaknesses.push('Contains sequential characters');
+
+  return {
     entropy,
     strength: entropy > 80 ? 'very-strong' 
       : entropy > 60 ? 'strong'
@@ -43,16 +62,20 @@ function analyzePassword(password: string): PasswordAnalysis {
       : entropy > 40 ? '> 1 year'
       : '< 1 year',
     quantumResistant: entropy > 80,
-    weaknesses: []
+    weaknesses,
+    patterns: {  // Add structured patterns
+      hasCommonWords,
+      hasKeyboardPatterns,
+      hasRepeatingChars,
+      hasSequentialChars
+    },
+    characterDistribution: {
+      uppercase: (password.match(/[A-Z]/g) || []).length,
+      lowercase: (password.match(/[a-z]/g) || []).length,
+      numbers: (password.match(/[0-9]/g) || []).length,
+      symbols: (password.match(/[^A-Za-z0-9]/g) || []).length
+    }
   };
-
-  if (length < 12) analysis.weaknesses.push('Length too short');
-  if (!hasUpper) analysis.weaknesses.push('No uppercase letters');
-  if (!hasLower) analysis.weaknesses.push('No lowercase letters');
-  if (!hasNumber) analysis.weaknesses.push('No numbers');
-  if (!hasSymbol) analysis.weaknesses.push('No special characters');
-
-  return analysis;
 }
 
 class QuantumSafeGenerator {

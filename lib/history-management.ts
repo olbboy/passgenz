@@ -1,21 +1,12 @@
 import { eventBus } from './event-bus'
+import { HistoryMetadata } from './types';
 
 export interface HistoryEntry {
   id: string;
   timestamp: number;
   feature: 'password' | 'pin' | 'secret' | 'id';
   value: string;
-  metadata: {
-    strength?: number;
-    analysis?: {
-      entropy: number;
-      timeToCrack: string;
-      weaknesses: string[];
-    };
-    context?: string;
-    tags?: string[];
-    favorite?: boolean;
-  };
+  metadata: HistoryMetadata;
 }
 
 export interface HistoryFilter {
@@ -148,7 +139,7 @@ export class HistoryManagementService {
     const entry = this.history.get(id);
     if (!entry || !entry.metadata.tags) return;
 
-    entry.metadata.tags = entry.metadata.tags.filter(t => t !== tag);
+    entry.metadata.tags = entry.metadata.tags.filter((t: string) => t !== tag);
     await this.persistHistory();
   }
 
@@ -169,7 +160,7 @@ export class HistoryManagementService {
   getAllTags(): string[] {
     const tags = new Set<string>();
     this.history.forEach(entry => {
-      entry.metadata.tags?.forEach(tag => tags.add(tag));
+      entry.metadata.tags?.forEach((tag: string) => tags.add(tag));
     });
     return Array.from(tags);
   }

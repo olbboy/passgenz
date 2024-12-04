@@ -272,73 +272,42 @@ export function PasswordGenerator() {
         } as GenerationResult;
       }
 
-      if (!result) {
-        throw new Error("No password was generated");
-      }
+      if (result) {
+        setPassword(result.password);
+        setAnalysis(result.analysis);
 
-      // Update state with the result
-      setPassword(result.password);
-      setAnalysis(result.analysis);
+        // Check breach database
+        const breach = await breachDb.checkPassword(result.password);
+        setBreachResult(breach);
 
-      // Check breach database
-      const breach = await breachDb.checkPassword(result.password);
-      setBreachResult(breach);
+        // Convert pattern warnings to structured format
+        const patternWarnings = convertPatternWarnings(result.analysis.weaknesses);
 
-      // Validate against analyzed context
-      if (mode === 'context' && analyzedContext && !validatePasswordAgainstContext(result.password, analyzedContext)) {
-        toast({
-          title: 'Warning',
-          description: 'Generated password does not meet all analyzed requirements',
-          variant: 'destructive'
+        // Create history entry
+        const historyEntry: HistoryMetadata = {
+          strength: result.analysis.entropy,
+          analysis: {
+            entropy: result.analysis.entropy,
+            timeToCrack: result.analysis.timeToCrack,
+            weaknesses: result.analysis.weaknesses,
+            breached: breach.breached,
+            breachCount: breach.count,
+            characterDistribution: result.analysis.characterDistribution,
+            patterns: patternWarnings,  // Use converted pattern warnings
+            recommendations: result.analysis.recommendations || []
+          },
+          context: mode === 'context' ? JSON.stringify(analyzedContext) : undefined,
+          tags: []
+        };
+
+        // Add to history
+        await historyService.addEntry({
+          value: result.password,
+          feature: 'password',
+          metadata: historyEntry
         });
       }
-
-      // Save to history with updated metadata
-      const metrics = analyzePassword(result.password);
-
-      // Convert patterns object to array of strings
-      const patternWarnings = Object.entries(metrics.patterns || {})
-        .filter(([_, hasPattern]) => hasPattern)
-        .map(([pattern]) => {
-          switch (pattern) {
-            case 'hasCommonWords':
-              return 'Contains common words';
-            case 'hasKeyboardPatterns':
-              return 'Contains keyboard patterns';
-            case 'hasRepeatingChars':
-              return 'Contains repeating characters';
-            case 'hasSequentialChars':
-              return 'Contains sequential characters';
-            default:
-              return pattern;
-          }
-        });
-
-      const historyEntry: HistoryMetadata = {
-        strength: result.analysis.strength === 'very-strong' ? 1 :
-                  result.analysis.strength === 'strong' ? 0.8 :
-                  result.analysis.strength === 'medium' ? 0.6 : 0.4,
-        analysis: {
-          entropy: result.analysis.entropy,
-          timeToCrack: result.analysis.timeToCrack,
-          weaknesses: result.analysis.weaknesses,
-          breached: breach.breached,
-          breachCount: breach.count,
-          characterDistribution: metrics.characterDistribution,
-          patterns: patternWarnings,
-          recommendations: metrics.recommendations || []
-        },
-        context: mode === 'context' ? JSON.stringify(analyzedContext) : undefined,
-        tags: ['generated']
-      };
-
-      await historyService.addEntry({
-        value: result.password,
-        feature: 'password',
-        metadata: historyEntry
-      });
     } catch (err) {
-      console.error('Generation Error:', err);
       setError(err instanceof Error ? err.message : 'Failed to generate password');
       toast({
         variant: "destructive",
@@ -348,7 +317,7 @@ export function PasswordGenerator() {
     } finally {
       setIsGenerating(false);
     }
-  }
+  };
 
   const copyToClipboard = async () => {
     if (!password) return
@@ -640,4 +609,19 @@ function validatePasswordAgainstRules(password: string, rules: PasswordRules): b
   }
 
   return true;
+}
+
+// Helper function to convert pattern warnings to structured format
+function convertPatternWarnings(warnings: string[]): {
+  hasCommonWords: boolean;
+  hasKeyboardPatterns: boolean;
+  hasRepeatingChars: boolean;
+  hasSequentialChars: boolean;
+} {
+  return {
+    hasCommonWords: warnings.some(w => w.toLowerCase().includes('common word')),
+    hasKeyboardPatterns: warnings.some(w => w.toLowerCase().includes('keyboard pattern')),
+    hasRepeatingChars: warnings.some(w => w.toLowerCase().includes('repeating')),
+    hasSequentialChars: warnings.some(w => w.toLowerCase().includes('sequential'))
+  };
 }

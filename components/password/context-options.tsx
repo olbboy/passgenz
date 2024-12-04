@@ -92,7 +92,12 @@ export function ContextOptions({
                             description: 'Excluded characters',
                             parameters: { chars: data.rules.excludedChars }
                         }
-                    ] : []
+                    ] : [],
+                    historyPolicy: {
+                        enabled: false,
+                        preventReuse: null,
+                        timeframe: null
+                    }
                 },
                 securityAssessment: {
                     level: 'high',

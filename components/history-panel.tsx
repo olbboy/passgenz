@@ -413,7 +413,7 @@ export function HistoryPanel() {
                           </div>
                         )}
 
-                        {entry.metadata?.analysis?.recommendations?.length > 0 && (
+                        {entry.metadata?.analysis?.recommendations && entry.metadata.analysis.recommendations.length > 0 && (
                           <div className="mt-2">
                             <h4 className="text-sm font-medium">Recommendations:</h4>
                             <ul className="list-disc pl-4 text-xs space-y-0.5">

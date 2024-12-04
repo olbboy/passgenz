@@ -11,27 +11,60 @@ import { Copy, RefreshCw } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { generatePin } from '@/lib/generators'
 import { HistoryManagementService } from '@/lib/history-management'
+import { PasswordAnalysis } from '@/lib/types'
 
 export function PinGenerator() {
   const { toast } = useToast()
   const [pin, setPin] = useState('')
-  const [length, setLength] = useState([4])
   const [pinType, setPinType] = useState<'numeric' | 'alphanumeric' | 'extended'>('numeric')
+  const [length, setLength] = useState([6])
+  const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
   const historyService = HistoryManagementService.getInstance()
 
   const handleGeneratePin = async () => {
-    const result = await generatePin(length[0], pinType)
-    setPin(result.pin)
+    try {
+      setIsGenerating(true);
+      const result = await generatePin(length[0], pinType);
 
-    // Save to history
-    await historyService.addEntry({
-      value: result.pin,
-      feature: 'pin',
-      metadata: {
-        tags: ['generated', pinType]
-      }
-    })
-  }
+      // Create history entry with full metadata
+      await historyService.addEntry({
+        value: result.pin,
+        feature: 'pin',
+        metadata: {
+          strength: result.analysis.entropy / 100, // Convert entropy to 0-1 scale
+          analysis: {
+            entropy: result.analysis.entropy,
+            timeToCrack: result.analysis.timeToCrack,
+            weaknesses: result.analysis.weaknesses,
+            breached: false,
+            characterDistribution: result.analysis.characterDistribution,
+            patterns: result.analysis.patterns,
+            recommendations: [
+              'Use only once',
+              'Do not share with others',
+              'Change regularly',
+              `Use ${pinType} format for better security`
+            ]
+          },
+          tags: ['generated', pinType],
+          context: `Length: ${length[0]}, Type: ${pinType}`
+        }
+      });
+
+      setPin(result.pin);
+      setAnalysis(result.analysis);
+
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: err instanceof Error ? err.message : 'Failed to generate PIN'
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const copyToClipboard = async () => {
     if (!pin) return
@@ -93,8 +126,12 @@ export function PinGenerator() {
             </Select>
           </div>
 
-          <Button className="w-full" onClick={handleGeneratePin}>
-            Generate PIN
+          <Button 
+            className="w-full" 
+            onClick={handleGeneratePin}
+            disabled={isGenerating}
+          >
+            {isGenerating ? 'Generating...' : 'Generate PIN'}
           </Button>
         </div>
       </CardContent>
