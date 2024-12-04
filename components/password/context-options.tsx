@@ -45,7 +45,7 @@ export function ContextOptions({
             // Convert AI rules to PasswordRequirements format
             const requirements: PasswordRequirements = {
                 platformType: {
-                    type: 'general',  // Default value
+                    type: 'general',
                     description: 'Generated from AI analysis'
                 },
                 passwordRules: {
@@ -62,21 +62,25 @@ export function ContextOptions({
                         allowedCharacterSets: [
                             {
                                 type: 'uppercase',
+                                characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                                 required: data.rules.requiredCharTypes.uppercase,
                                 description: 'Uppercase letters (A-Z)'
                             },
                             {
                                 type: 'lowercase',
+                                characters: 'abcdefghijklmnopqrstuvwxyz',
                                 required: data.rules.requiredCharTypes.lowercase,
                                 description: 'Lowercase letters (a-z)'
                             },
                             {
                                 type: 'number',
+                                characters: '0123456789',
                                 required: data.rules.requiredCharTypes.numbers,
                                 description: 'Numbers (0-9)'
                             },
                             {
                                 type: 'symbol',
+                                characters: '!@#$%^&*()_+-=[]{}|;:,.<>?',
                                 required: data.rules.requiredCharTypes.symbols,
                                 description: 'Special characters'
                             }
@@ -91,10 +95,12 @@ export function ContextOptions({
                     ] : []
                 },
                 securityAssessment: {
-                    level: 'high',  // Default to high
+                    level: 'high',
                     justification: 'Generated from AI analysis',
                     complianceStandards: [],
-                    vulnerabilityWarnings: []
+                    vulnerabilityWarnings: [],
+                    securityConsiderations: ['Use unique password for each account'],
+                    strengthAssessment: 'Strong password configuration'
                 },
                 recommendations: {
                     implementation: [],
@@ -102,7 +108,8 @@ export function ContextOptions({
                         'Use generated password as is',
                         'Store securely',
                         'Do not share with others'
-                    ]
+                    ],
+                    securityEnhancements: ['Enable two-factor authentication']
                 }
             };
 

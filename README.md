@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+![password-generator](/public/logo.png)
 
-First, run the development server:
+# 🔐 Advanced Password Generator
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+#### 🚀 Next-Generation Secure Password Generation Solution
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+English · [Documentation](https://docs.example.com) · [Live Demo](https://demo.example.com)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<img alt="Password Generator Preview" src="./screenshots/preview.png" width="100%" style="border-radius: 8px">
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+</div>
 
-## Learn More
+## 📝 Features
 
-To learn more about Next.js, take a look at the following resources:
+1. 🎯 **Multi-Mode Password Generation**:
+   - Basic password generation with customizable character sets
+   - Pattern-based generation for specific formats
+   - Memorable passwords using word combinations
+   - Context-aware generation based on service requirements
+   - Quantum-safe generation for enhanced security
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. 🤖 **AI-Powered Context Analysis**:
+   - Automatic requirement detection from service descriptions
+   - Smart security level assessment
+   - Compliance standard verification
+   - Custom constraint identification
+   - Intelligent recommendations
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. 🛡️ **Advanced Security Analysis**:
+   - Entropy calculation and strength assessment
+   - Quantum resistance evaluation
+   - Password breach detection
+   - Character distribution analysis
+   - Vulnerability identification
 
-## Deploy on Vercel
+4. 🎨 **Modern UI/UX Design**:
+   - Clean, responsive interface
+   - Real-time password strength visualization
+   - Interactive character distribution charts
+   - Comprehensive security analysis display
+   - Mobile-first approach using Shadcn UI
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. 📊 **Password Requirements Management**:
+   - Minimum/maximum length enforcement
+   - Required character type combinations
+   - Custom character exclusions
+   - Pattern restrictions (keyboard patterns, sequences)
+   - History policy implementation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+6. 💫 **Special Generation Features**:
+   - PIN generation (numeric/alphanumeric/extended)
+   - ID generation (UUID/nanoid/custom)
+   - Secret key generation (hex/base64)
+   - Prefix support for IDs
+   - Quantum-safe random number generation
+
+7. 🔍 **Validation & Verification**:
+   - Real-time requirement validation
+   - Service-specific compliance checking
+   - Password history verification
+   - Pattern detection and enforcement
+   - Character set validation
+
+8. 📱 **Progressive Features**:
+   - Responsive design for all devices
+   - Offline capability
+   - Copy to clipboard functionality
+   - Password history management
+   - Export/import capabilities
+
+## 🚀 Getting Started
