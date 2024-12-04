@@ -15,7 +15,7 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center py-8">
         <div className="w-full max-w-3xl">
           <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/logo.webp"
                 alt="PassGenz Logo"
@@ -27,7 +27,7 @@ export default function Home() {
               <Suspense fallback={<h1 className="text-4xl font-bold">PassGenz</h1>}>
                 <MatrixHeaderWrapper />
               </Suspense>
-            </div>
+            </Link>
             <div className="flex items-center gap-2">
               <GuideDrawer />
               <Link 
