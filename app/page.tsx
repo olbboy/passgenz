@@ -27,8 +27,8 @@ export default function Home() {
             </div>
             <ThemeToggle />
           </div>
-          <Alert 
-            variant="default" 
+          <Alert
+            variant="default"
             className="mb-6 bg-blue-50/50 border-blue-200 dark:bg-blue-950/30 dark:border-blue-900/50 transition-all duration-300 hover:shadow-md"
           >
             <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -37,8 +37,7 @@ export default function Home() {
                 Privacy First
               </AlertTitle>
               <AlertDescription className="text-blue-700 dark:text-blue-100 text-sm leading-relaxed">
-                Passwords are generated on the client side and are never stored anywhere. 
-                Neither on the client nor on the server. Your security is our top priority.
+                Our password generation process operates exclusively within your local device environment, ensuring maximum security and privacy. At no point are your passwords transmitted or stored—they remain completely ephemeral, leaving no trace on either your device or our servers.
               </AlertDescription>
             </div>
           </Alert>
