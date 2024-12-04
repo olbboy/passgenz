@@ -6,9 +6,14 @@
 
 #### 🚀 Next-Generation Secure Password Generation Solution
 
-English · [Documentation](https://passgenz.com/docs) · [Live Demo](https://passgenz.com)
+A modern, AI-powered password generator built with Next.js 14, featuring quantum-safe algorithms, context-aware analysis, and comprehensive security validation. Combines advanced cryptography with an intuitive UI to create strong, compliant passwords for any service.
 
-<img alt="PassGenz Preview" src="./screenshots/preview.png" width="100%" style="border-radius: 8px">
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)]()
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)]()
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)]()
+[![Shadcn/ui](https://img.shields.io/badge/Shadcn/ui-000000?style=flat-square&logo=shadcnui&logoColor=white)]()
+
+[Live Demo](https://passgenz.com) · [Documentation](https://passgenz.com/docs) · [Report Bug](https://github.com/yourusername/passgenz/issues)
 
 </div>
 
