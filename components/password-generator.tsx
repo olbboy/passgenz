@@ -8,7 +8,7 @@ import { Switch } from './ui/switch'
 import { Button } from './ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { motion } from 'framer-motion'
-import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle, Globe, Settings2, Sparkles, Hash, Brain, Loader2, Wand2, AlertCircle } from 'lucide-react'
+import { Copy, RefreshCw, Shield, AlertTriangle, CheckCircle, XCircle, Globe, Settings2, Sparkles, Hash, Brain, Loader2, Wand2, AlertCircle, HelpCircle } from 'lucide-react'
 import { generatePassword } from '@/lib/generators'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
@@ -30,6 +30,7 @@ import { analyzePassword } from "./password/password-output"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 import { PasswordRules } from '@/lib/types';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface PasswordOptions {
   uppercase: boolean
@@ -417,42 +418,18 @@ export function PasswordGenerator() {
   ];
 
   return (
-    <Card>
-      <CardHeader className="space-y-4">
-        <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="text-xl sm:text-2xl">Password Generator</CardTitle>
-          <div className="w-full sm:w-auto">
-            <Tabs 
-              value={mode} 
-              onValueChange={(value) => handleModeChange(value as GenerationMode)}
-              className="w-full sm:w-auto"
-            >
-              <TabsList className="grid w-full grid-cols-4 p-1 bg-muted rounded-lg h-auto">
-                {tabItems.map(tab => (
-                  <TabsTrigger 
-                    key={tab.value}
-                    value={tab.value}
-                    className={cn(
-                      "flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md transition-all",
-                      "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
-                      "hover:bg-background/50",
-                      "text-xs sm:text-sm", // Responsive text size
-                      "h-auto min-h-[2.5rem]" // Ensure consistent height
-                    )}
-                  >
-                    {tab.icon}
-                    <span className="hidden sm:inline">{tab.label}</span>
-                    <span className="inline sm:hidden">{tab.shortLabel}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-          </div>
-        </div>
+    <Card className="h-full">
+      <CardHeader className="space-y-2">
+        <CardTitle className="text-xl sm:text-2xl font-semibold">
+          Password Generator
+        </CardTitle>
+        <p className="text-sm text-muted-foreground">
+          Create strong, secure passwords with custom requirements
+        </p>
       </CardHeader>
 
-      <CardContent>
-        {/* Password Output Section */}
+      <CardContent className="space-y-8">
+        {/* Password Output Component */}
         <PasswordOutput 
           password={password}
           analysis={analysis}
@@ -460,62 +437,115 @@ export function PasswordGenerator() {
           onCopy={copyToClipboard}
         />
 
-        {/* Generation Options */}
-        {mode === 'basic' && (
-          <BasicOptions 
-            options={options}
-            onChange={setOptions}
-            length={length}
-            onLengthChange={setLength}
-          />
-        )}
+        {/* Options Grid */}
+        <div className="grid gap-6 sm:grid-cols-2">
+          {/* Length Slider */}
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <Label className="text-sm font-medium">Password Length</Label>
+              <span className="text-sm font-mono bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
+                {length[0]} characters
+              </span>
+            </div>
+            <div className="pt-2">
+              <Slider
+                value={length}
+                onValueChange={setLength}
+                min={8}
+                max={128}
+                step={1}
+                className="mt-2"
+                defaultValue={[16]}
+              />
+              <div className="flex justify-between mt-2">
+                <span className="text-xs text-muted-foreground">8</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                  Recommended: 16-32
+                </span>
+                <span className="text-xs text-muted-foreground">128</span>
+              </div>
+            </div>
+          </div>
 
-        {mode === 'context' && (
-          <ContextOptions 
-            context={context}
-            onContextChange={setContext}
-            analyzedContext={analyzedContext}
-            onAnalyze={handleContextAnalysis}
-          />
-        )}
+          {/* Character Options */}
+          <div className="space-y-4">
+            <Label className="text-sm font-medium">Character Types</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {Object.entries({
+                uppercase: {
+                  label: "Uppercase (A-Z)",
+                  description: "Include capital letters"
+                },
+                lowercase: {
+                  label: "Lowercase (a-z)",
+                  description: "Include small letters"
+                },
+                numbers: {
+                  label: "Numbers (0-9)",
+                  description: "Include digits"
+                },
+                symbols: {
+                  label: "Symbols (!@#$)",
+                  description: "Include special characters"
+                },
+              }).map(([key, { label, description }]) => (
+                <div key={key} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                  <Switch
+                    id={key}
+                    checked={options[key as keyof typeof options]}
+                    onCheckedChange={(checked) =>
+                      setOptions((prev) => ({ ...prev, [key]: checked }))
+                    }
+                    className="mt-0.5"
+                  />
+                  <div className="space-y-1">
+                    <Label htmlFor={key} className="text-sm font-medium">
+                      {label}
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      {description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-        {mode === 'pattern' && (
-          <PatternOptions 
-            pattern={pattern}
-            onChange={setPattern}
-          />
-        )}
+        {/* Advanced Options */}
+        <div className="space-y-4 pt-6 border-t border-border/50">
+          <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+            <div className="space-y-1">
+              <Label className="text-sm font-medium">Quantum-Safe</Label>
+              <p className="text-xs text-muted-foreground max-w-[280px]">
+                Enhance password strength with quantum-resistant entropy
+              </p>
+            </div>
+            <Switch
+              checked={options.quantumSafe}
+              onCheckedChange={(checked) =>
+                setOptions((prev) => ({ ...prev, quantumSafe: checked }))
+              }
+            />
+          </div>
+        </div>
 
-        {mode === 'memorable' && (
-          <MemorableOptions 
-            options={memorableOptions}
-            onChange={setMemorableOptions}
-          />
-        )}
-
-        {error && (
-          <Alert variant="destructive" className="mb-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        
+        {/* Generate Button */}
         <Button 
-          className="w-full mt-6" 
+          className="w-full mt-8 h-12 text-base" 
           size="lg"
           onClick={handleGeneratePassword}
           disabled={isGenerating}
         >
           {isGenerating ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating...
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              <span>Generating secure password...</span>
             </>
           ) : (
             <>
-              <Wand2 className="mr-2 h-4 w-4" />
-              Generate Password
+              <Wand2 className="mr-2 h-5 w-5" />
+              <span>Generate Strong Password</span>
             </>
           )}
         </Button>

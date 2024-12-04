@@ -94,6 +94,9 @@ export function PasswordOutput({
 }: PasswordOutputProps) {
   const metrics = password ? analyzePassword(password) : null;
 
+  // Recommendations section với type safety
+  const hasRecommendations = metrics?.recommendations && metrics.recommendations.length > 0;
+
   return (
     <motion.div className="space-y-6">
       {/* Password Display - Cải thiện UI */}
@@ -278,9 +281,9 @@ export function PasswordOutput({
         </div>
       )}
 
-      {/* Recommendations với animation tốt hơn */}
+      {/* Recommendations với type safety */}
       <AnimatePresence>
-        {metrics?.recommendations?.length > 0 && (
+        {hasRecommendations && metrics?.recommendations && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -288,8 +291,10 @@ export function PasswordOutput({
             transition={{ duration: 0.3 }}
           >
             <Alert variant="warning" className="bg-yellow-50/50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-900/50">
-              <Lightbulb className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
-              <AlertTitle className="text-yellow-800 dark:text-yellow-200">Recommendations</AlertTitle>
+              {/* <Lightbulb className="h-4 w-4 text-yellow-600 dark:text-yellow-400" /> */}
+              <AlertTitle className="text-yellow-800 dark:text-yellow-200">
+                Recommendations
+              </AlertTitle>
               <AlertDescription>
                 <ul className="space-y-2 mt-2">
                   {metrics.recommendations.map((rec, index) => (

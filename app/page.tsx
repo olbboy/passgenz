@@ -44,7 +44,7 @@ export default function Home() {
             variant="default"
             className="mb-6 bg-blue-50/50 border-blue-200 dark:bg-blue-950/30 dark:border-blue-900/50 transition-all duration-300 hover:shadow-md"
           >
-            <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            {/* <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" /> */}
             <div className="ml-4">
               <AlertTitle className="text-lg font-semibold text-blue-800 dark:text-blue-200">
                 Privacy First
