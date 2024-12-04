@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input'
 import { generatePatternFromRequirements, calculateTimeToCrack } from '@/lib/utils'
 import { Textarea } from "@/components/ui/textarea"
 import { PasswordOutput } from "./password/password-output"
-import { BasicOptions } from "./password/basic-options"
+import { BasicOptionsV2 } from "./password/basic-options-v2"
 import { ContextOptions } from "./password/context-options"
 import { PatternOptions } from "./password/pattern-options"
 import { MemorableOptions } from "./password/memorable-options"
@@ -31,6 +31,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 import { PasswordRules } from '@/lib/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { MethodComparison } from "./password/method-comparison"
+import { SecurityTips } from "./password/security-tips"
+import { UseCases } from "./password/use-cases"
 
 interface PasswordOptions {
   uppercase: boolean
@@ -42,6 +47,84 @@ interface PasswordOptions {
 }
 
 type GenerationMode = 'basic' | 'context' | 'pattern' | 'memorable';
+
+function getMethodDescription(mode: string): JSX.Element {
+  switch (mode) {
+    case 'basic':
+      return (
+        <>
+          <h4 className="font-medium">Standard Password Generation</h4>
+          <ul className="text-sm space-y-1 list-disc pl-4">
+            <li>Customize length and character types</li>
+            <li>Strong and secure by default</li>
+            <li>Perfect for general use</li>
+          </ul>
+        </>
+      );
+    case 'context':
+      return (
+        <>
+          <h4 className="font-medium">AI-Powered Context Analysis</h4>
+          <ul className="text-sm space-y-1 list-disc pl-4">
+            <li>Analyzes your specific requirements</li>
+            <li>Suggests optimal password rules</li>
+            <li>Best for specific platforms/services</li>
+          </ul>
+        </>
+      );
+    case 'pattern':
+      return (
+        <>
+          <h4 className="font-medium">Custom Pattern-Based</h4>
+          <ul className="text-sm space-y-1 list-disc pl-4">
+            <li>Define your own password pattern</li>
+            <li>Control exact character placement</li>
+            <li>Useful for specific format requirements</li>
+          </ul>
+        </>
+      );
+    case 'memorable':
+      return (
+        <>
+          <h4 className="font-medium">Easy to Remember</h4>
+          <ul className="text-sm space-y-1 list-disc pl-4">
+            <li>Creates memorable word combinations</li>
+            <li>Still maintains security standards</li>
+            <li>Great for frequently typed passwords</li>
+          </ul>
+        </>
+      );
+    default:
+      return <></>;
+  }
+}
+
+const tabItems = [
+  { 
+    value: 'basic' as GenerationMode,
+    icon: <Settings2 className="h-4 w-4" />,
+    label: 'Basic',
+    shortLabel: 'Basic'
+  },
+  { 
+    value: 'context' as GenerationMode,
+    icon: <Sparkles className="h-4 w-4" />,
+    label: 'AI Context',
+    shortLabel: 'AI'
+  },
+  { 
+    value: 'pattern' as GenerationMode,
+    icon: <Hash className="h-4 w-4" />,
+    label: 'Pattern',
+    shortLabel: 'Pattern'
+  },
+  { 
+    value: 'memorable' as GenerationMode,
+    icon: <Brain className="h-4 w-4" />,
+    label: 'Memorable',
+    shortLabel: 'Memo'
+  }
+] as const;
 
 export function PasswordGenerator() {
   const { toast } = useToast()
@@ -390,42 +473,98 @@ export function PasswordGenerator() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [password]);
 
-  const tabItems = [
-    { 
-      value: 'basic', 
-      icon: <Settings2 className="h-4 w-4" />, 
-      label: 'Basic',
-      shortLabel: 'Basic' // Short label for mobile
-    },
-    { 
-      value: 'context', 
-      icon: <Sparkles className="h-4 w-4" />, 
-      label: 'AI Context',
-      shortLabel: 'AI' // Shortened for mobile
-    },
-    { 
-      value: 'pattern', 
-      icon: <Hash className="h-4 w-4" />, 
-      label: 'Pattern',
-      shortLabel: 'Pattern'
-    },
-    { 
-      value: 'memorable', 
-      icon: <Brain className="h-4 w-4" />, 
-      label: 'Memorable',
-      shortLabel: 'Memo' // Shortened for mobile
-    }
-  ];
-
   return (
     <Card className="h-full">
-      <CardHeader className="space-y-2">
-        <CardTitle className="text-xl sm:text-2xl font-semibold">
-          Password Generator
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Create strong, secure passwords with custom requirements
-        </p>
+      <CardHeader className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <CardTitle className="text-xl sm:text-2xl font-semibold">
+              Password Generator
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Choose a generation method below
+            </p>
+          </div>
+          
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8 hover:bg-primary/10 transition-colors"
+              >
+                <HelpCircle className="h-5 w-5 text-muted-foreground" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Password Generation Guide</DialogTitle>
+                <DialogDescription>
+                  Choose the best method for your needs
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <MethodComparison />
+                <SecurityTips />
+                <UseCases />
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <Tabs 
+          value={mode} 
+          onValueChange={(value) => handleModeChange(value as GenerationMode)}
+          className="w-full"
+        >
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 p-1 bg-muted rounded-lg h-auto">
+            {tabItems.map(tab => (
+              <TooltipProvider key={tab.value}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger 
+                      value={tab.value}
+                      className={cn(
+                        "flex items-center justify-center gap-2 py-2.5 px-3 rounded-md transition-all",
+                        "hover:bg-background hover:text-primary hover:shadow-sm",
+                        "data-[state=active]:bg-background",
+                        "data-[state=active]:text-primary",
+                        "data-[state=active]:shadow-sm",
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className={cn(
+                          "transition-colors",
+                          "group-hover:text-primary",
+                          "data-[state=active]:text-primary"
+                        )}>
+                          {tab.icon}
+                        </span>
+                        <span className={cn(
+                          "hidden sm:inline font-medium",
+                          "group-hover:text-primary",
+                          "data-[state=active]:text-primary"
+                        )}>
+                          {tab.label}
+                        </span>
+                        <span className={cn(
+                          "sm:hidden font-medium",
+                          "group-hover:text-primary",
+                          "data-[state=active]:text-primary"
+                        )}>
+                          {tab.shortLabel}
+                        </span>
+                      </div>
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="w-64 p-3">
+                    {getMethodDescription(tab.value)}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ))}
+          </TabsList>
+        </Tabs>
       </CardHeader>
 
       <CardContent className="space-y-8">
@@ -437,98 +576,38 @@ export function PasswordGenerator() {
           onCopy={copyToClipboard}
         />
 
-        {/* Options Grid */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          {/* Length Slider */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <Label className="text-sm font-medium">Password Length</Label>
-              <span className="text-sm font-mono bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
-                {length[0]} characters
-              </span>
-            </div>
-            <div className="pt-2">
-              <Slider
-                value={length}
-                onValueChange={setLength}
-                min={8}
-                max={128}
-                step={1}
-                className="mt-2"
-                defaultValue={[16]}
-              />
-              <div className="flex justify-between mt-2">
-                <span className="text-xs text-muted-foreground">8</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-                  Recommended: 16-32
-                </span>
-                <span className="text-xs text-muted-foreground">128</span>
-              </div>
-            </div>
-          </div>
+        {/* Generation Options based on mode */}
+        {mode === 'basic' && (
+          <BasicOptionsV2 
+            options={options}
+            onChange={setOptions}
+            length={length}
+            onLengthChange={setLength}
+          />
+        )}
 
-          {/* Character Options */}
-          <div className="space-y-4">
-            <Label className="text-sm font-medium">Character Types</Label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {Object.entries({
-                uppercase: {
-                  label: "Uppercase (A-Z)",
-                  description: "Include capital letters"
-                },
-                lowercase: {
-                  label: "Lowercase (a-z)",
-                  description: "Include small letters"
-                },
-                numbers: {
-                  label: "Numbers (0-9)",
-                  description: "Include digits"
-                },
-                symbols: {
-                  label: "Symbols (!@#$)",
-                  description: "Include special characters"
-                },
-              }).map(([key, { label, description }]) => (
-                <div key={key} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                  <Switch
-                    id={key}
-                    checked={options[key as keyof typeof options]}
-                    onCheckedChange={(checked) =>
-                      setOptions((prev) => ({ ...prev, [key]: checked }))
-                    }
-                    className="mt-0.5"
-                  />
-                  <div className="space-y-1">
-                    <Label htmlFor={key} className="text-sm font-medium">
-                      {label}
-                    </Label>
-                    <p className="text-xs text-muted-foreground">
-                      {description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {mode === 'context' && (
+          <ContextOptions 
+            context={context}
+            onContextChange={setContext}
+            analyzedContext={analyzedContext}
+            onAnalyze={handleContextAnalysis}
+          />
+        )}
 
-        {/* Advanced Options */}
-        <div className="space-y-4 pt-6 border-t border-border/50">
-          <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
-            <div className="space-y-1">
-              <Label className="text-sm font-medium">Quantum-Safe</Label>
-              <p className="text-xs text-muted-foreground max-w-[280px]">
-                Enhance password strength with quantum-resistant entropy
-              </p>
-            </div>
-            <Switch
-              checked={options.quantumSafe}
-              onCheckedChange={(checked) =>
-                setOptions((prev) => ({ ...prev, quantumSafe: checked }))
-              }
-            />
-          </div>
-        </div>
+        {mode === 'pattern' && (
+          <PatternOptions 
+            pattern={pattern}
+            onChange={setPattern}
+          />
+        )}
+
+        {mode === 'memorable' && (
+          <MemorableOptions 
+            options={memorableOptions}
+            onChange={setMemorableOptions}
+          />
+        )}
 
         {/* Generate Button */}
         <Button 
