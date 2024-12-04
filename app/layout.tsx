@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -20,6 +20,12 @@ const outfit = Outfit({
   subsets: ['latin'],
   variable: '--font-cal-sans',
 })
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "PassGenz - Advanced Password Generator",
@@ -69,11 +75,6 @@ export const metadata: Metadata = {
     images: ["/twitter-image.png"],
     creator: "@passgenz",
     site: "@passgenz",
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
   },
   robots: {
     index: true,

@@ -1,0 +1,38 @@
+{
+  "name": "PassGenz - Advanced Password Generator",
+  "short_name": "PassGenz",
+  "description": "Next-Generation Secure Password Generation Solution with AI-powered features",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "apple-touch-icon"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "categories": ["utilities", "security"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "PassGenz",
+      "url": "/"
+    }
+  ]
+} 
