@@ -1,71 +1,52 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
-import { PasswordRequirements } from "@/lib/types";
+import { PasswordRequirements, PasswordRules } from "@/lib/types";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+// Add interfaces for type safety
+interface CharacterSet {
+  type: string;
+  required: boolean;
+}
 
-interface PasswordRules {
-  minLength: number;
-  maxLength: number | null;
-  requiredCharTypes: {
-    uppercase: boolean;
-    lowercase: boolean;
-    numbers: boolean;
-    symbols: boolean;
-  };
-  excludedChars: string[];
-  minCharTypesRequired: number;
-  patterns: {
-    allowCommonWords: boolean;
-    allowKeyboardPatterns: boolean;
-    allowRepeatingChars: boolean;
-    allowSequentialChars: boolean;
+interface Constraint {
+  type: string;
+  parameters?: {
+    chars?: string[];
   };
 }
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function POST(request: Request) {
   try {
     const { requirements } = await request.json();
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-pro",
-      generationConfig: {
-        temperature: 0.2,
-        topP: 0.8,
-        topK: 40,
+
+    // Convert PasswordRequirements to PasswordRules directly
+    const rules: PasswordRules = {
+      minLength: requirements.passwordRules.length.min,
+      maxLength: requirements.passwordRules.length.max,
+      requiredCharTypes: {
+        uppercase: requirements.passwordRules.characterRequirements.allowedCharacterSets
+          .some((set: CharacterSet) => set.type === 'uppercase' && set.required),
+        lowercase: requirements.passwordRules.characterRequirements.allowedCharacterSets
+          .some((set: CharacterSet) => set.type === 'lowercase' && set.required),
+        numbers: requirements.passwordRules.characterRequirements.allowedCharacterSets
+          .some((set: CharacterSet) => set.type === 'number' && set.required),
+        symbols: requirements.passwordRules.characterRequirements.allowedCharacterSets
+          .some((set: CharacterSet) => set.type === 'symbol' && set.required)
       },
-    });
-
-    const prompt = `Convert these password requirements into specific rules:
-
-Platform: ${requirements.platformType.type}
-Security Level: ${requirements.securityAssessment.level}
-Requirements: ${JSON.stringify(requirements.passwordRules, null, 2)}
-
-Return ONLY a JSON object with these exact fields:
-{
-  "minLength": number,
-  "maxLength": number | null,
-  "requiredCharTypes": {
-    "uppercase": boolean,
-    "lowercase": boolean,
-    "numbers": boolean,
-    "symbols": boolean
-  },
-  "excludedChars": string[],
-  "minCharTypesRequired": number,
-  "patterns": {
-    "allowCommonWords": boolean,
-    "allowKeyboardPatterns": boolean,
-    "allowRepeatingChars": boolean,
-    "allowSequentialChars": boolean
-  }
-}`;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response.text();
-    
-    // Parse and validate rules
-    const rules: PasswordRules = JSON.parse(response);
+      excludedChars: requirements.passwordRules.customConstraints
+        .filter((constraint: Constraint) => constraint.type === 'excluded-chars')
+        .flatMap((constraint: Constraint) => constraint.parameters?.chars || []),
+      minCharTypesRequired: requirements.passwordRules.characterRequirements.requiredCombinations.count,
+      patterns: {
+        // Set patterns based on security level
+        allowCommonWords: requirements.securityAssessment.level === 'low',
+        allowKeyboardPatterns: requirements.securityAssessment.level === 'low',
+        allowRepeatingChars: requirements.securityAssessment.level !== 'very-high',
+        allowSequentialChars: requirements.securityAssessment.level === 'low'
+      }
+    };
 
     return NextResponse.json({ 
       rules,

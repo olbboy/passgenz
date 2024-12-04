@@ -28,174 +28,97 @@ export function ContextOptions({
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    prompt: `As a password security expert, analyze the following context and provide password requirements.
-Focus on determining the platform type and appropriate security level.
-
-Context: "${context}"
-
-Instructions:
-1. Identify the type of platform/service (e.g., banking, social media, email, enterprise)
-2. Determine appropriate security requirements based on:
-   - Platform sensitivity
-   - Data protection needs
-   - Industry standards
-   - Common attack vectors
-3. Consider compliance requirements (e.g., NIST, PCI DSS)
-4. Provide practical, implementable requirements
-
-Respond with a JSON object in this exact format:
-{
-  "platformType": {
-    "type": "banking|social|email|enterprise|general",
-    "description": "Brief description of service type and security needs"
-  },
-  "passwordRules": {
-    "length": {
-      "min": number,
-      "max": number | null,
-      "description": "Explanation of length requirements"
-    },
-    "characterRequirements": {
-      "requiredCombinations": {
-        "count": number,
-        "from": number
-      },
-      "allowedCharacterSets": [
-        {
-          "type": "uppercase|lowercase|number|symbol",
-          "required": boolean,
-          "description": "Description of character type requirement"
-        }
-      ]
-    },
-    "customConstraints": [
-      {
-        "type": "excluded-chars|pattern|dictionary",
-        "description": "Description of constraint",
-        "parameters": { "chars": string[] }
-      }
-    ]
-  },
-  "securityAssessment": {
-    "level": "low|medium|high|very-high",
-    "justification": "Explanation of security level choice",
-    "complianceStandards": string[],
-    "vulnerabilityWarnings": string[]
-  },
-  "recommendations": {
-    "implementation": string[],
-    "userGuidance": string[]
-  }
-}`
+                    prompt: context
                 }),
             });
 
             const data = await res.json();
-            console.log('API Response:', data);
-
+            
             if (!res.ok || data.error) {
-                console.error('API Error:', data.error || 'Unknown error');
-                toast({
-                    title: "AI Analysis Failed",
-                    description: data.error || "Failed to analyze with AI",
-                    variant: "destructive",
-                });
-                return;
+                throw new Error(data.error || 'Failed to analyze context');
             }
 
-            try {
-                const aiResponse = JSON.parse(data.response);
-                console.log('Parsed AI Response:', aiResponse);
+            if (!data.rules) {
+                throw new Error('No rules returned from AI');
+            }
 
-                if (!aiResponse.platformType || !aiResponse.passwordRules) {
-                    console.error('Invalid AI response structure');
-                    toast({
-                        title: "Invalid Response",
-                        description: "AI returned invalid data structure",
-                        variant: "destructive",
-                    });
-                    return;
-                }
-
-                const requirements: PasswordRequirements = {
-                    platformType: {
-                        type: aiResponse.platformType.type || 'general',
-                        description: aiResponse.platformType.description || 'General purpose password'
+            // Convert AI rules to PasswordRequirements format
+            const requirements: PasswordRequirements = {
+                platformType: {
+                    type: 'general',  // Default value
+                    description: 'Generated from AI analysis'
+                },
+                passwordRules: {
+                    length: {
+                        min: data.rules.minLength,
+                        max: data.rules.maxLength,
+                        description: 'Generated length requirements'
                     },
-                    passwordRules: {
-                        length: {
-                            min: aiResponse.passwordRules.length.min || 12,
-                            max: aiResponse.passwordRules.length.max,
-                            description: aiResponse.passwordRules.length.description || 'Password length requirements'
+                    characterRequirements: {
+                        requiredCombinations: {
+                            count: data.rules.minCharTypesRequired,
+                            from: Object.values(data.rules.requiredCharTypes).filter(Boolean).length
                         },
-                        characterRequirements: {
-                            requiredCombinations: {
-                                count: aiResponse.passwordRules.characterRequirements.requiredCombinations.count,
-                                from: aiResponse.passwordRules.characterRequirements.requiredCombinations.count
+                        allowedCharacterSets: [
+                            {
+                                type: 'uppercase',
+                                required: data.rules.requiredCharTypes.uppercase,
+                                description: 'Uppercase letters (A-Z)'
                             },
-                            allowedCharacterSets: aiResponse.passwordRules.characterRequirements.allowedCharacterSets || [
-                                {
-                                    type: 'uppercase',
-                                    characters: null,
-                                    required: true,
-                                    description: 'Uppercase letters (A-Z)'
-                                },
-                                {
-                                    type: 'lowercase',
-                                    characters: null,
-                                    required: true,
-                                    description: 'Lowercase letters (a-z)'
-                                }
-                            ]
-                        },
-                        historyPolicy: aiResponse.passwordRules.historyPolicy || {
-                            enabled: false,
-                            preventReuse: null,
-                            timeframe: null
-                        },
-                        customConstraints: aiResponse.passwordRules.customConstraints || []
+                            {
+                                type: 'lowercase',
+                                required: data.rules.requiredCharTypes.lowercase,
+                                description: 'Lowercase letters (a-z)'
+                            },
+                            {
+                                type: 'number',
+                                required: data.rules.requiredCharTypes.numbers,
+                                description: 'Numbers (0-9)'
+                            },
+                            {
+                                type: 'symbol',
+                                required: data.rules.requiredCharTypes.symbols,
+                                description: 'Special characters'
+                            }
+                        ]
                     },
-                    securityAssessment: {
-                        level: aiResponse.securityAssessment.level || 'medium',
-                        justification: aiResponse.securityAssessment.justification || '',
-                        complianceStandards: aiResponse.securityAssessment.complianceStandards || [],
-                        securityConsiderations: aiResponse.securityAssessment.securityConsiderations || [],
-                        vulnerabilityWarnings: aiResponse.securityAssessment.vulnerabilityWarnings || [],
-                        strengthAssessment: aiResponse.securityAssessment.strengthAssessment || ''
-                    },
-                    recommendations: {
-                        implementation: aiResponse.recommendations.implementation || [],
-                        userGuidance: aiResponse.recommendations.userGuidance || [],
-                        securityEnhancements: aiResponse.recommendations.securityEnhancements || []
-                    }
-                };
+                    customConstraints: data.rules.excludedChars.length ? [
+                        {
+                            type: 'excluded-chars',
+                            description: 'Excluded characters',
+                            parameters: { chars: data.rules.excludedChars }
+                        }
+                    ] : []
+                },
+                securityAssessment: {
+                    level: 'high',  // Default to high
+                    justification: 'Generated from AI analysis',
+                    complianceStandards: [],
+                    vulnerabilityWarnings: []
+                },
+                recommendations: {
+                    implementation: [],
+                    userGuidance: [
+                        'Use generated password as is',
+                        'Store securely',
+                        'Do not share with others'
+                    ]
+                }
+            };
 
-                toast({
-                    title: "Analysis Complete",
-                    description: `Analyzed context for ${requirements.platformType.type}`,
-                    variant: "default",
-                });
-
-                onContextChange(context);
-                onAnalyze(requirements);
-
-            } catch (parseError) {
-                console.error('Parse Error:', parseError);
-                toast({
-                    title: "Parse Error",
-                    description: "Failed to parse AI response",
-                    variant: "destructive",
-                });
-                return;
-            }
-        } catch (error) {
-            console.error('Network Error:', error);
+            onAnalyze(requirements);
             toast({
-                title: "Network Error",
-                description: "Failed to connect to AI service",
-                variant: "destructive",
+                title: "Success",
+                description: "Context analyzed successfully"
             });
-            return;
+
+        } catch (error) {
+            console.error('AI Analysis Error:', error);
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error instanceof Error ? error.message : "Failed to analyze context"
+            });
         } finally {
             setIsLoading(false);
         }

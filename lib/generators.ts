@@ -1,5 +1,22 @@
+import { webcrypto } from 'crypto';
 import { PasswordOptions, GenerationResult, PasswordAnalysis } from './types';
 
+// Shared utilities
+const charsets = {
+  uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  lowercase: 'abcdefghijklmnopqrstuvwxyz',
+  numbers: '0123456789',
+  symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+};
+
+// Helper function to convert bytes to string
+function bytesToString(bytes: Uint8Array, chars: string): string {
+  return Array.from(bytes)
+    .map((byte: number) => chars[byte % chars.length])
+    .join('');
+}
+
+// Helper function to analyze password strength
 function analyzePassword(password: string): PasswordAnalysis {
   const length = password.length;
   const hasUpper = /[A-Z]/.test(password);
@@ -38,7 +55,34 @@ function analyzePassword(password: string): PasswordAnalysis {
   return analysis;
 }
 
-export async function generatePassword(length: number, options: PasswordOptions): Promise<GenerationResult> {
+class QuantumSafeGenerator {
+  private static instance: QuantumSafeGenerator;
+  private crypto: Crypto;
+
+  private constructor() {
+    // Fix type error by casting
+    this.crypto = (typeof window !== 'undefined' ? window.crypto : webcrypto) as Crypto;
+  }
+
+  static getInstance(): QuantumSafeGenerator {
+    if (!QuantumSafeGenerator.instance) {
+      QuantumSafeGenerator.instance = new QuantumSafeGenerator();
+    }
+    return QuantumSafeGenerator.instance;
+  }
+
+  async getRandomBytes(length: number): Promise<Uint8Array> {
+    const bytes = new Uint8Array(length);
+    this.crypto.getRandomValues(bytes);
+    return bytes;
+  }
+}
+
+// Export all functions
+export { generatePassword, generatePin, generateId, generateSecret };
+
+// Implement functions
+async function generatePassword(length: number, options: PasswordOptions): Promise<GenerationResult> {
   // Define character sets
   const charSets = {
     uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -85,5 +129,87 @@ export async function generatePassword(length: number, options: PasswordOptions)
   return {
     password,
     analysis: analyzePassword(password)
+  };
+}
+
+async function generatePin(
+  length: number,
+  type: 'numeric' | 'alphanumeric' | 'extended'
+): Promise<{ pin: string; analysis: PasswordAnalysis }> {
+  const generator = QuantumSafeGenerator.getInstance();
+  let chars = '';
+  
+  switch (type) {
+    case 'numeric':
+      chars = charsets.numbers;
+      break;
+    case 'alphanumeric':
+      chars = charsets.numbers + charsets.uppercase;
+      break;
+    case 'extended':
+      chars = charsets.numbers + charsets.uppercase + charsets.symbols;
+      break;
+  }
+
+  const randomBytes = await generator.getRandomBytes(length * 2);
+  const pin = bytesToString(randomBytes, chars).slice(0, length);
+
+  return {
+    pin,
+    analysis: analyzePassword(pin)
+  };
+}
+
+async function generateId(
+  format: 'uuid' | 'nanoid' | 'custom',
+  prefix?: string
+): Promise<{ id: string; analysis: PasswordAnalysis }> {
+  const generator = QuantumSafeGenerator.getInstance();
+  const crypto = typeof window !== 'undefined' ? window.crypto : webcrypto;
+  let id = '';
+
+  switch (format) {
+    case 'uuid':
+      id = crypto.randomUUID();
+      break;
+    case 'nanoid': {
+      const randomBytes = await generator.getRandomBytes(21);
+      const chars = charsets.numbers + charsets.lowercase + charsets.uppercase;
+      id = bytesToString(randomBytes, chars);
+      break;
+    }
+    case 'custom': {
+      const randomBytes = await generator.getRandomBytes(12);
+      const chars = charsets.numbers + charsets.uppercase;
+      id = bytesToString(randomBytes, chars);
+      break;
+    }
+  }
+
+  const finalId = prefix ? `${prefix}-${id}` : id;
+  return {
+    id: finalId,
+    analysis: analyzePassword(finalId)
+  };
+}
+
+async function generateSecret(
+  format: 'hex' | 'base64'
+): Promise<{ secret: string; analysis: PasswordAnalysis }> {
+  const generator = QuantumSafeGenerator.getInstance();
+  const bytes = await generator.getRandomBytes(32);
+  
+  let secret = '';
+  if (format === 'hex') {
+    secret = Array.from(bytes)
+      .map((byte: number) => byte.toString(16).padStart(2, '0'))
+      .join('');
+  } else {
+    secret = Buffer.from(bytes).toString('base64');
+  }
+
+  return {
+    secret,
+    analysis: analyzePassword(secret)
   };
 } 
