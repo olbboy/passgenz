@@ -1,12 +1,12 @@
 import { GeneratorTabs } from '@/components/generator-tabs'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { ShieldCheck, Github } from "lucide-react"
+import { Github } from "lucide-react"
 import Link from 'next/link'
 import Image from 'next/image'
 import { Suspense } from 'react'
 import { MatrixHeaderWrapper } from '@/components/matrix-header-wrapper'
+import { PrivacyNotice } from '@/components/privacy-notice'
 
 export default function Home() {
   return (
@@ -40,20 +40,7 @@ export default function Home() {
               <ThemeToggle />
             </div>
           </div>
-          <Alert
-            variant="default"
-            className="mb-6 bg-blue-50/50 border-blue-200 dark:bg-blue-950/30 dark:border-blue-900/50 transition-all duration-300 hover:shadow-md"
-          >
-            {/* <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" /> */}
-            <div className="ml-4">
-              <AlertTitle className="text-lg font-semibold text-blue-800 dark:text-blue-200">
-                Privacy First
-              </AlertTitle>
-              <AlertDescription className="text-blue-700 dark:text-blue-100 text-sm leading-relaxed">
-                Our password generation process operates exclusively within your local device environment, ensuring maximum security and privacy. At no point are your passwords transmitted or stored—they remain completely ephemeral, leaving no trace on either your device or our servers.
-              </AlertDescription>
-            </div>
-          </Alert>
+          <PrivacyNotice />
           <GeneratorTabs />
         </div>
       </div>
