@@ -1,6 +1,6 @@
 <div align="center">
 
-![passgenz](/public/logo.webp)
+![passgenz](/public/icon.png)
 
 # 🔐 PassGenz - Advanced Password Generator
 
