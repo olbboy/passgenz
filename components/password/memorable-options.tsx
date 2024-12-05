@@ -4,6 +4,7 @@ import { Switch } from "@/components/ui/switch"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Info } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useTranslations } from 'next-intl';
 
 interface MemorableOptionsProps {
   options: {
@@ -16,6 +17,8 @@ interface MemorableOptionsProps {
 }
 
 export function MemorableOptions({ options, onChange }: MemorableOptionsProps) {
+  const t = useTranslations('Components.PasswordGenerator.memorable');
+
   // Preview example based on current options
   const getExample = () => {
     const words = Array(options.wordCount).fill('word');
@@ -32,9 +35,9 @@ export function MemorableOptions({ options, onChange }: MemorableOptionsProps) {
       {/* Word Count Slider */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium">Number of Words</Label>
+          <Label className="text-sm font-medium">{t('wordCountLabel')}</Label>
           <span className="text-sm font-mono bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
-            {options.wordCount} words
+            {options.wordCount} {t('wordCount')}
           </span>
         </div>
         <Slider
@@ -48,9 +51,9 @@ export function MemorableOptions({ options, onChange }: MemorableOptionsProps) {
           className="mt-2"
         />
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span>2 words</span>
-          <span>Recommended: 3-4</span>
-          <span>5 words</span>
+          <span>2 {t('words')}</span>
+          <span>{t('recommended')}: 3-4</span>
+          <span>5 {t('words')}</span>
         </div>
       </div>
 
@@ -59,20 +62,20 @@ export function MemorableOptions({ options, onChange }: MemorableOptionsProps) {
         {[
           {
             id: 'capitalize',
-            label: 'Capitalize Words',
-            description: 'Capitalize the first letter of each word',
+            label: t('capitalizeLabel'),
+            description: t('capitalizeDescription'),
             value: options.capitalize
           },
           {
             id: 'includeNumbers',
-            label: 'Add Numbers',
-            description: 'Append random numbers at the end',
+            label: t('includeNumbersLabel'),
+            description: t('includeNumbersDescription'),
             value: options.includeNumbers
           },
           {
             id: 'includeSeparators',
-            label: 'Add Separators',
-            description: 'Add hyphens between words',
+            label: t('includeSeparatorsLabel'),
+            description: t('includeSeparatorsDescription'),
             value: options.includeSeparators
           }
         ].map(option => (
@@ -103,14 +106,14 @@ export function MemorableOptions({ options, onChange }: MemorableOptionsProps) {
       {/* Preview */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label className="text-sm text-muted-foreground">Preview Example:</Label>
+          <Label className="text-sm text-muted-foreground">{t('preview')}:</Label>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
                 <Info className="h-4 w-4 text-muted-foreground" />
               </TooltipTrigger>
               <TooltipContent>
-                This is just an example format. The actual password will use random words.
+                {t('previewTooltip')}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -123,8 +126,7 @@ export function MemorableOptions({ options, onChange }: MemorableOptionsProps) {
       {/* Info Alert */}
       <Alert className="bg-muted/50">
         <AlertDescription className="text-sm text-muted-foreground">
-          Memorable passwords use random dictionary words combined with numbers and symbols,
-          making them easier to remember while maintaining security.
+          {t('infoAlert')}
         </AlertDescription>
       </Alert>
     </div>

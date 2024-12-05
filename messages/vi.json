@@ -117,7 +117,7 @@
           "features": [
             "Định nghĩa mẫu mật khẩu riêng",
             "Kiểm soát vị trí ký tự chính xác",
-            "Hữu ích cho yêu cầu định dạng cụ thể"
+            "Hữu ích cho yêu cầu định dạng cụ th"
           ]
         },
         "memorable": {
@@ -189,14 +189,14 @@
             "availableTypes": "Loại Có Sẵn"
           },
           "security": {
-            "title": "Đánh Giá Bảo Mật",
+            "title": "Đánh Gi B��o Mật",
             "level": "Cấp Độ",
             "justification": "Lý Do",
             "compliance": "Tuân Thủ",
             "warnings": "Cảnh Báo"
           },
           "recommendations": {
-            "title": "Khuyến Nghị",
+            "title": "Khuyến Ngh",
             "implementation": "Triển Khai",
             "guidance": "Hướng Dẫn Người Dùng"
           }
@@ -208,7 +208,19 @@
             "title": "Phân Tích Thủ Công",
             "description": "Sử Dụng Yêu Cầu Bảo Mật Tiêu Chuẩn"
           }
-        }
+        },
+        "patternTemplate": "Mẫu Định Dạng",
+        "patternGuide": {
+          "title": "Hướng Dẫn Mẫu",
+          "uppercase": "Chữ Hoa (A-Z)",
+          "lowercase": "Chữ Thường (a-z)",
+          "digit": "Số (0-9)",
+          "special": "Ký Tự Đặc Biệt (!@#$%^&*)"
+        },
+        "preview": "Xem Trước",
+        "examples": "Ví Dụ",
+        "validationWarning": "Mẫu chỉ có thể chứa các ký tự L, l, d, s",
+        "patternInstructions": "Sử dụng L cho chữ hoa, l cho chữ thường, d cho số, và s cho ký t�� đặc biệt."
       },
       "guide": {
         "title": "Hướng Dẫn Tạo Mật Khẩu",
@@ -238,13 +250,28 @@
           ]
         },
         "recommendations": {
-          "title": "Khuyến Nghị",
+          "title": "Khuyến Ngh",
           "list": [
             "Sử dụng mật khẩu mạnh hơn",
             "Bật xác thực hai yếu tố",
             "Thay đổi mật khẩu thường xuyên"
           ]
         }
+      },
+      "memorable": {
+        "wordCountLabel": "Số Lượng Từ",
+        "wordCount": "từ",
+        "capitalizeLabel": "Viết Hoa Từ",
+        "capitalizeDescription": "Viết hoa chữ cái đầu tiên của mỗi từ",
+        "includeNumbersLabel": "Thêm Số",
+        "includeNumbersDescription": "Thêm số ngẫu nhiên ở cuối",
+        "includeSeparatorsLabel": "Thêm Ký Tự Ngăn Cách",
+        "includeSeparatorsDescription": "Thêm dấu gạch ngang giữa các từ",
+        "preview": "Xem Trước Ví Dụ",
+        "previewTooltip": "Đây chỉ là định dạng ví dụ. Mật khẩu thực tế sẽ sử dụng các từ ngẫu nhiên.",
+        "infoAlert": "Mật khẩu dễ nhớ sử dụng các từ từ điển ngẫu nhiên kết hợp với số và ký tự đặc biệt, giúp dễ nhớ trong khi vẫn đảm bảo an toàn.",
+        "words": "từ",
+        "recommended": "Khuyến nghị"
       }
     },
     "PinGenerator": {
@@ -314,7 +341,7 @@
         "description": "Bảo Vệ Tài Khoản Của Bạn Với Mật Khẩu Mạnh"
       },
       "letter": {
-        "loading": "Đang tải...",
+        "loading": "Đang t��i...",
         "error": "Đã Xảy Ra Lỗi",
         "retry": "Thử Lại"
       },

@@ -208,7 +208,19 @@
             "title": "Manual Analysis",
             "description": "Using standard security requirements"
           }
-        }
+        },
+        "patternTemplate": "Pattern Template",
+        "patternGuide": {
+          "title": "Pattern Guide",
+          "uppercase": "Uppercase letter (A-Z)",
+          "lowercase": "Lowercase letter (a-z)",
+          "digit": "Digit (0-9)",
+          "special": "Special character (!@#$%^&*)"
+        },
+        "preview": "Preview",
+        "examples": "Examples",
+        "validationWarning": "Pattern can only contain L, l, d, s characters",
+        "patternInstructions": "Use L for uppercase, l for lowercase, d for digits, and s for special characters."
       },
       "guide": {
         "title": "Password Generation Guide",
@@ -245,6 +257,21 @@
             "Change your password regularly"
           ]
         }
+      },
+      "memorable": {
+        "wordCountLabel": "Number of Words",
+        "wordCount": "words",
+        "capitalizeLabel": "Capitalize Words",
+        "capitalizeDescription": "Capitalize the first letter of each word",
+        "includeNumbersLabel": "Add Numbers",
+        "includeNumbersDescription": "Append random numbers at the end",
+        "includeSeparatorsLabel": "Add Separators",
+        "includeSeparatorsDescription": "Add hyphens between words",
+        "preview": "Preview Example",
+        "previewTooltip": "This is just an example format. The actual password will use random words.",
+        "infoAlert": "Memorable passwords use random dictionary words combined with numbers and symbols, making them easier to remember while maintaining security.",
+        "words": "words",
+        "recommended": "Recommended"
       }
     },
     "PinGenerator": {
