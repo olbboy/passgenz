@@ -1,41 +1,36 @@
 'use client'
 
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle, 
-  SheetTrigger,
-  SheetClose 
-} from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
-import { BookOpen } from "lucide-react"
-import { GuideContent } from "./guide-content"
-import { useState, useEffect } from "react"
-import { cn } from "@/lib/utils"
+import { useTranslations } from 'next-intl';
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { BookOpen } from "lucide-react";
+import { GuideContent } from "./guide-content";
+import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 export function GuideDrawer() {
-  const [width, setWidth] = useState("95%")
+  const t = useTranslations('Components.GuideDrawer');
+  const [width, setWidth] = useState("95%");
 
   // Dynamically adjust width based on screen size
   useEffect(() => {
     function updateWidth() {
-      const screenWidth = window.innerWidth
+      const screenWidth = window.innerWidth;
       if (screenWidth < 640) { // mobile
-        setWidth("95%")
+        setWidth("95%");
       } else if (screenWidth < 1024) { // tablet
-        setWidth("85%")
+        setWidth("85%");
       } else if (screenWidth < 1280) { // small desktop
-        setWidth("75%")
+        setWidth("75%");
       } else { // large desktop
-        setWidth("65%")
+        setWidth("65%");
       }
     }
 
-    updateWidth()
-    window.addEventListener('resize', updateWidth)
-    return () => window.removeEventListener('resize', updateWidth)
-  }, [])
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
 
   return (
     <Sheet>
@@ -54,7 +49,7 @@ export function GuideDrawer() {
       >
         <div className="h-full flex flex-col bg-background">
           <SheetHeader className="px-6 py-4 border-b flex flex-row items-center justify-between shrink-0">
-            <SheetTitle className="text-2xl font-semibold">Password Security Guide</SheetTitle>
+            <SheetTitle className="text-2xl font-semibold">{t('title')}</SheetTitle>
           </SheetHeader>
           <div className="flex-1 overflow-hidden">
             <GuideContent />
@@ -62,5 +57,5 @@ export function GuideDrawer() {
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 } 

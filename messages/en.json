@@ -381,6 +381,87 @@
         "en": "English",
         "vi": "Vietnamese"
       }
+    },
+    "GuideDrawer": {
+      "title": "Password Security Guide",
+      "description": "Learn how to create strong and secure passwords.",
+      "openGuide": "Open Guide"
+    },
+    "GuideContent": {
+      "sections": {
+        "intro": "Understanding Modern Password Security",
+        "foundation": "The Foundation of Strong Passwords",
+        "strength": "Password Strength in Practice",
+        "beyond": "Beyond Traditional Passwords",
+        "implementation": "Practical Security Implementation",
+        "future": "Future-Proofing Your Security"
+      },
+      "strengthExamples": {
+        "8char": {
+          "type1": "Only lowercase letters",
+          "time1": "Instantly",
+          "type2": "Add uppercase letters",
+          "time2": "30 minutes",
+          "type3": "Add numbers (123)",
+          "time3": "1 hour",
+          "type4": "Add special characters (@#$)",
+          "time4": "24 hours"
+        },
+        "12char": {
+          "type1": "Only lowercase letters",
+          "time1": "A few weeks",
+          "type2": "Add uppercase letters",
+          "time2": "5 years",
+          "type3": "Add numbers (123)",
+          "time3": "2,000 years",
+          "type4": "Add special characters (@#$)",
+          "time4": "63,000 years"
+        }
+      },
+      "introAlert": "Did you know? 81% of data breaches occur due to weak or stolen passwords!",
+      "introDescription": "In today's internet age, protecting your password is crucial. Just like you lock your house to protect your belongings, a strong password will help protect your personal information online.",
+      "foundationTitle": "Two Important Things About Passwords",
+      "foundationPoint1": {
+        "title": "1. One password per account",
+        "description": "Imagine: If you use the same key for both your house and your safe, when a thief gets the key, they can access everything. Passwords are the same - each account should have a unique password!"
+      },
+      "foundationPoint2": {
+        "title": "2. Passwords must be truly random",
+        "description": "Don't use easily guessable information like birthdays, pet names, or phone numbers. Create truly random passwords to make them hard to guess!"
+      },
+      "strengthTitle": "How Strong or Weak is a Password?",
+      "strengthDescription": "When creating a password, the length and complexity determine how long it takes for a hacker to crack your password. Here are some examples:",
+      "tipsTitle": "Tips for Creating a Secure Password",
+      "doTitle": "Things YOU SHOULD do:",
+      "doTip1": "Use at least 12 characters",
+      "doTip2": "Combine uppercase, lowercase, numbers, and special characters",
+      "doTip3": "Use random phrases (e.g., 'BlueCatLoves@Fish2024')",
+      "doTip4": "Change important passwords every 3-6 months",
+      "dontTitle": "Things YOU SHOULD NOT do:",
+      "dontTip1": "Use personal information (birthdays, names, phone numbers)",
+      "dontTip2": "Use dictionary words",
+      "dontTip3": "Use overly simple passwords (123456, password)",
+      "dontTip4": "Use the same password for multiple accounts",
+      "extraTitle": "Additional Tips to Protect Your Account",
+      "extraTip": "In addition to setting a strong password, you should:",
+      "extraTip1": "Enable two-factor authentication if possible",
+      "extraTip2": "Do not share your password with others",
+      "extraTip3": "Do not enter your password on public computers",
+      "extraTip4": "Use a password manager to store securely",
+      "strength8CharTitle": "Password Strength for 8 Characters",
+      "strength12CharTitle": "Password Strength for 12 Characters",
+      "strength8CharConclusion": "🤔 What does this mean?",
+      "strength8CharPoint1": "Instantly: If only using lowercase (like 'password'), a computer can guess it immediately.",
+      "strength8CharPoint2": "30 minutes: Adding uppercase (like 'Password') makes it a bit harder, but still not secure enough.",
+      "strength8CharPoint3": "1 hour: Adding numbers (like 'Password123') is still not strong enough.",
+      "strength8CharPoint4": "24 hours: Adding special characters (like 'Password@123') is better, but still not truly safe.",
+      "strength12CharConclusion": "✅ Conclusion: A password of 12 characters or more, combined with various character types, will be VERY SAFE!",
+      "strength12CharPoint1": "A few weeks: Only using lowercase letters (like 'helloeveryone') is still not safe.",
+      "strength12CharPoint2": "5 years: Adding uppercase letters (like 'HelloEveryone') makes it much harder to crack.",
+      "strength12CharPoint3": "2,000 years: Adding numbers (like 'HelloEveryone123') is very hard to crack.",
+      "strength12CharPoint4": "63,000 years: Adding special characters (like 'HelloEveryone@123') is nearly impossible to crack with current technology.",
+      "strengthTip": "💡 Tip:",
+      "strengthTipDescription": "Instead of remembering complex characters, you can use an easy-to-remember phrase and add numbers and special characters. For example: 'I love pho' → 'ILove@Pho2024'"
     }
   }
 } 

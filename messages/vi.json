@@ -381,6 +381,87 @@
         "en": "Tiếng Anh",
         "vi": "Tiếng Việt"
       }
+    },
+    "GuideDrawer": {
+      "title": "Hướng Dẫn Bảo Mật Mật Khẩu",
+      "description": "Tìm hiểu cách tạo mật khẩu mạnh và an toàn.",
+      "openGuide": "Mở Hướng Dẫn"
+    },
+    "GuideContent": {
+      "sections": {
+        "intro": "Hiểu về Bảo Mật Mật Khẩu Hiện Đại",
+        "foundation": "Nền Tảng của Mật Khẩu Mạnh",
+        "strength": "Độ Mạnh của Mật Khẩu trong Thực Tế",
+        "beyond": "Vượt Ra Ngoài Mật Khẩu Truyền Thống",
+        "implementation": "Triển Khai Bảo Mật Thực Tế",
+        "future": "Bảo Vệ An Ninh Tương Lai"
+      },
+      "strengthExamples": {
+        "8char": {
+          "type1": "Chỉ dùng chữ thường",
+          "time1": "Ngay lập tức",
+          "type2": "Thêm chữ HOA",
+          "time2": "30 phút",
+          "type3": "Thêm số (123)",
+          "time3": "1 giờ",
+          "type4": "Thêm ký tự đặc biệt (@#$)",
+          "time4": "24 giờ"
+        },
+        "12char": {
+          "type1": "Chỉ dùng chữ thường",
+          "time1": "Vài tuần",
+          "type2": "Thêm chữ HOA",
+          "time2": "5 năm",
+          "type3": "Thêm số (123)",
+          "time3": "2,000 năm",
+          "type4": "Thêm ký tự đặc biệt (@#$)",
+          "time4": "63,000 năm"
+        }
+      },
+      "introAlert": "Bạn có biết? 81% các vụ rò rỉ thông tin xảy ra do mật khẩu yếu hoặc bị đánh cắp!",
+      "introDescription": "Trong thời đại internet ngày nay, việc bảo vệ mật khẩu của bạn rất quan trọng. Giống như việc bạn khóa cửa nhà để bảo vệ đồ đạc, mật khẩu mạnh sẽ giúp bảo vệ thông tin cá nhân của bạn trên mạng.",
+      "foundationTitle": "Hai Điều Quan Trọng Về Mật Khẩu",
+      "foundationPoint1": {
+        "title": "1. Một Tài Khoản Một Mật Khẩu",
+        "description": "Hãy tưởng tượng: Nếu bạn dùng cùng một chìa khóa cho cả nhà và két sắt, khi kẻ trộm có được chìa khóa, họ có thể tiếp cận mọi thứ. Mật khẩu cũng vậy - mỗi tài khoản nên có một mật khẩu riêng!"
+      },
+      "foundationPoint2": {
+        "title": "2. Mật Khẩu Phải Thực Sự Ngẫu Nhiên",
+        "description": "Đừng sử dụng những thông tin dễ đoán như ngày sinh, tên thú cưng, hoặc số điện thoại. Hãy tạo mật khẩu thực sự ngẫu nhiên để chúng khó bị đoán ra!"
+      },
+      "strengthTitle": "Mật Khẩu Mạnh - Yếu Ra Sao?",
+      "strengthDescription": "Khi tạo mật khẩu, độ dài và độ phức tạp của mật khẩu quyết định thời gian cần thiết để hacker có thể phá được mật khẩu của bạn. Hãy xem các ví dụ sau:",
+      "tipsTitle": "Mẹo Tạo Mật Khẩu An Toàn",
+      "doTitle": "Những Điều NÊN Làm:",
+      "doTip1": "Sử Dụng Ít Nhất 12 Ký Tự",
+      "doTip2": "Kết Hợp Chữ HOA, Chữ Thường, Số và Ký Tự Đặc Biệt",
+      "doTip3": "Sử Dụng Cụm Từ Ngẫu Nhiên (Ví Dụ: 'MèoXanhThích@Cá2024')",
+      "doTip4": "Thay Đổi Mật Khẩu Quan Trọng Mỗi 3-6 Tháng",
+      "dontTitle": "Những Điều KHÔNG NÊN Làm:",
+      "dontTip1": "Sử Dụng Thông Tin Cá Nhân (Ngày Sinh, Tên, Số Điện Thoại)",
+      "dontTip2": "Sử Dụng Các Từ Trong Từ Điển",
+      "dontTip3": "Sử Dụng Mật Khẩu Quá Đơn Giản (123456, password)",
+      "dontTip4": "Sử Dụng Cùng Một Mật Khẩu Cho Nhiều Tài Khoản",
+      "extraTitle": "Lời Khuyên Thêm Để Bảo Vệ Tài Khoản Của Bạn",
+      "extraTip": "Ngoài Việc Đặt Mật Khẩu Mạnh, Bạn Nên:",
+      "extraTip1": "Bật Xác Thực Hai Yếu Tố Nếu Có Thể",
+      "extraTip2": "Không Chia Sẻ Mật Khẩu Với Người Khác",
+      "extraTip3": "Không Nhập Mật Khẩu Trên Máy Tính Công Cộng",
+      "extraTip4": "Sử Dụng Trình Quản Lý Mật Khẩu Để Lưu Trữ An Toàn",
+      "strength8CharTitle": "Độ Mạnh Mật Khẩu 8 Ký Tự",
+      "strength12CharTitle": "Độ Mạnh Mật Khẩu 12 Ký Tự",
+      "strength8CharConclusion": "🤔 Điều này có nghĩa là gì?",
+      "strength8CharPoint1": "Ngay lập tức: Nếu chỉ dùng chữ thường (như 'password'), máy tính có thể đoán ra ngay.",
+      "strength8CharPoint2": "30 phút: Thêm chữ HOA (như 'Password') sẽ khó hơn một chút, nhưng vẫn không đủ an toàn.",
+      "strength8CharPoint3": "1 giờ: Thêm số (như 'Password123') cũng chưa đủ mạnh.",
+      "strength8CharPoint4": "24 giờ: Thêm ký tự đặc biệt (như 'Password@123') tốt hơn, nhưng vẫn chưa thực sự an toàn.",
+      "strength12CharConclusion": "✅ Kết luận: Mật khẩu 12 ký tự trở lên, kết hợp đủ loại ký tự sẽ RẤT AN TOÀN!",
+      "strength12CharPoint1": "Vài tuần: Chỉ dùng chữ thường (như 'helloeveryone') vẫn chưa đủ an toàn.",
+      "strength12CharPoint2": "5 năm: Thêm chữ HOA (như 'HelloEveryone') đã khó phá hơn nhiều.",
+      "strength12CharPoint3": "2,000 năm: Thêm số (như 'HelloEveryone123') rất khó để phá được.",
+      "strength12CharPoint4": "63,000 năm: Thêm ký tự đặc biệt (như 'HelloEveryone@123') gần như không thể phá được bằng công nghệ hiện tại.",
+      "strengthTip": "💡 Mẹo hay:",
+      "strengthTipDescription": "Thay vì nhớ các ký tự phức tạp, bạn có thể dùng một câu dễ nhớ và thêm số, ký tự đặc biệt. Ví dụ: 'Tôi thích ăn phở' → 'ToiThich@Pho2024'"
     }
   }
 }
