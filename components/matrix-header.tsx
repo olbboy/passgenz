@@ -64,7 +64,7 @@ export function MatrixHeader() {
             <MatrixLetter key={index} letter={letter} index={index} />
           ))}
         </span>
-        <motion.span
+        {/* <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.5 }}
@@ -74,7 +74,7 @@ export function MatrixHeader() {
           )}
         >
           Advanced Password Generator
-        </motion.span>
+        </motion.span> */}
       </h1>
     </div>
   );

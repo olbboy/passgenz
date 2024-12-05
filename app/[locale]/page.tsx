@@ -11,6 +11,7 @@ import Image from 'next/image'
 import { Suspense } from 'react'
 import { MatrixHeaderWrapper } from '@/components/matrix-header-wrapper'
 import { PrivacyNotice } from '@/components/privacy-notice'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export default function Home() {
   const t = useTranslations('HomePage');
@@ -44,6 +45,7 @@ export default function Home() {
                   <Github className="h-5 w-5" />
                 </Button>
               </Link>
+              <LanguageSwitcher />
               <ThemeToggle />
             </div>
           </div>

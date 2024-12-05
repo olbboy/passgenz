@@ -9,8 +9,139 @@
   },
   "Common": {
     "buttons": {
-      "submit": "Gửi",
+      "submit": "Xác nhận",
       "cancel": "Hủy"
+    }
+  },
+  "Guide": {
+    "introduction": "Bạn có biết? 81% các vụ rò rỉ dữ liệu xảy ra do mật khẩu yếu hoặc bị đánh cắp!",
+    "importance": "Trong thời đại internet hiện nay, việc bảo vệ mật khẩu là vô cùng quan trọng. Giống như việc bạn khóa nhà để bảo vệ tài sản, một mật khẩu mạnh sẽ giúp bảo vệ thông tin cá nhân của bạn trên mạng.",
+    "passwordPrinciples": {
+      "title": "Hai điều quan trọng về mật khẩu",
+      "point1": {
+        "title": "1. Mỗi tài khoản một mật khẩu",
+        "description": "Hãy tưởng tượng: Nếu bạn dùng cùng một chìa khóa cho cả nhà và két sắt, khi kẻ trộm có được chìa khóa, họ có thể lấy được tất cả. Mật khẩu cũng vậy - mỗi tài khoản nên có một mật khẩu riêng!"
+      },
+      "point2": {
+        "title": "2. Mật khẩu phải thực sự ngẫu nhiên",
+        "description": "Đừng sử dụng những thông tin dễ đoán như ngày sinh, tên thú cưng, hay số điện thoại. Hãy tạo mật khẩu thực sự ngẫu nhiên để khó bị đoán ra!"
+      }
+    },
+    "passwordStrength": {
+      "title": "Mật khẩu mạnh hay yếu như thế nào?",
+      "description": "Khi tạo mật khẩu, độ dài và độ phức tạp sẽ quyết định thời gian cần thiết để hacker có thể phá được mật khẩu của bạn. Dưới đây là một số ví dụ:"
+    },
+    "passwordTips": {
+      "title": "Mẹo tạo mật khẩu an toàn",
+      "do": {
+        "title": "Những điều NÊN làm:",
+        "list": [
+          "Sử dụng ít nhất 12 ký tự",
+          "Kết hợp chữ hoa, chữ thường, số và ký tự đặc biệt",
+          "Dùng cụm từ ngẫu nhiên (ví dụ: 'MeoXanhThich@Ca2024')",
+          "Thay đổi mật khẩu quan trọng mỗi 3-6 tháng"
+        ]
+      },
+      "don't": {
+        "title": "Những điều KHÔNG NÊN làm:",
+        "list": [
+          "Sử dụng thông tin cá nhân (ngày sinh, tên, số điện thoại)",
+          "Sử dụng các từ trong từ điển",
+          "Sử dụng mật khẩu quá đơn giản (123456, password)",
+          "Sử dụng cùng một mật khẩu cho nhiều tài khoản"
+        ]
+      }
+    },
+    "extraAdvice": {
+      "title": "Mẹo bảo vệ tài khoản",
+      "list": [
+        "Bật xác thực hai yếu tố nếu có thể",
+        "Không chia sẻ mật khẩu với người khác",
+        "Không nhập mật khẩu trên máy tính công cộng",
+        "Sử dụng trình quản lý mật khẩu để lưu trữ an toàn"
+      ]
+    }
+  },
+  "PasswordGenerator": {
+    "title": "Trình tạo mật khẩu",
+    "lengthLabel": "Độ dài mật khẩu",
+    "lengthDescription": "Chọn độ dài cho mật khẩu của bạn.",
+    "characterSets": {
+      "uppercase": "Chữ hoa (A-Z)",
+      "lowercase": "Chữ thường (a-z)",
+      "numbers": "Số (0-9)",
+      "symbols": "Ký tự đặc biệt (!@#$%^&*()_+-=[]{}|;:,.<>?)"
+    },
+    "generateButton": "Tạo mật khẩu",
+    "copyButton": "Sao chép",
+    "successMessage": "Đã tạo mật khẩu thành công!",
+    "errorMessage": "Không thể tạo mật khẩu."
+  },
+  "PinGenerator": {
+    "title": "Trình tạo mã PIN",
+    "lengthLabel": "Độ dài PIN",
+    "generateButton": "Tạo PIN",
+    "copyButton": "Sao chép",
+    "successMessage": "Đã tạo PIN thành công!",
+    "errorMessage": "Không thể tạo PIN."
+  },
+  "IdGenerator": {
+    "title": "Trình tạo ID",
+    "generateButton": "Tạo ID",
+    "copyButton": "Sao chép",
+    "successMessage": "Đã tạo ID thành công!",
+    "errorMessage": "Không thể tạo ID."
+  },
+  "SecretGenerator": {
+    "title": "Trình tạo khóa bí mật",
+    "algorithmLabel": "Chọn thuật toán",
+    "formatLabel": "Chọn định dạng",
+    "generateButton": "Tạo khóa bí mật",
+    "copyButton": "Sao chép",
+    "successMessage": "Đã tạo khóa bí mật thành công!",
+    "errorMessage": "Không thể tạo khóa bí mật."
+  },
+  "Notifications": {
+    "success": "Thao tác hoàn tất thành công!",
+    "error": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "loading": "Đang tải, vui lòng đợi..."
+  },
+  "Footer": {
+    "contact": "Liên hệ",
+    "privacyPolicy": "Chính sách bảo mật",
+    "termsOfService": "Điều khoản dịch vụ"
+  },
+  "SecurityCheck": {
+    "title": "Kiểm tra bảo mật",
+    "description": "Phân tích mật khẩu của bạn dựa trên các lỗ hổng đã biết và tiêu chuẩn bảo mật.",
+    "vulnerabilities": {
+      "title": "Phát hiện lỗ hổng",
+      "list": [
+        "Mật khẩu yếu",
+        "Mật khẩu thường được sử dụng",
+        "Chứa thông tin cá nhân"
+      ]
+    },
+    "recommendations": {
+      "title": "Khuyến nghị",
+      "list": [
+        "Sử dụng mật khẩu mạnh hơn",
+        "Bật xác thực hai yếu tố",
+        "Thay đổi mật khẩu thường xuyên"
+      ]
+    }
+  },
+  "History": {
+    "title": "Lịch sử tạo",
+    "emptyMessage": "Chưa có lịch sử.",
+    "item": {
+      "generatedAt": "Tạo lúc: {time}",
+      "type": "Loại: {type}",
+      "value": "Giá trị: {value}",
+      "actions": {
+        "copy": "Sao chép",
+        "delete": "Xóa"
+      }
     }
   }
 } 
