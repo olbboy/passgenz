@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Inter, JetBrains_Mono, Outfit } from 'next/font/google'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -97,6 +98,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} font-sans antialiased`}>
+        <GoogleAnalytics gaId="G-E6RGNPR8L3" />
+        <GoogleTagManager gtmId="GTM-NJVMX8WH" />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
