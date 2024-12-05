@@ -1,0 +1,16 @@
+{
+  "HomePage": {
+    "title": "PassGenz - Trình tạo mật khẩu nâng cao",
+    "description": {
+      "prefix": "Chào mừng đến với",
+      "highlight": "ứng dụng",
+      "suffix": "của chúng tôi"
+    }
+  },
+  "Common": {
+    "buttons": {
+      "submit": "Gửi",
+      "cancel": "Hủy"
+    }
+  }
+} 

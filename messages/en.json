@@ -1,0 +1,12 @@
+{
+  "HomePage": {
+    "title": "Hello world!",
+    "description": "Welcome to our application"
+  },
+  "Common": {
+    "buttons": {
+      "submit": "Submit",
+      "cancel": "Cancel"
+    }
+  }
+} 

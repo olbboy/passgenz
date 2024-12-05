@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import {NextIntlClientProvider, useMessages} from 'next-intl';
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -22,13 +22,13 @@ const outfit = Outfit({
   variable: '--font-cal-sans',
 })
 
-export const viewport: Viewport = {
+export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
 };
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "PassGenz - Advanced Password Generator",
   description: "Next-Generation Secure Password Generation Solution with AI-powered features, multiple algorithms, and customizable options.",
   keywords: ["password generator", "secure password", "password tool", "security", "encryption"],
@@ -91,26 +91,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+  children
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html>
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} font-sans antialiased`}>
-        <GoogleAnalytics gaId="G-E6RGNPR8L3" />
-        <GoogleTagManager gtmId="GTM-NJVMX8WH" />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <TooltipProvider>
-            {children}
-          </TooltipProvider>
-          <Toaster />
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );
