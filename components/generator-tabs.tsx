@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from 'next-intl';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PasswordGenerator } from "./password-generator"
 import { PinGenerator } from "./pin-generator"
@@ -11,6 +12,7 @@ import { useState } from "react"
 import { HistoryDrawer } from "./history-drawer"
 
 export function GeneratorTabs() {
+  const t = useTranslations('Tabs');
   const [showHistory, setShowHistory] = useState(false)
 
   return (
@@ -18,10 +20,10 @@ export function GeneratorTabs() {
       <Tabs defaultValue="password" className="w-full">
         <div className="flex items-center justify-between mb-4">
           <TabsList className="flex-1 grid grid-cols-4">
-            <TabsTrigger value="password">Password</TabsTrigger>
-            <TabsTrigger value="pin">PIN</TabsTrigger>
-            <TabsTrigger value="secret">Secret</TabsTrigger>
-            <TabsTrigger value="id">ID</TabsTrigger>
+            <TabsTrigger value="password">{t('password')}</TabsTrigger>
+            <TabsTrigger value="pin">{t('pin')}</TabsTrigger>
+            <TabsTrigger value="secret">{t('secret')}</TabsTrigger>
+            <TabsTrigger value="id">{t('id')}</TabsTrigger>
           </TabsList>
           
           <Button

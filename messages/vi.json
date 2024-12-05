@@ -9,7 +9,7 @@
   },
   "Common": {
     "buttons": {
-      "submit": "Xác nhận",
+      "submit": "Gửi",
       "cancel": "Hủy"
     }
   },
@@ -142,6 +142,78 @@
         "copy": "Sao chép",
         "delete": "Xóa"
       }
+    }
+  },
+  "Tabs": {
+    "password": "Mật khẩu",
+    "pin": "Mã PIN",
+    "secret": "Khóa bí mật",
+    "id": "ID"
+  },
+  "PasswordOutput": {
+    "compromised": {
+      "title": "Mật khẩu đã bị lộ",
+      "description": "Tìm thấy trong {count} vụ rò rỉ dữ liệu",
+      "learnMore": "Tìm hiểu thêm"
+    }
+  },
+  "Components": {
+    "PasswordGenerator": {
+      "title": "Trình tạo mật khẩu",
+      "options": {
+        "length": "Độ dài",
+        "uppercase": "Chữ hoa",
+        "lowercase": "Chữ thường",
+        "numbers": "Số",
+        "symbols": "Ký tự đặc biệt"
+      },
+      "distribution": "Phân bố",
+      "securityChecks": "Kiểm tra bảo mật",
+      "recommendations": "Khuyến nghị",
+      "patterns": {
+        "hasCommonWords": "Chứa từ phổ biến",
+        "hasKeyboardPatterns": "Chứa mẫu bàn phím",
+        "hasRepeatingChars": "Chứa ký tự lặp lại",
+        "hasSequentialChars": "Chứa ký tự tuần tự"
+      },
+      "strength": {
+        "veryStrong": "RẤT MẠNH",
+        "strong": "MẠNH",
+        "medium": "TRUNG BÌNH",
+        "weak": "YẾU"
+      },
+      "placeholder": "Nhấn tạo để tạo mật khẩu"
+    },
+    "History": {
+      "title": "Lịch sử tạo",
+      "empty": "Chưa có lịch sử",
+      "clearAll": "Xóa tất cả",
+      "itemActions": {
+        "copy": "Sao chép",
+        "delete": "Xóa"
+      }
+    },
+    "SecurityCheck": {
+      "title": "Kiểm tra bảo mật",
+      "description": "Kiểm tra mật khẩu với các lỗ hổng đã biết",
+      "checkButton": "Kiểm tra mật khẩu",
+      "loading": "Đang kiểm tra...",
+      "results": {
+        "safe": "Mật khẩu an toàn để sử dụng",
+        "compromised": "Mật khẩu đã bị lộ"
+      }
+    },
+    "PrivacyNotice": {
+      "title": "Thông báo bảo mật",
+      "description": "Mật khẩu của bạn được tạo cục bộ và không bao giờ được lưu trữ hoặc truyền đi.",
+      "learnMore": "Tìm hiểu thêm",
+      "dismiss": "Đóng"
+    },
+    "Tooltips": {
+      "generate": "Tạo mật khẩu mới (Ctrl/⌘ + G)",
+      "copy": "Sao chép vào clipboard (Ctrl/⌘ + C)",
+      "history": "Xem lịch sử",
+      "guide": "Hướng dẫn bảo mật mật khẩu"
     }
   }
 } 

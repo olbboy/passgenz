@@ -1,25 +1,30 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { getLocale } from '@/app/i18n/settings';
+import { Button } from "@/components/ui/button";
 
 const LanguageSwitcher = () => {
   const router = useRouter();
-  const [locale, setLocale] = useState('en');
+  const pathname = usePathname();
+  const currentLocale = getLocale(pathname);
 
   const changeLanguage = () => {
-    const newLocale = locale === 'en' ? 'vi' : 'en';
-    setLocale(newLocale);
-    router.push(`/${newLocale}`);
+    const newLocale = currentLocale === 'en' ? 'vi' : 'en';
+    const newPathname = pathname.replace(`/${currentLocale}`, `/${newLocale}`);
+    router.push(newPathname);
+    router.refresh();
   };
 
   return (
-    <button 
+    <Button 
       onClick={changeLanguage} 
-      className="flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition duration-200"
+      variant="outline"
+      size="icon"
+      className="w-9 h-9"
     >
-      {locale === 'en' ? 'VI' : 'EN'}
-    </button>
+      {currentLocale === 'en' ? 'VI' : 'EN'}
+    </Button>
   );
 };
 

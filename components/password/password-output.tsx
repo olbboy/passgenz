@@ -10,6 +10,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { format } from "date-fns"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useTranslations } from 'next-intl';
 
 interface PasswordOutputProps {
   password: string;
@@ -92,6 +93,7 @@ export function PasswordOutput({
   onCopy,
   breachResult 
 }: PasswordOutputProps) {
+  const t = useTranslations('PasswordOutput');
   const metrics = password ? analyzePassword(password) : null;
 
   // Recommendations section với type safety

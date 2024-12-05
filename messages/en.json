@@ -143,5 +143,77 @@
         "delete": "Delete"
       }
     }
+  },
+  "Tabs": {
+    "password": "Password",
+    "pin": "PIN",
+    "secret": "Secret",
+    "id": "ID"
+  },
+  "PasswordOutput": {
+    "compromised": {
+      "title": "Password Compromised",
+      "description": "Found in {count} data breaches",
+      "learnMore": "Learn More"
+    }
+  },
+  "Components": {
+    "PasswordGenerator": {
+      "title": "Password Generator",
+      "options": {
+        "length": "Length",
+        "uppercase": "Uppercase",
+        "lowercase": "Lowercase",
+        "numbers": "Numbers",
+        "symbols": "Symbols"
+      },
+      "distribution": "Distribution",
+      "securityChecks": "Security Checks",
+      "recommendations": "Recommendations",
+      "patterns": {
+        "hasCommonWords": "Contains common words",
+        "hasKeyboardPatterns": "Contains keyboard patterns",
+        "hasRepeatingChars": "Contains repeating characters",
+        "hasSequentialChars": "Contains sequential characters"
+      },
+      "strength": {
+        "veryStrong": "VERY STRONG",
+        "strong": "STRONG",
+        "medium": "MEDIUM",
+        "weak": "WEAK"
+      },
+      "placeholder": "Click generate to create password"
+    },
+    "History": {
+      "title": "Generation History",
+      "empty": "No history available",
+      "clearAll": "Clear All",
+      "itemActions": {
+        "copy": "Copy",
+        "delete": "Delete"
+      }
+    },
+    "SecurityCheck": {
+      "title": "Security Check",
+      "description": "Check your password against known vulnerabilities",
+      "checkButton": "Check Password",
+      "loading": "Checking...",
+      "results": {
+        "safe": "Password is safe to use",
+        "compromised": "Password has been compromised"
+      }
+    },
+    "PrivacyNotice": {
+      "title": "Privacy Notice",
+      "description": "Your passwords are generated locally and never stored or transmitted.",
+      "learnMore": "Learn More",
+      "dismiss": "Dismiss"
+    },
+    "Tooltips": {
+      "generate": "Generate new password (Ctrl/⌘ + G)",
+      "copy": "Copy to clipboard (Ctrl/⌘ + C)",
+      "history": "View history",
+      "guide": "Password security guide"
+    }
   }
 } 
