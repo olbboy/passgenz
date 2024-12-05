@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "title": "PassGenz - Advanced Password Generator",
+    "title": "PassGenz",
     "description": {
       "prefix": "Welcome to",
       "highlight": "the application",
@@ -62,62 +62,6 @@
       ]
     }
   },
-  "PasswordGenerator": {
-    "title": "Password Generator",
-    "lengthLabel": "Password Length",
-    "lengthDescription": "Choose the length of your password.",
-    "characterSets": {
-      "uppercase": "Uppercase Letters (A-Z)",
-      "lowercase": "Lowercase Letters (a-z)",
-      "numbers": "Numbers (0-9)",
-      "symbols": "Special Characters (!@#$%^&*()_+-=[]{}|;:,.<>?)"
-    },
-    "generateButton": "Generate Password",
-    "copyButton": "Copy to Clipboard",
-    "successMessage": "Password generated successfully!",
-    "errorMessage": "Failed to generate password.",
-    "options": {
-      "length": "Length",
-      "uppercase": "Uppercase",
-      "lowercase": "Lowercase",
-      "numbers": "Numbers",
-      "symbols": "Symbols"
-    },
-    "contextAnalyzer": {
-      "placeholder": "Enter password requirements or service URL...",
-      "analyzing": "Analyzing...",
-      "analyze": "Analyze Requirements",
-      "results": {
-        "title": "Analysis Results",
-        "requirements": "Requirements",
-        "suggestions": "Suggestions"
-      }
-    }
-  },
-  "PinGenerator": {
-    "title": "PIN Generator",
-    "lengthLabel": "PIN Length",
-    "generateButton": "Generate PIN",
-    "copyButton": "Copy to Clipboard",
-    "successMessage": "PIN generated successfully!",
-    "errorMessage": "Failed to generate PIN."
-  },
-  "IdGenerator": {
-    "title": "ID Generator",
-    "generateButton": "Generate ID",
-    "copyButton": "Copy to Clipboard",
-    "successMessage": "ID generated successfully!",
-    "errorMessage": "Failed to generate ID."
-  },
-  "SecretGenerator": {
-    "title": "Secret Generator",
-    "algorithmLabel": "Select Algorithm",
-    "formatLabel": "Select Format",
-    "generateButton": "Generate Secret",
-    "copyButton": "Copy to Clipboard",
-    "successMessage": "Secret generated successfully!",
-    "errorMessage": "Failed to generate secret."
-  },
   "Notifications": {
     "success": "Operation completed successfully!",
     "error": "An error occurred. Please try again.",
@@ -128,53 +72,16 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service"
   },
-  "SecurityCheck": {
-    "title": "Security Check",
-    "description": "Analyze your password against known vulnerabilities and security standards.",
-    "vulnerabilities": {
-      "title": "Vulnerabilities Detected",
-      "list": [
-        "Weak password",
-        "Commonly used password",
-        "Contains personal information"
-      ]
-    },
-    "recommendations": {
-      "title": "Recommendations",
-      "list": [
-        "Use a stronger password",
-        "Enable two-factor authentication",
-        "Change your password regularly"
-      ]
-    }
-  },
-  "History": {
-    "title": "Generation History",
-    "emptyMessage": "No history available.",
-    "item": {
-      "generatedAt": "Generated at: {time}",
-      "type": "Type: {type}",
-      "value": "Value: {value}",
-      "actions": {
-        "copy": "Copy",
-        "delete": "Delete"
-      }
-    }
-  },
   "Tabs": {
     "password": "Password",
     "pin": "PIN",
     "secret": "Secret",
     "id": "ID"
   },
-  "PasswordOutput": {
-    "compromised": {
-      "title": "Password Compromised",
-      "description": "Found in {count} data breaches",
-      "learnMore": "Learn More"
-    }
-  },
   "Components": {
+    "Common": {
+      "placeholder": "Click generate to create password"
+    },
     "PasswordGenerator": {
       "title": "Password Generator",
       "subtitle": "Choose a generation method below",
@@ -204,14 +111,24 @@
             "Suggests optimal password rules",
             "Best for specific platforms/services"
           ]
+        },
+        "pattern": {
+          "title": "Pattern Based Generation",
+          "features": [
+            "Define your own password pattern",
+            "Control exact character placement",
+            "Useful for specific format requirements"
+          ]
+        },
+        "memorable": {
+          "title": "Memorable Passwords",
+          "features": [
+            "Creates memorable word combinations",
+            "Still maintains security standards",
+            "Great for frequently typed passwords"
+          ]
         }
       },
-      "guide": {
-        "title": "Password Generation Guide",
-        "description": "Choose the best method for your needs"
-      },
-      "generating": "Generating secure password...",
-      "generateButton": "Generate Strong Password",
       "basic": {
         "length": {
           "label": "Password Length",
@@ -243,7 +160,116 @@
             "description": "Enhance password strength with quantum-resistant entropy"
           }
         }
+      },
+      "context": {
+        "placeholder": "Describe the platform or service you need a password for (e.g., online banking, social media, work system)...",
+        "analyze": {
+          "ai": "AI Analysis",
+          "manual": "Manual Analysis"
+        },
+        "analyzing": "Analyzing...",
+        "results": {
+          "title": "Analyzed Requirements:",
+          "platform": {
+            "title": "Platform Information",
+            "type": "Type",
+            "description": "Description"
+          },
+          "rules": {
+            "title": "Password Rules",
+            "length": "Length",
+            "characters": "characters",
+            "unlimited": "unlimited",
+            "requiredTypes": "Required Character Types",
+            "from": "from",
+            "characterSets": "Character Sets",
+            "required": "Required",
+            "optional": "Optional",
+            "any": "Any",
+            "availableTypes": "available types"
+          },
+          "security": {
+            "title": "Security Assessment",
+            "level": "Level",
+            "justification": "Justification",
+            "compliance": "Compliance",
+            "warnings": "Warnings"
+          },
+          "recommendations": {
+            "title": "Recommendations",
+            "implementation": "Implementation",
+            "guidance": "User Guidance"
+          }
+        },
+        "toast": {
+          "success": "Context analyzed successfully",
+          "error": "Failed to analyze context",
+          "manual": {
+            "title": "Manual Analysis",
+            "description": "Using standard security requirements"
+          }
+        }
+      },
+      "guide": {
+        "title": "Password Generation Guide",
+        "description": "Choose the best method for your needs"
+      },
+      "generating": "Generating secure password...",
+      "generateButton": "Generate Strong Password",
+      "copyButton": "Copy",
+      "successMessage": "Password generated successfully!",
+      "errorMessage": "Failed to generate password.",
+      "output": {
+        "compromised": {
+          "title": "Password Compromised",
+          "description": "Found in {count} data breaches",
+          "learnMore": "Learn More"
+        }
+      },
+      "securityCheck": {
+        "title": "Security Check",
+        "description": "Analyze your password against known vulnerabilities and security standards.",
+        "vulnerabilities": {
+          "title": "Vulnerabilities Detected",
+          "list": [
+            "Weak password",
+            "Commonly used password",
+            "Contains personal information"
+          ]
+        },
+        "recommendations": {
+          "title": "Recommendations",
+          "list": [
+            "Use a stronger password",
+            "Enable two-factor authentication",
+            "Change your password regularly"
+          ]
+        }
       }
+    },
+    "PinGenerator": {
+      "title": "PIN Generator",
+      "lengthLabel": "PIN Length",
+      "generateButton": "Generate PIN",
+      "copyButton": "Copy",
+      "successMessage": "PIN generated successfully!",
+      "errorMessage": "Failed to generate PIN."
+    },
+    "IdGenerator": {
+      "title": "ID Generator",
+      "generateButton": "Generate ID",
+      "copyButton": "Copy",
+      "successMessage": "ID generated successfully!",
+      "errorMessage": "Failed to generate ID."
+    },
+    "SecretGenerator": {
+      "title": "Secret Generator",
+      "algorithmLabel": "Select Algorithm",
+      "formatLabel": "Select Format",
+      "generateButton": "Generate Secret",
+      "copyButton": "Copy",
+      "successMessage": "Secret generated successfully!",
+      "errorMessage": "Failed to generate secret."
     },
     "History": {
       "title": "Generation History",
@@ -252,6 +278,11 @@
       "itemActions": {
         "copy": "Copy",
         "delete": "Delete"
+      },
+      "item": {
+        "generatedAt": "Generated at: {time}",
+        "type": "Type: {type}",
+        "value": "Value: {value}"
       }
     },
     "SecurityCheck": {
@@ -275,6 +306,31 @@
       "copy": "Copy to clipboard (Ctrl/⌘ + C)",
       "history": "View history",
       "guide": "Password security guide"
+    },
+    "Matrix": {
+      "header": {
+        "title": "Strong Security",
+        "subtitle": "Generate Secure Password",
+        "description": "Protect Your Accounts with Strong Passwords"
+      },
+      "letter": {
+        "loading": "Loading...",
+        "error": "An Error Occurred",
+        "retry": "Retry"
+      },
+      "animation": {
+        "speed": "Speed",
+        "density": "Density",
+        "pause": "Pause",
+        "resume": "Resume"
+      }
+    },
+    "LanguageSwitcher": {
+      "label": "Select language",
+      "languages": {
+        "en": "English",
+        "vi": "Vietnamese"
+      }
     }
   }
 } 

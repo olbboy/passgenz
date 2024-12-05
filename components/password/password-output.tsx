@@ -94,6 +94,7 @@ export function PasswordOutput({
   breachResult 
 }: PasswordOutputProps) {
   const t = useTranslations('PasswordOutput');
+  const c = useTranslations('Components.Common');
   const metrics = password ? analyzePassword(password) : null;
 
   // Recommendations section với type safety
@@ -112,7 +113,7 @@ export function PasswordOutput({
             "text-xl sm:text-2xl font-mono flex-1 tracking-wider select-all break-all",
             !password && "text-muted-foreground text-lg sm:text-xl"
           )}>
-            {password || 'Click generate to create password'}
+            {password || c('placeholder')}
           </span>
           <div className="flex gap-2 shrink-0">
             <TooltipProvider delayDuration={300}>

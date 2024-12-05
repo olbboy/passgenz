@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "title": "PassGenz - Trình tạo mật khẩu nâng cao",
+    "title": "PassGenz",
     "description": {
       "prefix": "Chào mừng đến với",
       "highlight": "ứng dụng",
@@ -9,44 +9,44 @@
   },
   "Common": {
     "buttons": {
-      "submit": "Gửi",
-      "cancel": "Hủy"
+      "submit": "Xác Nhận",
+      "cancel": "Hủy Bỏ"
     }
   },
   "Guide": {
     "introduction": "Bạn có biết? 81% các vụ rò rỉ dữ liệu xảy ra do mật khẩu yếu hoặc bị đánh cắp!",
-    "importance": "Trong thời đại internet hiện nay, việc bảo vệ mật khẩu là vô cùng quan trọng. Giống như việc bạn khóa nhà để bảo vệ tài sản, một mật khẩu mạnh sẽ giúp bảo vệ thông tin cá nhân của bạn trên mạng.",
+    "importance": "Trong thời đại internet hiện nay, bảo vệ mật khẩu là việc vô cùng quan trọng. Giống như việc bạn khóa nhà để bảo vệ tài sản, một mật khẩu mạnh sẽ giúp bảo vệ thông tin cá nhân của bạn trên mạng.",
     "passwordPrinciples": {
       "title": "Hai điều quan trọng về mật khẩu",
       "point1": {
-        "title": "1. Mỗi tài khoản một mật khẩu",
-        "description": "Hãy tưởng tượng: Nếu bạn dùng cùng một chìa khóa cho cả nhà và két sắt, khi kẻ trộm có được chìa khóa, họ có thể lấy được tất cả. Mật khẩu cũng vậy - mỗi tài khoản nên có một mật khẩu riêng!"
+        "title": "1. Một tài khoản một mật khẩu",
+        "description": "Hãy tưởng tượng: Nếu bạn dùng cùng một chìa khóa cho cả nhà và két sắt, khi kẻ trộm có được chìa khóa, họ có thể tiếp cận mọi thứ. Mật khẩu cũng vậy - mỗi tài khoản nên có một mật khẩu riêng!"
       },
       "point2": {
         "title": "2. Mật khẩu phải thực sự ngẫu nhiên",
-        "description": "Đừng sử dụng những thông tin dễ đoán như ngày sinh, tên thú cưng, hay số điện thoại. Hãy tạo mật khẩu thực sự ngẫu nhiên để khó bị đoán ra!"
+        "description": "Đừng sử dụng những thông tin dễ đoán như ngày sinh, tên thú cưng, hoặc số điện thoại. Hãy tạo mật khẩu thực sự ngẫu nhiên để chúng khó bị đoán ra!"
       }
     },
     "passwordStrength": {
       "title": "Mật khẩu mạnh hay yếu như thế nào?",
-      "description": "Khi tạo mật khẩu, độ dài và độ phức tạp sẽ quyết định thời gian cần thiết để hacker có thể phá được mật khẩu của bạn. Dưới đây là một số ví dụ:"
+      "description": "Khi tạo mật khẩu, độ dài và độ phức tạp quyết định thời gian cần thiết để hacker có thể phá được mật khẩu của bạn. Dưới đây là một số ví dụ:"
     },
     "passwordTips": {
       "title": "Mẹo tạo mật khẩu an toàn",
       "do": {
-        "title": "Những điều NÊN làm:",
+        "title": "Những điều BẠN NÊN làm:",
         "list": [
-          "Sử dụng ít nhất 12 ký tự",
-          "Kết hợp chữ hoa, chữ thường, số và ký tự đặc biệt",
-          "Dùng cụm từ ngẫu nhiên (ví dụ: 'MeoXanhThich@Ca2024')",
+          "Sử dụng ít nhất 12 ký tự.",
+          "Kết hợp chữ hoa, chữ thường, số, và ký tự đặc biệt.",
+          "Sử dụng cụm từ ngẫu nhiên (ví dụ: 'MeoXanhThich@Ca2024')",
           "Thay đổi mật khẩu quan trọng mỗi 3-6 tháng"
         ]
       },
       "don't": {
-        "title": "Những điều KHÔNG NÊN làm:",
+        "title": "Những điều BẠN KHÔNG NÊN làm:",
         "list": [
           "Sử dụng thông tin cá nhân (ngày sinh, tên, số điện thoại)",
-          "Sử dụng các từ trong từ điển",
+          "Sử dụng từ điển",
           "Sử dụng mật khẩu quá đơn giản (123456, password)",
           "Sử dụng cùng một mật khẩu cho nhiều tài khoản"
         ]
@@ -58,136 +58,9 @@
         "Bật xác thực hai yếu tố nếu có thể",
         "Không chia sẻ mật khẩu với người khác",
         "Không nhập mật khẩu trên máy tính công cộng",
-        "Sử dụng trình quản lý mật khẩu để lưu trữ an toàn"
+        "Sử dụng password manager để lưu trữ an toàn"
       ]
     }
-  },
-  "PasswordGenerator": {
-    "title": "Trình tạo mật khẩu",
-    "subtitle": "Chọn phương thức tạo bên dưới",
-    "modes": {
-      "basic": "Tạo chuẩn",
-      "basicShort": "Chuẩn",
-      "context": "AI phân tích",
-      "contextShort": "AI",
-      "pattern": "Theo mẫu",
-      "patternShort": "Mẫu",
-      "memorable": "Dễ nhớ",
-      "memorableShort": "Nhớ"
-    },
-    "basic": {
-      "length": {
-        "label": "Độ dài mật khẩu",
-        "characters": "ký tự",
-        "recommended": "Khuyến nghị: 16-32"
-      },
-      "characterTypes": {
-        "label": "Loại ký tự",
-        "uppercase": {
-          "label": "Chữ hoa (A-Z)",
-          "description": "Bao gồm chữ cái in hoa"
-        },
-        "lowercase": {
-          "label": "Chữ thường (a-z)",
-          "description": "Bao gồm chữ cái thường"
-        },
-        "numbers": {
-          "label": "Số (0-9)",
-          "description": "Bao gồm chữ số"
-        },
-        "symbols": {
-          "label": "Ký tự đặc biệt (!@#$)",
-          "description": "Bao gồm ký tự đặc biệt"
-        }
-      },
-      "advanced": {
-        "quantumSafe": {
-          "label": "Bảo mật lượng tử",
-          "description": "Tăng cường độ mạnh mật khẩu với entropy chống lượng tử"
-        }
-      }
-    },
-    "descriptions": {
-      "basic": {
-        "title": "Tạo mật khẩu chuẩn",
-        "features": [
-          "Tùy chỉnh độ dài và loại ký tự",
-          "Mạnh và an toàn mặc định",
-          "Phù hợp cho mọi mục đích"
-        ]
-      },
-      "context": {
-        "title": "Phân tích bằng AI",
-        "features": [
-          "Phân tích yêu cầu cụ thể",
-          "Đề xuất quy tắc mật khẩu tối ưu",
-          "Tốt nhất cho các nền tảng/dịch vụ cụ thể"
-        ]
-      },
-      "pattern": {
-        "title": "Tạo theo mẫu",
-        "features": [
-          "Định nghĩa mẫu mật khẩu của riêng bạn",
-          "Kiểm soát vị trí ký tự chính xác",
-          "Hữu ích cho các yêu cầu định dạng cụ thể"
-        ]
-      },
-      "memorable": {
-        "title": "Mật khẩu dễ nhớ",
-        "features": [
-          "Tạo các cụm từ dễ nhớ",
-          "Vẫn đảm bảo tiêu chuẩn bảo mật",
-          "Tuyệt vời cho mật khẩu thường xuyên nhập"
-        ]
-      }
-    },
-    "guide": {
-      "title": "Hướng dẫn tạo mật khẩu",
-      "description": "Ch���n phương thức phù hợp nhất với nhu cầu của bạn"
-    },
-    "generating": "Đang tạo mật khẩu an toàn...",
-    "generateButton": "Tạo mật khẩu mạnh",
-    "options": {
-      "length": "Độ dài",
-      "uppercase": "Chữ hoa",
-      "lowercase": "Chữ thường",
-      "numbers": "Số",
-      "symbols": "Ký tự đặc biệt"
-    },
-    "contextAnalyzer": {
-      "placeholder": "Nhập yêu cầu mật khẩu hoặc URL của dịch vụ...",
-      "analyzing": "Đang phân tích...",
-      "analyze": "Phân tích yêu cầu",
-      "results": {
-        "title": "Kết quả phân tích",
-        "requirements": "Yêu cầu",
-        "suggestions": "Đề xuất"
-      }
-    }
-  },
-  "PinGenerator": {
-    "title": "Trình tạo mã PIN",
-    "lengthLabel": "Độ dài PIN",
-    "generateButton": "Tạo PIN",
-    "copyButton": "Sao chép",
-    "successMessage": "Đã tạo PIN thành công!",
-    "errorMessage": "Không thể tạo PIN."
-  },
-  "IdGenerator": {
-    "title": "Trình tạo ID",
-    "generateButton": "Tạo ID",
-    "copyButton": "Sao chép",
-    "successMessage": "Đã tạo ID thành công!",
-    "errorMessage": "Không thể tạo ID."
-  },
-  "SecretGenerator": {
-    "title": "Trình tạo khóa bí mật",
-    "algorithmLabel": "Chọn thuật toán",
-    "formatLabel": "Chọn định dạng",
-    "generateButton": "Tạo khóa bí mật",
-    "copyButton": "Sao chép",
-    "successMessage": "Đã tạo khóa bí mật thành công!",
-    "errorMessage": "Không thể tạo khóa bí mật."
   },
   "Notifications": {
     "success": "Thao tác hoàn tất thành công!",
@@ -195,85 +68,82 @@
     "loading": "Đang tải, vui lòng đợi..."
   },
   "Footer": {
-    "contact": "Liên hệ",
-    "privacyPolicy": "Chính sách bảo mật",
-    "termsOfService": "Điều khoản dịch vụ"
-  },
-  "SecurityCheck": {
-    "title": "Kiểm tra bảo mật",
-    "description": "Phân tích mật khẩu của bạn dựa trên các lỗ hổng đã biết và tiêu chuẩn bảo mật.",
-    "vulnerabilities": {
-      "title": "Phát hiện lỗ hổng",
-      "list": [
-        "Mật khẩu yếu",
-        "Mật khẩu thường được sử dụng",
-        "Chứa thông tin cá nhân"
-      ]
-    },
-    "recommendations": {
-      "title": "Khuyến nghị",
-      "list": [
-        "Sử dụng mật khẩu mạnh hơn",
-        "Bật xác thực hai yếu tố",
-        "Thay đổi mật khẩu thường xuyên"
-      ]
-    }
-  },
-  "History": {
-    "title": "Lịch sử tạo",
-    "emptyMessage": "Chưa có lịch sử.",
-    "item": {
-      "generatedAt": "Tạo lc: {time}",
-      "type": "Loại: {type}",
-      "value": "Giá trị: {value}",
-      "actions": {
-        "copy": "Sao chép",
-        "delete": "Xóa"
-      }
-    }
+    "contact": "Liên H",
+    "privacyPolicy": "Chính Sách Bảo Mật",
+    "termsOfService": "Điều Khoản Dịch Vụ"
   },
   "Tabs": {
     "password": "Mật khẩu",
-    "pin": "Mã PIN",
-    "secret": "Khóa bí mật",
+    "pin": "PIN",
+    "secret": "Secret",
     "id": "ID"
   },
-  "PasswordOutput": {
-    "compromised": {
-      "title": "Mật khẩu đã bị lộ",
-      "description": "Tìm thấy trong {count} vụ rò rỉ dữ liệu",
-      "learnMore": "Tìm hiểu thêm"
-    }
-  },
   "Components": {
+    "Common": {
+      "placeholder": "Nhấn tạo để tạo mật khẩu"
+    },
     "PasswordGenerator": {
-      "title": "Trình tạo mật khẩu",
+      "title": "Trình Tạo Mật Khẩu",
       "subtitle": "Chọn phương thức tạo bên dưới",
       "modes": {
-        "basic": "Tạo chuẩn",
-        "basicShort": "Chuẩn",
-        "context": "AI phân tích",
+        "basic": "Tạo Tiêu Chuẩn",
+        "basicShort": "Cơ bản",
+        "context": "AI Context",
         "contextShort": "AI",
-        "pattern": "Theo mẫu",
+        "pattern": "Theo Mẫu",
         "patternShort": "Mẫu",
-        "memorable": "Dễ nhớ",
+        "memorable": "Dễ Nhớ",
         "memorableShort": "Nhớ"
+      },
+      "descriptions": {
+        "basic": {
+          "title": "Tạo Mật Khẩu Tiêu Chuẩn",
+          "features": [
+            "Tùy chỉnh độ dài và loại ký tự",
+            "Mạnh và an toàn theo mặc định",
+            "Phù hợp cho sử dụng thông thường"
+          ]
+        },
+        "context": {
+          "title": "Phân Tích Context Bằng AI",
+          "features": [
+            "Phân tích yêu cầu cụ thể của bạn",
+            "Đề xuất quy tắc mật khẩu tối ưu",
+            "Tốt nhất cho các nền tảng/dịch vụ cụ thể"
+          ]
+        },
+        "pattern": {
+          "title": "Tạo Theo Mẫu",
+          "features": [
+            "Định nghĩa mẫu mật khẩu riêng",
+            "Kiểm soát vị trí ký tự chính xác",
+            "Hữu ích cho yêu cầu định dạng cụ thể"
+          ]
+        },
+        "memorable": {
+          "title": "Mật Khẩu Dễ Nhớ",
+          "features": [
+            "Tạo kết hợp từ dễ nhớ",
+            "Vẫn đảm bảo tiêu chuẩn bảo mật",
+            "Tuyệt vời cho mật khẩu thường xuyên nhập"
+          ]
+        }
       },
       "basic": {
         "length": {
-          "label": "Độ dài mật khẩu",
+          "label": "Độ Dài Mật Khẩu",
           "characters": "ký tự",
           "recommended": "Khuyến nghị: 16-32"
         },
         "characterTypes": {
-          "label": "Loại ký tự",
+          "label": "Loại Ký Tự",
           "uppercase": {
             "label": "Chữ hoa (A-Z)",
-            "description": "Bao gồm chữ cái in hoa"
+            "description": "Bao gồm chữ cái viết hoa"
           },
           "lowercase": {
             "label": "Chữ thường (a-z)",
-            "description": "Bao gồm chữ cái thường"
+            "description": "Bao gồm chữ cái viết thường"
           },
           "numbers": {
             "label": "Số (0-9)",
@@ -286,99 +156,181 @@
         },
         "advanced": {
           "quantumSafe": {
-            "label": "Bảo mật lượng tử",
+            "label": "Quantum-Safe",
             "description": "Tăng cường độ mạnh mật khẩu với entropy chống lượng tử"
           }
         }
       },
-      "descriptions": {
-        "basic": {
-          "title": "Tạo mật khẩu chuẩn",
-          "features": [
-            "Tùy chỉnh độ dài và loại ký tự",
-            "Mạnh và an toàn mặc định",
-            "Phù hợp cho mọi mục đích"
-          ]
+      "context": {
+        "placeholder": "Mô tả nền tảng hoặc dịch vụ bạn cần mật khẩu (ví dụ: ngân hàng trực tuyến, mạng xã hội, hệ thống công việc)...",
+        "analyze": {
+          "ai": "Phân Tích AI",
+          "manual": "Phân Tích Thủ Công"
         },
-        "context": {
-          "title": "Phân tích bằng AI",
-          "features": [
-            "Phân tích yêu cầu cụ thể",
-            "Đề xuất quy tắc mật khẩu tối ưu",
-            "Tốt nhất cho các nền tảng/dịch vụ cụ thể"
-          ]
+        "analyzing": "Đang phân tích...",
+        "results": {
+          "title": "Yêu Cầu Đã Phân Tích:",
+          "platform": {
+            "title": "Thông Tin Nền Tảng",
+            "type": "Loại",
+            "description": "Mô tả"
+          },
+          "rules": {
+            "title": "Quy Tắc Mật Khẩu",
+            "length": "Độ Dài",
+            "characters": "Ký Tự",
+            "unlimited": "Không Giới Hạn",
+            "requiredTypes": "Loại Ký Tự Yêu Cầu",
+            "from": "Từ",
+            "characterSets": "Bộ Ký Tự",
+            "required": "Bắt Buộc",
+            "optional": "Tùy Chọn",
+            "any": "Bất Kỳ",
+            "availableTypes": "Loại Có Sẵn"
+          },
+          "security": {
+            "title": "Đánh Giá Bảo Mật",
+            "level": "Cấp Độ",
+            "justification": "Lý Do",
+            "compliance": "Tuân Thủ",
+            "warnings": "Cảnh Báo"
+          },
+          "recommendations": {
+            "title": "Khuyến Nghị",
+            "implementation": "Triển Khai",
+            "guidance": "Hướng Dẫn Người Dùng"
+          }
         },
-        "pattern": {
-          "title": "Tạo theo mẫu",
-          "features": [
-            "Định nghĩa mẫu mật khẩu của riêng bạn",
-            "Kiểm soát vị trí ký tự chính xác",
-            "Hữu ích cho các yêu cầu định dạng cụ thể"
-          ]
-        },
-        "memorable": {
-          "title": "Mật khẩu dễ nhớ",
-          "features": [
-            "Tạo các cụm từ dễ nhớ",
-            "Vẫn đảm bảo tiêu chuẩn bảo mật",
-            "Tuyệt vời cho mật khẩu thường xuyên nhập"
-          ]
+        "toast": {
+          "success": "Đã Phân Tích Context Thành Công",
+          "error": "Không Thể Phân Tích Context",
+          "manual": {
+            "title": "Phân Tích Thủ Công",
+            "description": "Sử Dụng Yêu Cầu Bảo Mật Tiêu Chuẩn"
+          }
         }
       },
       "guide": {
-        "title": "Hướng dẫn tạo mật khẩu",
-        "description": "Chọn phương thức phù hợp nhất với nhu cầu của bạn"
+        "title": "Hướng Dẫn Tạo Mật Khẩu",
+        "description": "Chọn phương thức phù hợp với nhu cầu của bạn"
       },
       "generating": "Đang tạo mật khẩu an toàn...",
-      "generateButton": "Tạo mật khẩu mạnh",
-      "options": {
-        "length": "Độ dài",
-        "uppercase": "Chữ hoa",
-        "lowercase": "Chữ thường",
-        "numbers": "Số",
-        "symbols": "Ký tự đặc biệt"
+      "generateButton": "Tạo Mật Khẩu Mạnh",
+      "copyButton": "Sao Chép",
+      "successMessage": "Đã tạo mật khẩu thành công!",
+      "errorMessage": "Không thể tạo mật khẩu.",
+      "output": {
+        "compromised": {
+          "title": "Mật Khẩu Đã Bị Lộ",
+          "description": "Được tìm thấy trong {count} vụ rò rỉ dữ liệu",
+          "learnMore": "Tìm Hiểu Thêm"
+        }
       },
-      "contextAnalyzer": {
-        "placeholder": "Nhập yêu cầu mật khẩu hoặc URL của dịch vụ...",
-        "analyzing": "Đang phân tích...",
-        "analyze": "Phân tích yêu cầu",
-        "results": {
-          "title": "Kết quả phân tích",
-          "requirements": "Yêu cầu",
-          "suggestions": "Đề xuất"
+      "securityCheck": {
+        "title": "Kiểm Tra Bảo Mật",
+        "description": "Phân tích mật khẩu của bạn với các lỗ hổng đã biết và tiêu chuẩn bảo mật.",
+        "vulnerabilities": {
+          "title": "Phát Hiện Lỗ Hổng",
+          "list": [
+            "Mật khẩu yếu",
+            "Mật khẩu thường được sử dụng",
+            "Chứa thông tin cá nhân"
+          ]
+        },
+        "recommendations": {
+          "title": "Khuyến Nghị",
+          "list": [
+            "Sử dụng mật khẩu mạnh hơn",
+            "Bật xác thực hai yếu tố",
+            "Thay đổi mật khẩu thường xuyên"
+          ]
         }
       }
     },
+    "PinGenerator": {
+      "title": "Trình Tạo PIN",
+      "lengthLabel": "Độ Dài PIN",
+      "generateButton": "Tạo PIN",
+      "copyButton": "Sao Chép",
+      "successMessage": "Đã tạo PIN thành công!",
+      "errorMessage": "Không thể tạo PIN."
+    },
+    "IdGenerator": {
+      "title": "Trình Tạo ID",
+      "generateButton": "Tạo ID",
+      "copyButton": "Sao Chép",
+      "successMessage": "Đã tạo ID thành công!",
+      "errorMessage": "Không thể tạo ID."
+    },
+    "SecretGenerator": {
+      "title": "Trình Tạo Secret",
+      "algorithmLabel": "Chọn Thuật Toán",
+      "formatLabel": "Chọn Định Dạng",
+      "generateButton": "Tạo Secret",
+      "copyButton": "Sao Chép",
+      "successMessage": "Đã tạo secret thành công!",
+      "errorMessage": "Không thể tạo secret."
+    },
     "History": {
-      "title": "Lịch sử tạo",
-      "empty": "Chưa có lịch sử",
-      "clearAll": "Xóa tất cả",
+      "title": "Lịch Sử Tạo",
+      "empty": "Không có lịch sử",
+      "clearAll": "Xóa Tất Cả",
       "itemActions": {
         "copy": "Sao chép",
         "delete": "Xóa"
+      },
+      "item": {
+        "generatedAt": "Được tạo lúc: {time}",
+        "type": "Loại: {type}",
+        "value": "Giá trị: {value}"
       }
     },
     "SecurityCheck": {
-      "title": "Kiểm tra bảo mật",
-      "description": "Kiểm tra mật khẩu với các lỗ hổng đã biết",
-      "checkButton": "Kiểm tra mật khẩu",
+      "title": "Kiểm Tra Bảo Mật",
+      "description": "Kiểm tra mật khẩu của bạn với các lỗ hổng đã biết",
+      "checkButton": "Kiểm Tra Mật Khẩu",
       "loading": "Đang kiểm tra...",
       "results": {
-        "safe": "Mật khẩu an toàn để sử dụng",
-        "compromised": "Mật khẩu đã bị lộ"
+        "safe": "Mật Khẩu An Toàn Để Sử Dụng",
+        "compromised": "Mật Khẩu Đã Bị Lộ"
       }
     },
     "PrivacyNotice": {
-      "title": "Thông báo bảo mật",
+      "title": "Thông Báo Quyền Riêng Tư",
       "description": "Mật khẩu của bạn được tạo cục bộ và không bao giờ được lưu trữ hoặc truyền đi.",
-      "learnMore": "Tìm hiểu thêm",
-      "dismiss": "Đóng"
+      "learnMore": "Tìm Hiểu Thêm",
+      "dismiss": "Bỏ Qua"
     },
     "Tooltips": {
-      "generate": "Tạo mật khẩu mới (Ctrl/⌘ + G)",
-      "copy": "Sao chép vào clipboard (Ctrl/⌘ + C)",
-      "history": "Xem lịch sử",
-      "guide": "Hướng dẫn bảo mật mật khẩu"
+      "generate": "Tạo Mật Khẩu Mới (Ctrl/⌘ + G)",
+      "copy": "Sao Chép Vào Clipboard (Ctrl/⌘ + C)",
+      "history": "Xem Lịch Sử",
+      "guide": "Hướng Dẫn Bảo Mật Mật Khẩu"
+    },
+    "Matrix": {
+      "header": {
+        "title": "Bảo Mật Mạnh Mẽ",
+        "subtitle": "Tạo Mật Khẩu An Toàn",
+        "description": "Bảo Vệ Tài Khoản Của Bạn Với Mật Khẩu Mạnh"
+      },
+      "letter": {
+        "loading": "Đang tải...",
+        "error": "Đã Xảy Ra Lỗi",
+        "retry": "Thử Lại"
+      },
+      "animation": {
+        "speed": "Tốc Độ",
+        "density": "Mật Độ",
+        "pause": "Tạm Dừng",
+        "resume": "Tiếp Tục"
+      }
+    },
+    "LanguageSwitcher": {
+      "label": "Chọn Ngôn Ngữ",
+      "languages": {
+        "en": "Tiếng Anh",
+        "vi": "Tiếng Việt"
+      }
     }
   }
-} 
+}
