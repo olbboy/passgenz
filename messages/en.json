@@ -1,12 +1,147 @@
 {
   "HomePage": {
-    "title": "Hello world!",
-    "description": "Welcome to our application"
+    "title": "PassGenz - Advanced Password Generator",
+    "description": {
+      "prefix": "Welcome to",
+      "highlight": "the application",
+      "suffix": "of ours"
+    }
   },
   "Common": {
     "buttons": {
       "submit": "Submit",
       "cancel": "Cancel"
+    }
+  },
+  "Guide": {
+    "introduction": "Did you know? 81% of data breaches occur due to weak or stolen passwords!",
+    "importance": "In today's internet age, protecting your password is crucial. Just like you lock your house to protect your belongings, a strong password will help protect your personal information online.",
+    "passwordPrinciples": {
+      "title": "Two important things about passwords",
+      "point1": {
+        "title": "1. One password per account",
+        "description": "Imagine: If you use the same key for both your house and your safe, when a thief gets the key, they can access everything. Passwords are the same - each account should have a unique password!"
+      },
+      "point2": {
+        "title": "2. Passwords must be truly random",
+        "description": "Don't use easily guessable information like birthdays, pet names, or phone numbers. Create truly random passwords to make them hard to guess!"
+      }
+    },
+    "passwordStrength": {
+      "title": "How strong or weak is a password?",
+      "description": "When creating a password, the length and complexity determine how long it takes for a hacker to crack your password. Here are some examples:"
+    },
+    "passwordTips": {
+      "title": "Tips for creating a secure password",
+      "do": {
+        "title": "Things YOU SHOULD do:",
+        "list": [
+          "Use at least 12 characters",
+          "Combine uppercase, lowercase, numbers, and special characters",
+          "Use random phrases (e.g., 'BlueCatLoves@Fish2024')",
+          "Change important passwords every 3-6 months"
+        ]
+      },
+      "don't": {
+        "title": "Things YOU SHOULD NOT do:",
+        "list": [
+          "Use personal information (birthdays, names, phone numbers)",
+          "Use dictionary words",
+          "Use overly simple passwords (123456, password)",
+          "Use the same password for multiple accounts"
+        ]
+      }
+    },
+    "extraAdvice": {
+      "title": "Tips to protect your account",
+      "list": [
+        "Enable two-factor authentication if possible",
+        "Do not share your password with others",
+        "Do not enter your password on public computers",
+        "Use a password manager to store securely"
+      ]
+    }
+  },
+  "PasswordGenerator": {
+    "title": "Password Generator",
+    "lengthLabel": "Password Length",
+    "lengthDescription": "Choose the length of your password.",
+    "characterSets": {
+      "uppercase": "Uppercase Letters (A-Z)",
+      "lowercase": "Lowercase Letters (a-z)",
+      "numbers": "Numbers (0-9)",
+      "symbols": "Special Characters (!@#$%^&*()_+-=[]{}|;:,.<>?)"
+    },
+    "generateButton": "Generate Password",
+    "copyButton": "Copy to Clipboard",
+    "successMessage": "Password generated successfully!",
+    "errorMessage": "Failed to generate password."
+  },
+  "PinGenerator": {
+    "title": "PIN Generator",
+    "lengthLabel": "PIN Length",
+    "generateButton": "Generate PIN",
+    "copyButton": "Copy to Clipboard",
+    "successMessage": "PIN generated successfully!",
+    "errorMessage": "Failed to generate PIN."
+  },
+  "IdGenerator": {
+    "title": "ID Generator",
+    "generateButton": "Generate ID",
+    "copyButton": "Copy to Clipboard",
+    "successMessage": "ID generated successfully!",
+    "errorMessage": "Failed to generate ID."
+  },
+  "SecretGenerator": {
+    "title": "Secret Generator",
+    "algorithmLabel": "Select Algorithm",
+    "formatLabel": "Select Format",
+    "generateButton": "Generate Secret",
+    "copyButton": "Copy to Clipboard",
+    "successMessage": "Secret generated successfully!",
+    "errorMessage": "Failed to generate secret."
+  },
+  "Notifications": {
+    "success": "Operation completed successfully!",
+    "error": "An error occurred. Please try again.",
+    "loading": "Loading, please wait..."
+  },
+  "Footer": {
+    "contact": "Contact Us",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
+  "SecurityCheck": {
+    "title": "Security Check",
+    "description": "Analyze your password against known vulnerabilities and security standards.",
+    "vulnerabilities": {
+      "title": "Vulnerabilities Detected",
+      "list": [
+        "Weak password",
+        "Commonly used password",
+        "Contains personal information"
+      ]
+    },
+    "recommendations": {
+      "title": "Recommendations",
+      "list": [
+        "Use a stronger password",
+        "Enable two-factor authentication",
+        "Change your password regularly"
+      ]
+    }
+  },
+  "History": {
+    "title": "Generation History",
+    "emptyMessage": "No history available.",
+    "item": {
+      "generatedAt": "Generated at: {time}",
+      "type": "Type: {type}",
+      "value": "Value: {value}",
+      "actions": {
+        "copy": "Copy",
+        "delete": "Delete"
+      }
     }
   }
 } 
