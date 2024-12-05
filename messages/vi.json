@@ -64,18 +64,57 @@
   },
   "PasswordGenerator": {
     "title": "Trình tạo mật khẩu",
-    "lengthLabel": "Độ dài mật khẩu",
-    "lengthDescription": "Chọn độ dài cho mật khẩu của bạn.",
-    "characterSets": {
-      "uppercase": "Chữ hoa (A-Z)",
-      "lowercase": "Chữ thường (a-z)",
-      "numbers": "Số (0-9)",
-      "symbols": "Ký tự đặc biệt (!@#$%^&*()_+-=[]{}|;:,.<>?)"
+    "subtitle": "Chọn phương thức tạo bên dưới",
+    "modes": {
+      "basic": "Tạo chuẩn",
+      "basicShort": "Chuẩn",
+      "context": "AI phân tích",
+      "contextShort": "AI",
+      "pattern": "Theo mẫu",
+      "patternShort": "Mẫu",
+      "memorable": "Dễ nhớ",
+      "memorableShort": "Nhớ"
     },
-    "generateButton": "Tạo mật khẩu",
-    "copyButton": "Sao chép",
-    "successMessage": "Đã tạo mật khẩu thành công!",
-    "errorMessage": "Không thể tạo mật khẩu."
+    "descriptions": {
+      "basic": {
+        "title": "Tạo mật khẩu chuẩn",
+        "features": [
+          "Tùy chỉnh độ dài và loại ký tự",
+          "Mạnh và an toàn mặc định",
+          "Phù hợp cho mọi mục đích"
+        ]
+      },
+      "context": {
+        "title": "Phân tích bằng AI",
+        "features": [
+          "Phân tích yêu cầu cụ thể",
+          "Đề xuất quy tắc mật khẩu tối ưu",
+          "Tốt nhất cho các nền tảng/dịch vụ cụ thể"
+        ]
+      },
+      "pattern": {
+        "title": "Tạo theo mẫu",
+        "features": [
+          "Định nghĩa mẫu mật khẩu của riêng bạn",
+          "Kiểm soát vị trí ký tự chính xác",
+          "Hữu ích cho các yêu cầu định dạng cụ thể"
+        ]
+      },
+      "memorable": {
+        "title": "Mật khẩu dễ nhớ",
+        "features": [
+          "Tạo các cụm từ dễ nhớ",
+          "Vẫn đảm bảo tiêu chuẩn bảo mật",
+          "Tuyệt vời cho mật khẩu thường xuyên nhập"
+        ]
+      }
+    },
+    "guide": {
+      "title": "Hướng dẫn tạo mật khẩu",
+      "description": "Chọn phương thức phù hợp nhất với nhu cầu của bạn"
+    },
+    "generating": "Đang tạo mật khẩu an toàn...",
+    "generateButton": "Tạo mật khẩu mạnh"
   },
   "PinGenerator": {
     "title": "Trình tạo mã PIN",
@@ -153,36 +192,64 @@
   "PasswordOutput": {
     "compromised": {
       "title": "Mật khẩu đã bị lộ",
-      "description": "Tìm thấy trong {count} vụ rò rỉ dữ liệu",
+      "description": "Tìm thy trong {count} vụ rò rỉ dữ liệu",
       "learnMore": "Tìm hiểu thêm"
     }
   },
   "Components": {
     "PasswordGenerator": {
       "title": "Trình tạo mật khẩu",
-      "options": {
-        "length": "Độ dài",
-        "uppercase": "Chữ hoa",
-        "lowercase": "Chữ thường",
-        "numbers": "Số",
-        "symbols": "Ký tự đặc biệt"
+      "subtitle": "Chọn phương thức tạo bên dưới",
+      "modes": {
+        "basic": "Tạo chuẩn",
+        "basicShort": "Chuẩn",
+        "context": "AI phân tích",
+        "contextShort": "AI",
+        "pattern": "Theo mẫu",
+        "patternShort": "Mẫu",
+        "memorable": "Dễ nhớ",
+        "memorableShort": "Nhớ"
       },
-      "distribution": "Phân bố",
-      "securityChecks": "Kiểm tra bảo mật",
-      "recommendations": "Khuyến nghị",
-      "patterns": {
-        "hasCommonWords": "Chứa từ phổ biến",
-        "hasKeyboardPatterns": "Chứa mẫu bàn phím",
-        "hasRepeatingChars": "Chứa ký tự lặp lại",
-        "hasSequentialChars": "Chứa ký tự tuần tự"
+      "descriptions": {
+        "basic": {
+          "title": "Tạo mật khẩu chuẩn",
+          "features": [
+            "Tùy chỉnh độ dài và loại ký tự",
+            "Mạnh và an toàn mặc định",
+            "Phù hợp cho mọi mục đích"
+          ]
+        },
+        "context": {
+          "title": "Phân tích bằng AI",
+          "features": [
+            "Phân tích yêu cầu cụ thể",
+            "Đề xuất quy tắc mật khẩu tối ưu",
+            "Tốt nhất cho các nền tảng/dịch vụ cụ thể"
+          ]
+        },
+        "pattern": {
+          "title": "Tạo theo mẫu",
+          "features": [
+            "Định nghĩa mẫu mật khẩu của riêng bạn",
+            "Kiểm soát vị trí ký tự chính xác",
+            "Hữu ích cho các yêu cầu định dạng cụ thể"
+          ]
+        },
+        "memorable": {
+          "title": "Mật khẩu dễ nhớ",
+          "features": [
+            "Tạo các cụm từ dễ nhớ",
+            "Vẫn đảm bảo tiêu chuẩn bảo mật",
+            "Tuyệt vời cho mật khẩu thường xuyên nhập"
+          ]
+        }
       },
-      "strength": {
-        "veryStrong": "RẤT MẠNH",
-        "strong": "MẠNH",
-        "medium": "TRUNG BÌNH",
-        "weak": "YẾU"
+      "guide": {
+        "title": "Hướng dẫn tạo mật khẩu",
+        "description": "Chọn phương thức phù hợp nhất với nhu cầu của bạn"
       },
-      "placeholder": "Nhấn tạo để tạo mật khẩu"
+      "generating": "Đang tạo mật khẩu an toàn...",
+      "generateButton": "Tạo mật khẩu mạnh"
     },
     "History": {
       "title": "Lịch sử tạo",

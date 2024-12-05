@@ -160,29 +160,41 @@
   "Components": {
     "PasswordGenerator": {
       "title": "Password Generator",
-      "options": {
-        "length": "Length",
-        "uppercase": "Uppercase",
-        "lowercase": "Lowercase",
-        "numbers": "Numbers",
-        "symbols": "Symbols"
+      "subtitle": "Choose a generation method below",
+      "modes": {
+        "basic": "Standard Generation",
+        "basicShort": "Basic",
+        "context": "AI Context",
+        "contextShort": "AI",
+        "pattern": "Pattern Based",
+        "patternShort": "Pattern",
+        "memorable": "Memorable",
+        "memorableShort": "Memo"
       },
-      "distribution": "Distribution",
-      "securityChecks": "Security Checks",
-      "recommendations": "Recommendations",
-      "patterns": {
-        "hasCommonWords": "Contains common words",
-        "hasKeyboardPatterns": "Contains keyboard patterns",
-        "hasRepeatingChars": "Contains repeating characters",
-        "hasSequentialChars": "Contains sequential characters"
+      "descriptions": {
+        "basic": {
+          "title": "Standard Password Generation",
+          "features": [
+            "Customize length and character types",
+            "Strong and secure by default",
+            "Perfect for general use"
+          ]
+        },
+        "context": {
+          "title": "AI-Powered Context Analysis",
+          "features": [
+            "Analyzes your specific requirements",
+            "Suggests optimal password rules",
+            "Best for specific platforms/services"
+          ]
+        }
       },
-      "strength": {
-        "veryStrong": "VERY STRONG",
-        "strong": "STRONG",
-        "medium": "MEDIUM",
-        "weak": "WEAK"
+      "guide": {
+        "title": "Password Generation Guide",
+        "description": "Choose the best method for your needs"
       },
-      "placeholder": "Click generate to create password"
+      "generating": "Generating secure password...",
+      "generateButton": "Generate Strong Password"
     },
     "History": {
       "title": "Generation History",

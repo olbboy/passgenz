@@ -36,6 +36,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { MethodComparison } from "./password/method-comparison"
 import { SecurityTips } from "./password/security-tips"
 import { UseCases } from "./password/use-cases"
+import { useTranslations } from 'next-intl';
 
 interface PasswordOptions {
   uppercase: boolean
@@ -48,86 +49,9 @@ interface PasswordOptions {
 
 type GenerationMode = 'basic' | 'context' | 'pattern' | 'memorable';
 
-function getMethodDescription(mode: string): JSX.Element {
-  switch (mode) {
-    case 'basic':
-      return (
-        <>
-          <h4 className="font-medium">Standard Password Generation</h4>
-          <ul className="text-sm space-y-1 list-disc pl-4">
-            <li>Customize length and character types</li>
-            <li>Strong and secure by default</li>
-            <li>Perfect for general use</li>
-          </ul>
-        </>
-      );
-    case 'context':
-      return (
-        <>
-          <h4 className="font-medium">AI-Powered Context Analysis</h4>
-          <ul className="text-sm space-y-1 list-disc pl-4">
-            <li>Analyzes your specific requirements</li>
-            <li>Suggests optimal password rules</li>
-            <li>Best for specific platforms/services</li>
-          </ul>
-        </>
-      );
-    case 'pattern':
-      return (
-        <>
-          <h4 className="font-medium">Custom Pattern-Based</h4>
-          <ul className="text-sm space-y-1 list-disc pl-4">
-            <li>Define your own password pattern</li>
-            <li>Control exact character placement</li>
-            <li>Useful for specific format requirements</li>
-          </ul>
-        </>
-      );
-    case 'memorable':
-      return (
-        <>
-          <h4 className="font-medium">Easy to Remember</h4>
-          <ul className="text-sm space-y-1 list-disc pl-4">
-            <li>Creates memorable word combinations</li>
-            <li>Still maintains security standards</li>
-            <li>Great for frequently typed passwords</li>
-          </ul>
-        </>
-      );
-    default:
-      return <></>;
-  }
-}
-
-const tabItems = [
-  { 
-    value: 'basic' as GenerationMode,
-    icon: <Settings2 className="h-4 w-4" />,
-    label: 'Basic',
-    shortLabel: 'Basic'
-  },
-  { 
-    value: 'context' as GenerationMode,
-    icon: <Sparkles className="h-4 w-4" />,
-    label: 'AI Context',
-    shortLabel: 'AI'
-  },
-  { 
-    value: 'pattern' as GenerationMode,
-    icon: <Hash className="h-4 w-4" />,
-    label: 'Pattern',
-    shortLabel: 'Pattern'
-  },
-  { 
-    value: 'memorable' as GenerationMode,
-    icon: <Brain className="h-4 w-4" />,
-    label: 'Memorable',
-    shortLabel: 'Memo'
-  }
-] as const;
-
 export function PasswordGenerator() {
   const { toast } = useToast()
+  const t = useTranslations('Components.PasswordGenerator');
   const [password, setPassword] = useState('')
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
   const [length, setLength] = useState([16])
@@ -356,16 +280,94 @@ export function PasswordGenerator() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [password]);
 
+  const tabItems = [
+    { 
+      value: 'basic' as GenerationMode,
+      icon: <Settings2 className="h-4 w-4" />,
+      label: t('modes.basic'),
+      shortLabel: t('modes.basicShort')
+    },
+    { 
+      value: 'context' as GenerationMode,
+      icon: <Sparkles className="h-4 w-4" />,
+      label: t('modes.context'),
+      shortLabel: t('modes.contextShort')
+    },
+    { 
+      value: 'pattern' as GenerationMode,
+      icon: <Hash className="h-4 w-4" />,
+      label: t('modes.pattern'),
+      shortLabel: t('modes.patternShort')
+    },
+    { 
+      value: 'memorable' as GenerationMode,
+      icon: <Brain className="h-4 w-4" />,
+      label: t('modes.memorable'),
+      shortLabel: t('modes.memorableShort')
+    }
+  ] as const;
+
+  function getMethodDescription(mode: string): JSX.Element {
+    switch (mode) {
+      case 'basic':
+        return (
+          <>
+            <h4 className="font-medium">{t('descriptions.basic.title')}</h4>
+            <ul className="text-sm space-y-1 list-disc pl-4">
+              {(t.raw('descriptions.basic.features') as string[]).map((feature, index) => (
+                <li key={index}>{feature}</li>
+              ))}
+            </ul>
+          </>
+        );
+      case 'context':
+        return (
+          <>
+            <h4 className="font-medium">{t('descriptions.context.title')}</h4>
+            <ul className="text-sm space-y-1 list-disc pl-4">
+              {(t.raw('descriptions.context.features') as string[]).map((feature, index) => (
+                <li key={index}>{feature}</li>
+              ))}
+            </ul>
+          </>
+        );
+      case 'pattern':
+        return (
+          <>
+            <h4 className="font-medium">{t('descriptions.pattern.title')}</h4>
+            <ul className="text-sm space-y-1 list-disc pl-4">
+              {(t.raw('descriptions.pattern.features') as string[]).map((feature, index) => (
+                <li key={index}>{feature}</li>
+              ))}
+            </ul>
+          </>
+        );
+      case 'memorable':
+        return (
+          <>
+            <h4 className="font-medium">{t('descriptions.memorable.title')}</h4>
+            <ul className="text-sm space-y-1 list-disc pl-4">
+              {(t.raw('descriptions.memorable.features') as string[]).map((feature, index) => (
+                <li key={index}>{feature}</li>
+              ))}
+            </ul>
+          </>
+        );
+      default:
+        return <></>;
+    }
+  }
+
   return (
     <Card className="h-full">
       <CardHeader className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <CardTitle className="text-xl sm:text-2xl font-semibold">
-              Password Generator
+              {t('title')}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              Choose a generation method below
+              {t('subtitle')}
             </p>
           </div>
           
@@ -381,9 +383,9 @@ export function PasswordGenerator() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Password Generation Guide</DialogTitle>
+                <DialogTitle>{t('guide.title')}</DialogTitle>
                 <DialogDescription>
-                  Choose the best method for your needs
+                  {t('guide.description')}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
@@ -502,12 +504,12 @@ export function PasswordGenerator() {
           {isGenerating ? (
             <>
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              <span>Generating secure password...</span>
+              <span>{t('generating')}</span>
             </>
           ) : (
             <>
               <Wand2 className="mr-2 h-5 w-5" />
-              <span>Generate Strong Password</span>
+              <span>{t('generateButton')}</span>
             </>
           )}
         </Button>
