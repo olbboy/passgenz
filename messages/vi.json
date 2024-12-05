@@ -189,7 +189,7 @@
             "availableTypes": "Loại Có Sẵn"
           },
           "security": {
-            "title": "Đánh Gi B��o Mật",
+            "title": "Đánh Gi Bo Mật",
             "level": "Cấp Độ",
             "justification": "Lý Do",
             "compliance": "Tuân Thủ",
@@ -220,7 +220,7 @@
         "preview": "Xem Trước",
         "examples": "Ví Dụ",
         "validationWarning": "Mẫu chỉ có thể chứa các ký tự L, l, d, s",
-        "patternInstructions": "Sử dụng L cho chữ hoa, l cho chữ thường, d cho số, và s cho ký t�� đặc biệt."
+        "patternInstructions": "Sử dụng L cho chữ hoa, l cho chữ thường, d cho số, và s cho ký t đc biệt."
       },
       "guide": {
         "title": "Hướng Dẫn Tạo Mật Khẩu",
@@ -277,26 +277,49 @@
     "PinGenerator": {
       "title": "Trình Tạo PIN",
       "lengthLabel": "Độ Dài PIN",
-      "generateButton": "Tạo PIN",
-      "copyButton": "Sao Chép",
-      "successMessage": "Đã tạo PIN thành công!",
-      "errorMessage": "Không thể tạo PIN."
+      "pinTypeLabel": "Loại PIN",
+      "selectPinType": "Chọn loại PIN",
+      "numeric": "Số (0-9)",
+      "alphanumeric": "Ký tự chữ và số",
+      "extended": "Mở rộng (bao gồm ký tự đặc biệt)",
+      "generatePin": "Tạo PIN",
+      "generating": "Đang tạo...",
+      "copiedTitle": "Đã Sao Chép!",
+      "copiedDescription": "PIN đã được sao chép vào clipboard",
+      "errorTitle": "Lỗi",
+      "errorDescription": "Không thể tạo PIN",
+      "placeholder": "Nhấn tạo để tạo PIN"
     },
     "IdGenerator": {
       "title": "Trình Tạo ID",
-      "generateButton": "Tạo ID",
-      "copyButton": "Sao Chép",
-      "successMessage": "Đã tạo ID thành công!",
-      "errorMessage": "Không thể tạo ID."
+      "formatLabel": "Định Dạng ID",
+      "selectFormat": "Chọn định dạng",
+      "uuid": "UUID v4",
+      "nanoid": "NanoID",
+      "customFormat": "Định Dạng Tùy Chỉnh",
+      "prefixLabel": "Tiền Tố (tùy chọn)",
+      "prefixPlaceholder": "Nhập tiền tố",
+      "generateId": "Tạo ID",
+      "copiedTitle": "Đã Sao Chép!",
+      "copiedDescription": "ID đã được sao chép vào clipboard",
+      "errorTitle": "Lỗi",
+      "errorDescription": "Không thể tạo ID",
+      "placeholder": "Nhấn tạo để tạo ID"
     },
     "SecretGenerator": {
       "title": "Trình Tạo Secret",
       "algorithmLabel": "Chọn Thuật Toán",
       "formatLabel": "Chọn Định Dạng",
-      "generateButton": "Tạo Secret",
-      "copyButton": "Sao Chép",
-      "successMessage": "Đã tạo secret thành công!",
-      "errorMessage": "Không thể tạo secret."
+      "selectAlgorithm": "Chọn thuật toán",
+      "selectFormat": "Chọn định dạng",
+      "hexadecimal": "Mã Hex",
+      "base64": "Base64",
+      "generateSecret": "Tạo Secret",
+      "copiedTitle": "Đã Sao Chép!",
+      "copiedDescription": "Secret đã được sao chép vào clipboard",
+      "errorTitle": "Lỗi",
+      "errorDescription": "Không thể tạo secret",
+      "placeholder": "Nhấn tạo để tạo secret"
     },
     "History": {
       "title": "Lịch Sử Tạo",
@@ -341,7 +364,7 @@
         "description": "Bảo Vệ Tài Khoản Của Bạn Với Mật Khẩu Mạnh"
       },
       "letter": {
-        "loading": "Đang t��i...",
+        "loading": "Đang ti...",
         "error": "Đã Xảy Ra Lỗi",
         "retry": "Thử Lại"
       },

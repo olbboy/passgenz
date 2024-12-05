@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { generatePin } from '@/lib/generators'
 import { HistoryManagementService } from '@/lib/history-management'
 import { PasswordAnalysis } from '@/lib/types'
+import { useTranslations } from 'next-intl';
 
 export function PinGenerator() {
   const { toast } = useToast()
@@ -21,6 +22,7 @@ export function PinGenerator() {
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const historyService = HistoryManagementService.getInstance()
+  const t = useTranslations('Components.PinGenerator');
 
   const handleGeneratePin = async () => {
     try {
@@ -58,8 +60,8 @@ export function PinGenerator() {
     } catch (err) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: err instanceof Error ? err.message : 'Failed to generate PIN'
+        title: t('errorTitle'),
+        description: err instanceof Error ? err.message : t('errorDescription')
       });
     } finally {
       setIsGenerating(false);
@@ -70,15 +72,15 @@ export function PinGenerator() {
     if (!pin) return
     await navigator.clipboard.writeText(pin)
     toast({
-      title: 'Copied!',
-      description: 'PIN copied to clipboard',
+      title: t('copiedTitle'),
+      description: t('copiedDescription'),
     })
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>PIN Generator</CardTitle>
+        <CardTitle>{t('title')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <motion.div
@@ -88,7 +90,7 @@ export function PinGenerator() {
         >
           <div className="flex items-center space-x-4 bg-secondary p-4 rounded-lg">
             <span className="text-xl font-mono flex-1 font-[family-name:var(--font-geist-mono)]">
-              {pin || 'Click generate'}
+              {pin || t('placeholder')}
             </span>
             <Button variant="outline" size="icon" onClick={handleGeneratePin}>
               <RefreshCw className="h-4 w-4" />
@@ -101,7 +103,7 @@ export function PinGenerator() {
 
         <div className="space-y-4">
           <div>
-            <Label>PIN Length: {length}</Label>
+            <Label>{t('lengthLabel')}: {length}</Label>
             <Slider
               value={length}
               onValueChange={setLength}
@@ -113,15 +115,15 @@ export function PinGenerator() {
           </div>
 
           <div className="space-y-2">
-            <Label>PIN Type</Label>
+            <Label>{t('pinTypeLabel')}</Label>
             <Select value={pinType} onValueChange={(value: 'numeric' | 'alphanumeric' | 'extended') => setPinType(value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select PIN type" />
+                <SelectValue placeholder={t('selectPinType')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="numeric">Numeric (0-9)</SelectItem>
-                <SelectItem value="alphanumeric">Alphanumeric</SelectItem>
-                <SelectItem value="extended">Extended (with symbols)</SelectItem>
+                <SelectItem value="numeric">{t('numeric')}</SelectItem>
+                <SelectItem value="alphanumeric">{t('alphanumeric')}</SelectItem>
+                <SelectItem value="extended">{t('extended')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -131,7 +133,7 @@ export function PinGenerator() {
             onClick={handleGeneratePin}
             disabled={isGenerating}
           >
-            {isGenerating ? 'Generating...' : 'Generate PIN'}
+            {isGenerating ? t('generating') : t('generatePin')}
           </Button>
         </div>
       </CardContent>
