@@ -75,7 +75,24 @@
     "generateButton": "Generate Password",
     "copyButton": "Copy to Clipboard",
     "successMessage": "Password generated successfully!",
-    "errorMessage": "Failed to generate password."
+    "errorMessage": "Failed to generate password.",
+    "options": {
+      "length": "Length",
+      "uppercase": "Uppercase",
+      "lowercase": "Lowercase",
+      "numbers": "Numbers",
+      "symbols": "Symbols"
+    },
+    "contextAnalyzer": {
+      "placeholder": "Enter password requirements or service URL...",
+      "analyzing": "Analyzing...",
+      "analyze": "Analyze Requirements",
+      "results": {
+        "title": "Analysis Results",
+        "requirements": "Requirements",
+        "suggestions": "Suggestions"
+      }
+    }
   },
   "PinGenerator": {
     "title": "PIN Generator",
@@ -194,7 +211,39 @@
         "description": "Choose the best method for your needs"
       },
       "generating": "Generating secure password...",
-      "generateButton": "Generate Strong Password"
+      "generateButton": "Generate Strong Password",
+      "basic": {
+        "length": {
+          "label": "Password Length",
+          "characters": "characters",
+          "recommended": "Recommended: 16-32"
+        },
+        "characterTypes": {
+          "label": "Character Types",
+          "uppercase": {
+            "label": "Uppercase (A-Z)",
+            "description": "Include capital letters"
+          },
+          "lowercase": {
+            "label": "Lowercase (a-z)",
+            "description": "Include small letters"
+          },
+          "numbers": {
+            "label": "Numbers (0-9)",
+            "description": "Include digits"
+          },
+          "symbols": {
+            "label": "Symbols (!@#$)",
+            "description": "Include special characters"
+          }
+        },
+        "advanced": {
+          "quantumSafe": {
+            "label": "Quantum-Safe",
+            "description": "Enhance password strength with quantum-resistant entropy"
+          }
+        }
+      }
     },
     "History": {
       "title": "Generation History",

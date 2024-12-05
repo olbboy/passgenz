@@ -75,6 +75,38 @@
       "memorable": "Dễ nhớ",
       "memorableShort": "Nhớ"
     },
+    "basic": {
+      "length": {
+        "label": "Độ dài mật khẩu",
+        "characters": "ký tự",
+        "recommended": "Khuyến nghị: 16-32"
+      },
+      "characterTypes": {
+        "label": "Loại ký tự",
+        "uppercase": {
+          "label": "Chữ hoa (A-Z)",
+          "description": "Bao gồm chữ cái in hoa"
+        },
+        "lowercase": {
+          "label": "Chữ thường (a-z)",
+          "description": "Bao gồm chữ cái thường"
+        },
+        "numbers": {
+          "label": "Số (0-9)",
+          "description": "Bao gồm chữ số"
+        },
+        "symbols": {
+          "label": "Ký tự đặc biệt (!@#$)",
+          "description": "Bao gồm ký tự đặc biệt"
+        }
+      },
+      "advanced": {
+        "quantumSafe": {
+          "label": "Bảo mật lượng tử",
+          "description": "Tăng cường độ mạnh mật khẩu với entropy chống lượng tử"
+        }
+      }
+    },
     "descriptions": {
       "basic": {
         "title": "Tạo mật khẩu chuẩn",
@@ -111,10 +143,27 @@
     },
     "guide": {
       "title": "Hướng dẫn tạo mật khẩu",
-      "description": "Chọn phương thức phù hợp nhất với nhu cầu của bạn"
+      "description": "Ch���n phương thức phù hợp nhất với nhu cầu của bạn"
     },
     "generating": "Đang tạo mật khẩu an toàn...",
-    "generateButton": "Tạo mật khẩu mạnh"
+    "generateButton": "Tạo mật khẩu mạnh",
+    "options": {
+      "length": "Độ dài",
+      "uppercase": "Chữ hoa",
+      "lowercase": "Chữ thường",
+      "numbers": "Số",
+      "symbols": "Ký tự đặc biệt"
+    },
+    "contextAnalyzer": {
+      "placeholder": "Nhập yêu cầu mật khẩu hoặc URL của dịch vụ...",
+      "analyzing": "Đang phân tích...",
+      "analyze": "Phân tích yêu cầu",
+      "results": {
+        "title": "Kết quả phân tích",
+        "requirements": "Yêu cầu",
+        "suggestions": "Đề xuất"
+      }
+    }
   },
   "PinGenerator": {
     "title": "Trình tạo mã PIN",
@@ -174,7 +223,7 @@
     "title": "Lịch sử tạo",
     "emptyMessage": "Chưa có lịch sử.",
     "item": {
-      "generatedAt": "Tạo lúc: {time}",
+      "generatedAt": "Tạo lc: {time}",
       "type": "Loại: {type}",
       "value": "Giá trị: {value}",
       "actions": {
@@ -192,7 +241,7 @@
   "PasswordOutput": {
     "compromised": {
       "title": "Mật khẩu đã bị lộ",
-      "description": "Tìm thy trong {count} vụ rò rỉ dữ liệu",
+      "description": "Tìm thấy trong {count} vụ rò rỉ dữ liệu",
       "learnMore": "Tìm hiểu thêm"
     }
   },
@@ -209,6 +258,38 @@
         "patternShort": "Mẫu",
         "memorable": "Dễ nhớ",
         "memorableShort": "Nhớ"
+      },
+      "basic": {
+        "length": {
+          "label": "Độ dài mật khẩu",
+          "characters": "ký tự",
+          "recommended": "Khuyến nghị: 16-32"
+        },
+        "characterTypes": {
+          "label": "Loại ký tự",
+          "uppercase": {
+            "label": "Chữ hoa (A-Z)",
+            "description": "Bao gồm chữ cái in hoa"
+          },
+          "lowercase": {
+            "label": "Chữ thường (a-z)",
+            "description": "Bao gồm chữ cái thường"
+          },
+          "numbers": {
+            "label": "Số (0-9)",
+            "description": "Bao gồm chữ số"
+          },
+          "symbols": {
+            "label": "Ký tự đặc biệt (!@#$)",
+            "description": "Bao gồm ký tự đặc biệt"
+          }
+        },
+        "advanced": {
+          "quantumSafe": {
+            "label": "Bảo mật lượng tử",
+            "description": "Tăng cường độ mạnh mật khẩu với entropy chống lượng tử"
+          }
+        }
       },
       "descriptions": {
         "basic": {
@@ -249,7 +330,24 @@
         "description": "Chọn phương thức phù hợp nhất với nhu cầu của bạn"
       },
       "generating": "Đang tạo mật khẩu an toàn...",
-      "generateButton": "Tạo mật khẩu mạnh"
+      "generateButton": "Tạo mật khẩu mạnh",
+      "options": {
+        "length": "Độ dài",
+        "uppercase": "Chữ hoa",
+        "lowercase": "Chữ thường",
+        "numbers": "Số",
+        "symbols": "Ký tự đặc biệt"
+      },
+      "contextAnalyzer": {
+        "placeholder": "Nhập yêu cầu mật khẩu hoặc URL của dịch vụ...",
+        "analyzing": "Đang phân tích...",
+        "analyze": "Phân tích yêu cầu",
+        "results": {
+          "title": "Kết quả phân tích",
+          "requirements": "Yêu cầu",
+          "suggestions": "Đề xuất"
+        }
+      }
     },
     "History": {
       "title": "Lịch sử tạo",
