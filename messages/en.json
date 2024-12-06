@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "title": "PassGenz",
+    "title": "",
     "description": {
       "prefix": "Welcome to",
       "highlight": "the application",
@@ -462,6 +462,79 @@
       "strength12CharPoint4": "63,000 years: Adding special characters (like 'HelloEveryone@123') is nearly impossible to crack with current technology.",
       "strengthTip": "💡 Tip:",
       "strengthTipDescription": "Instead of remembering complex characters, you can use an easy-to-remember phrase and add numbers and special characters. For example: 'I love pho' → 'ILove@Pho2024'"
+    },
+    "PasswordOutput": {
+      "tooltips": {
+        "generate": "Generate new password (Ctrl/⌘ + G)",
+        "copy": "Copy to clipboard (Ctrl/⌘ + C)"
+      },
+      "analysis": {
+        "title": "Password Analysis",
+        "strength": "Strength",
+        "entropy": "Entropy",
+        "timeToCrack": "Time to Crack",
+        "characterTypes": "Character Types",
+        "uppercase": "Uppercase",
+        "lowercase": "Lowercase",
+        "numbers": "Numbers",
+        "symbols": "Symbols"
+      },
+      "breach": {
+        "title": "Breach Check",
+        "found": "Found in {count} data breaches",
+        "safe": "No breaches found",
+        "lastBreached": "Last breached: {date}"
+      },
+      "patterns": {
+        "title": "Pattern Analysis",
+        "commonWords": "Common Words",
+        "keyboardPatterns": "Keyboard Patterns",
+        "repeatingChars": "Repeating Characters",
+        "sequentialChars": "Sequential Characters",
+        "found": "Found",
+        "notFound": "Not Found"
+      },
+      "distribution": {
+        "title": "Distribution",
+        "characterCount": "Character Count",
+        "uppercase": "Uppercase",
+        "lowercase": "Lowercase",
+        "numbers": "Numbers",
+        "symbols": "Symbols",
+        "outOf": "out of"
+      },
+      "securityCheck": {
+        "title": "Security Checks",
+        "patterns": {
+          "commonWords": "Common Words",
+          "keyboardPatterns": "Keyboard Patterns",
+          "repeatingChars": "Repeating Characters",
+          "sequentialChars": "Sequential Characters",
+          "Has common words": "Has Common Words",
+          "Has keyboard patterns": "Has Keyboard Patterns",
+          "Has repeating chars": "Has Repeating Characters",
+          "Has sequential chars": "Has Sequential Characters"
+        },
+        "status": {
+          "found": "Found",
+          "notFound": "Not Found"
+        }
+      },
+      "recommendations": {
+        "title": "Recommendations",
+        "increaseLength": "Increase password length",
+        "addUppercase": "Add uppercase letters",
+        "addSpecialChars": "Add special characters",
+        "avoidCommonWords": "Avoid common words",
+        "avoidPatterns": "Avoid keyboard patterns"
+      },
+      "strengthIndicator": {
+        "weak": "Weak",
+        "medium": "Medium",
+        "strong": "Strong",
+        "veryStrong": "Very Strong",
+        "timeToCrack": "Time to crack"
+      }
     }
   }
 } 

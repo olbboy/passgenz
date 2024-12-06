@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "title": "PassGenz",
+    "title": "",
     "description": {
       "prefix": "Chào mừng đến với",
       "highlight": "ứng dụng",
@@ -451,7 +451,7 @@
       "strength8CharTitle": "Độ Mạnh Mật Khẩu 8 Ký Tự",
       "strength12CharTitle": "Độ Mạnh Mật Khẩu 12 Ký Tự",
       "strength8CharConclusion": "🤔 Điều này có nghĩa là gì?",
-      "strength8CharPoint1": "Ngay lập tức: Nếu chỉ dùng chữ thường (như 'password'), máy tính có thể đoán ra ngay.",
+      "strength8CharPoint1": "Ngay lập tức: Nếu chỉ dùng ch thường (như 'password'), máy tính có thể đoán ra ngay.",
       "strength8CharPoint2": "30 phút: Thêm chữ HOA (như 'Password') sẽ khó hơn một chút, nhưng vẫn không đủ an toàn.",
       "strength8CharPoint3": "1 giờ: Thêm số (như 'Password123') cũng chưa đủ mạnh.",
       "strength8CharPoint4": "24 giờ: Thêm ký tự đặc biệt (như 'Password@123') tốt hơn, nhưng vẫn chưa thực sự an toàn.",
@@ -462,6 +462,79 @@
       "strength12CharPoint4": "63,000 năm: Thêm ký tự đặc biệt (như 'HelloEveryone@123') gần như không thể phá được bằng công nghệ hiện tại.",
       "strengthTip": "💡 Mẹo hay:",
       "strengthTipDescription": "Thay vì nhớ các ký tự phức tạp, bạn có thể dùng một câu dễ nhớ và thêm số, ký tự đặc biệt. Ví dụ: 'Tôi thích ăn phở' → 'ToiThich@Pho2024'"
+    },
+    "PasswordOutput": {
+      "tooltips": {
+        "generate": "Tạo mật khẩu mới (Ctrl/⌘ + G)",
+        "copy": "Sao chép vào clipboard (Ctrl/⌘ + C)"
+      },
+      "analysis": {
+        "title": "Phân Tích Mật Khẩu",
+        "strength": "Độ Mạnh",
+        "entropy": "Entropy",
+        "timeToCrack": "Thời Gian Để Phá",
+        "characterTypes": "Loại Ký Tự",
+        "uppercase": "Chữ Hoa",
+        "lowercase": "Chữ Thường",
+        "numbers": "Số",
+        "symbols": "Ký Tự Đặc Biệt"
+      },
+      "breach": {
+        "title": "Kiểm Tra Rò Rỉ",
+        "found": "Tìm thấy trong {count} vụ rò rỉ dữ liệu",
+        "safe": "Không tìm thấy rò rỉ",
+        "lastBreached": "Lần cuối bị lộ: {date}"
+      },
+      "patterns": {
+        "title": "Phân Tích Mẫu",
+        "commonWords": "Từ Thông Dụng",
+        "keyboardPatterns": "Mẫu Bàn Phím",
+        "repeatingChars": "Ký Tự Lặp Lại",
+        "sequentialChars": "Ký Tự Tuần Tự",
+        "found": "Tìm Thấy",
+        "notFound": "Không Tìm Thấy"
+      },
+      "distribution": {
+        "title": "Phân Bố Ký Tự",
+        "characterCount": "Số Lượng Ký Tự",
+        "uppercase": "Chữ Hoa",
+        "lowercase": "Chữ Thường",
+        "numbers": "Số",
+        "symbols": "Ký Tự Đặc Biệt",
+        "outOf": "trên"
+      },
+      "securityCheck": {
+        "title": "Kiểm Tra Bảo Mật",
+        "patterns": {
+          "commonWords": "Từ Thông Dụng",
+          "keyboardPatterns": "Mẫu Bàn Phím",
+          "repeatingChars": "Ký Tự Lặp Lại",
+          "sequentialChars": "Ký Tự Tuần Tự",
+          "Has common words": "Có Từ Thông Dụng",
+          "Has keyboard patterns": "Có Mẫu Bàn Phím",
+          "Has repeating chars": "Có Ký Tự Lặp Lại",
+          "Has sequential chars": "Có Ký Tự Tuần Tự"
+        },
+        "status": {
+          "found": "Tìm Thấy",
+          "notFound": "Không Tìm Thấy"
+        }
+      },
+      "recommendations": {
+        "title": "Khuyến Nghị",
+        "increaseLength": "Tăng độ dài mật khẩu",
+        "addUppercase": "Thêm chữ hoa",
+        "addSpecialChars": "Thêm ký tự đặc biệt",
+        "avoidCommonWords": "Tránh các từ thông dụng",
+        "avoidPatterns": "Tránh các mẫu bàn phím"
+      },
+      "strengthIndicator": {
+        "weak": "Yếu",
+        "medium": "Trung Bình",
+        "strong": "Mạnh",
+        "veryStrong": "Rất Mạnh",
+        "timeToCrack": "Thời gian để phá"
+      }
     }
   }
 }

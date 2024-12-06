@@ -93,7 +93,7 @@ export function PasswordOutput({
   onCopy,
   breachResult 
 }: PasswordOutputProps) {
-  const t = useTranslations('PasswordOutput');
+  const t = useTranslations('Components.PasswordOutput');
   const c = useTranslations('Components.Common');
   const metrics = password ? analyzePassword(password) : null;
 
@@ -130,7 +130,7 @@ export function PasswordOutput({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="text-xs">
-                  Generate new password (Ctrl/⌘ + G)
+                  {t('tooltips.generate')}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -153,7 +153,7 @@ export function PasswordOutput({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="text-xs">
-                  Copy to clipboard (Ctrl/⌘ + C)
+                  {t('tooltips.copy')}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -225,7 +225,7 @@ export function PasswordOutput({
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg font-medium flex items-center gap-2">
                     <BarChart2 className="h-5 w-5" />
-                    Distribution
+                    {t('distribution.title')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -233,8 +233,8 @@ export function PasswordOutput({
                     {Object.entries(metrics.characterDistribution).map(([type, count]) => (
                       <div key={type}>
                         <div className="flex justify-between text-sm mb-1">
-                          <span className="capitalize">{type}</span>
-                          <span className="font-mono">{count}/{password.length}</span>
+                          <span className="capitalize">{t(`distribution.${type}`)}</span>
+                          <span className="font-mono">{count}/{password.length} {t('distribution.outOf')}</span>
                         </div>
                         <div className="relative h-2">
                           <div className="absolute inset-0 bg-secondary rounded-full" />
@@ -261,7 +261,7 @@ export function PasswordOutput({
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg font-medium flex items-center gap-2">
                     <ShieldCheck className="h-5 w-5" />
-                    Security Checks
+                    {t('securityCheck.title')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -273,7 +273,9 @@ export function PasswordOutput({
                         ) : (
                           <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
                         )}
-                        <span className="text-sm">{formatPatternName(pattern)}</span>
+                        <span className="text-sm">
+                          {t(`securityCheck.patterns.${formatPatternName(pattern)}`)}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -296,7 +298,7 @@ export function PasswordOutput({
             <Alert variant="warning" className="bg-yellow-50/50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-900/50">
               {/* <Lightbulb className="h-4 w-4 text-yellow-600 dark:text-yellow-400" /> */}
               <AlertTitle className="text-yellow-800 dark:text-yellow-200">
-                Recommendations
+                {t('recommendations.title')}
               </AlertTitle>
               <AlertDescription>
                 <ul className="space-y-2 mt-2">
