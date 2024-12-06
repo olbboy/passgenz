@@ -109,8 +109,8 @@ export default function RootLayout({
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>
-        <GoogleAnalytics gaId="G-XXXXXXXXXX" />
-        <GoogleTagManager gtmId="GTM-XXXXXXX" />
+        <GoogleAnalytics gaId="G-E6RGNPR8L3" />
+        <GoogleTagManager gtmId="GTM-NJVMX8WH" />
       </body>
     </html>
   );
