@@ -1,12 +1,10 @@
 'use client'
 
-import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { MatrixLetter } from '@/components/matrix-letter';
 
 export function MatrixHeader() {
-  const t = useTranslations('HomePage');
   const title = "PassGenZ";
 
   return (
@@ -26,7 +24,7 @@ export function MatrixHeader() {
             "hidden md:inline-block"
           )}
         >
-          {t('title')}
+          🔐
         </motion.span>
       </h1>
     </div>

@@ -36,7 +36,6 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { MethodComparison } from "./password/method-comparison"
 import { SecurityTips } from "./password/security-tips"
 import { UseCases } from "./password/use-cases"
-import { useTranslations } from 'next-intl';
 
 interface PasswordOptions {
   uppercase: boolean
@@ -51,7 +50,6 @@ type GenerationMode = 'basic' | 'context' | 'pattern' | 'memorable';
 
 export function PasswordGenerator() {
   const { toast } = useToast()
-  const t = useTranslations('Components.PasswordGenerator');
   const [password, setPassword] = useState('')
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
   const [length, setLength] = useState([16])
@@ -284,26 +282,26 @@ export function PasswordGenerator() {
     { 
       value: 'basic' as GenerationMode,
       icon: <Settings2 className="h-4 w-4" />,
-      label: t('modes.basic'),
-      shortLabel: t('modes.basicShort')
+      label: 'Basic',
+      shortLabel: 'Basic'
     },
     { 
       value: 'context' as GenerationMode,
       icon: <Sparkles className="h-4 w-4" />,
-      label: t('modes.context'),
-      shortLabel: t('modes.contextShort')
+      label: 'Context',
+      shortLabel: 'Context'
     },
     { 
       value: 'pattern' as GenerationMode,
       icon: <Hash className="h-4 w-4" />,
-      label: t('modes.pattern'),
-      shortLabel: t('modes.patternShort')
+      label: 'Pattern',
+      shortLabel: 'Pattern'
     },
     { 
       value: 'memorable' as GenerationMode,
       icon: <Brain className="h-4 w-4" />,
-      label: t('modes.memorable'),
-      shortLabel: t('modes.memorableShort')
+      label: 'Memorable',
+      shortLabel: 'Memorable'
     }
   ] as const;
 
@@ -312,9 +310,9 @@ export function PasswordGenerator() {
       case 'basic':
         return (
           <>
-            <h4 className="font-medium">{t('descriptions.basic.title')}</h4>
+            <h4 className="font-medium">Basic</h4>
             <ul className="text-sm space-y-1 list-disc pl-4">
-              {(t.raw('descriptions.basic.features') as string[]).map((feature, index) => (
+              {['Feature 1', 'Feature 2', 'Feature 3'].map((feature, index) => (
                 <li key={index}>{feature}</li>
               ))}
             </ul>
@@ -323,9 +321,9 @@ export function PasswordGenerator() {
       case 'context':
         return (
           <>
-            <h4 className="font-medium">{t('descriptions.context.title')}</h4>
+            <h4 className="font-medium">Context</h4>
             <ul className="text-sm space-y-1 list-disc pl-4">
-              {(t.raw('descriptions.context.features') as string[]).map((feature, index) => (
+              {['Feature 1', 'Feature 2', 'Feature 3'].map((feature, index) => (
                 <li key={index}>{feature}</li>
               ))}
             </ul>
@@ -334,9 +332,9 @@ export function PasswordGenerator() {
       case 'pattern':
         return (
           <>
-            <h4 className="font-medium">{t('descriptions.pattern.title')}</h4>
+            <h4 className="font-medium">Pattern</h4>
             <ul className="text-sm space-y-1 list-disc pl-4">
-              {(t.raw('descriptions.pattern.features') as string[]).map((feature, index) => (
+              {['Feature 1', 'Feature 2', 'Feature 3'].map((feature, index) => (
                 <li key={index}>{feature}</li>
               ))}
             </ul>
@@ -345,9 +343,9 @@ export function PasswordGenerator() {
       case 'memorable':
         return (
           <>
-            <h4 className="font-medium">{t('descriptions.memorable.title')}</h4>
+            <h4 className="font-medium">Memorable</h4>
             <ul className="text-sm space-y-1 list-disc pl-4">
-              {(t.raw('descriptions.memorable.features') as string[]).map((feature, index) => (
+              {['Feature 1', 'Feature 2', 'Feature 3'].map((feature, index) => (
                 <li key={index}>{feature}</li>
               ))}
             </ul>
@@ -364,10 +362,10 @@ export function PasswordGenerator() {
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <CardTitle className="text-xl sm:text-2xl font-semibold">
-              {t('title')}
+              Password Generator
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              {t('subtitle')}
+              Generate a strong and secure password
             </p>
           </div>
           
@@ -383,9 +381,9 @@ export function PasswordGenerator() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>{t('guide.title')}</DialogTitle>
+                <DialogTitle>Guide</DialogTitle>
                 <DialogDescription>
-                  {t('guide.description')}
+                  This guide provides tips and best practices for creating strong passwords.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
@@ -504,12 +502,12 @@ export function PasswordGenerator() {
           {isGenerating ? (
             <>
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              <span>{t('generating')}</span>
+              <span>Generating...</span>
             </>
           ) : (
             <>
               <Wand2 className="mr-2 h-5 w-5" />
-              <span>{t('generateButton')}</span>
+              <span>Generate</span>
             </>
           )}
         </Button>

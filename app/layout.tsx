@@ -1,4 +1,4 @@
-import {NextIntlClientProvider, useMessages} from 'next-intl';
+import React from 'react'
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -96,9 +96,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html>
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} font-sans antialiased`}>
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TooltipProvider>
+            {children}
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
+        <GoogleAnalytics gaId="G-XXXXXXXXXX" />
+        <GoogleTagManager gtmId="GTM-XXXXXXX" />
       </body>
     </html>
   );

@@ -7,7 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Progress } from "@/components/ui/progress"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { useTranslations } from 'next-intl';
 
 interface Section {
   id: string
@@ -21,31 +20,30 @@ interface PasswordStrength {
 }
 
 export function GuideContent(): JSX.Element {
-  const t = useTranslations('Components.GuideContent');
   const [scrollProgress, setScrollProgress] = useState(0)
   const [activeSection, setActiveSection] = useState("")
 
   const sections: Section[] = [
-    { id: "intro", title: t('sections.intro') },
-    { id: "foundation", title: t('sections.foundation') },
-    { id: "strength", title: t('sections.strength') },
-    { id: "beyond", title: t('sections.beyond') },
-    { id: "implementation", title: t('sections.implementation') },
-    { id: "future", title: t('sections.future') },
+    { id: "intro", title: "Understanding Modern Password Security" },
+    { id: "foundation", title: "The Foundation of Strong Passwords" },
+    { id: "strength", title: "Password Strength in Practice" },
+    { id: "beyond", title: "Beyond Traditional Passwords" },
+    { id: "implementation", title: "Practical Security Implementation" },
+    { id: "future", title: "Future-Proofing Your Security" },
   ]
 
   const strengthExamples8Char: PasswordStrength[] = [
-    { type: t('strengthExamples.8char.type1'), time: t('strengthExamples.8char.time1'), variant: "destructive" },
-    { type: t('strengthExamples.8char.type2'), time: t('strengthExamples.8char.time2'), variant: "outline" },
-    { type: t('strengthExamples.8char.type3'), time: t('strengthExamples.8char.time3'), variant: "outline" },
-    { type: t('strengthExamples.8char.type4'), time: t('strengthExamples.8char.time4'), variant: "default" },
+    { type: "Only lowercase letters", time: "Instantly", variant: "destructive" },
+    { type: "Add uppercase letters", time: "30 minutes", variant: "outline" },
+    { type: "Add numbers (123)", time: "1 hour", variant: "outline" },
+    { type: "Add special characters (@#$)", time: "24 hours", variant: "default" },
   ]
 
   const strengthExamples12Char: PasswordStrength[] = [
-    { type: t('strengthExamples.12char.type1'), time: t('strengthExamples.12char.time1'), variant: "outline" },
-    { type: t('strengthExamples.12char.type2'), time: t('strengthExamples.12char.time2'), variant: "default" },
-    { type: t('strengthExamples.12char.type3'), time: t('strengthExamples.12char.time3'), variant: "default" },
-    { type: t('strengthExamples.12char.type4'), time: t('strengthExamples.12char.time4'), variant: "default" },
+    { type: "Only lowercase letters", time: "A few weeks", variant: "outline" },
+    { type: "Add uppercase letters", time: "5 years", variant: "default" },
+    { type: "Add numbers (123)", time: "2,000 years", variant: "default" },
+    { type: "Add special characters (@#$)", time: "63,000 years", variant: "default" },
   ]
 
   useEffect(() => {
@@ -82,79 +80,79 @@ export function GuideContent(): JSX.Element {
       <Progress value={scrollProgress} className="w-full" />
       <ScrollArea className="flex-1 h-[calc(100vh-8rem)] scroll-container">
         <div className="px-6 py-8 max-w-[900px] mx-auto space-y-12">
-          {/* Giới thiệu */}
+          {/* Introduction */}
           <section id="intro" className="scroll-mt-16">
             <Alert className="mb-8 bg-yellow-500/15 border-yellow-500/50">
               <AlertDescription className="text-base font-medium">
-                {t('introAlert')}
+                Did you know? 81% of data breaches occur due to weak or stolen passwords!
               </AlertDescription>
             </Alert>
             
             <p className="text-lg text-muted-foreground">
-              {t('introDescription')}
+              In today's internet age, protecting your password is crucial. Just like you lock your house to protect your belongings, a strong password will help protect your personal information online.
             </p>
           </section>
 
-          {/* Nguyên tắc cơ bản */}
+          {/* Foundation */}
           <section id="foundation" className="scroll-mt-16">
-            <h2 className="text-2xl font-semibold mb-6">{t('foundationTitle')}</h2>
+            <h2 className="text-2xl font-semibold mb-6">Two Important Things About Passwords</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="p-6">
-                <h3 className="font-medium text-lg mb-3">{t('foundationPoint1.title')}</h3>
+                <h3 className="font-medium text-lg mb-3">1. One password per account</h3>
                 <p className="text-sm text-muted-foreground">
-                  {t('foundationPoint1.description')}
+                  Imagine: If you use the same key for both your house and your safe, when a thief gets the key, they can access everything. Passwords are the same - each account should have a unique password!
                 </p>
               </Card>
               <Card className="p-6">
-                <h3 className="font-medium text-lg mb-3">{t('foundationPoint2.title')}</h3>
+                <h3 className="font-medium text-lg mb-3">2. Passwords must be truly random</h3>
                 <p className="text-sm text-muted-foreground">
-                  {t('foundationPoint2.description')}
+                  Don't use easily guessable information like birthdays, pet names, or phone numbers. Create truly random passwords to make them hard to guess!
                 </p>
               </Card>
             </div>
           </section>
 
-          {/* Độ mạnh mật khẩu */}
+          {/* Password Strength */}
           <section id="strength" className="scroll-mt-16">
-            <h2 className="text-2xl font-semibold mb-6">{t('strengthTitle')}</h2>
+            <h2 className="text-2xl font-semibold mb-6">How Strong or Weak is a Password?</h2>
             <div className="space-y-6">
               <div className="prose prose-sm dark:prose-invert mb-4">
                 <p>
-                  {t('strengthDescription')}
+                  When creating a password, the length and complexity determine how long it takes for a hacker to crack your password. Here are some examples:
                 </p>
               </div>
 
               <Card className="p-6">
-                <h3 className="font-medium text-lg mb-4">{t('strength8CharTitle')}</h3>
+                <h3 className="font-medium text-lg mb-4">Password Strength for 8 Characters</h3>
                 <div className="space-y-6">
                   <div className="space-y-3">
                     {strengthExamples8Char.map(renderStrengthExample)}
                   </div>
                   <div className="text-sm text-muted-foreground space-y-2">
-                    <p className="font-medium">{t('strength8CharConclusion')}</p>
+                    <p className="font-medium">🤔 What does this mean?</p>
                     <ul className="list-disc list-inside space-y-1.5">
-                      <li>{t('strength8CharPoint1')}</li>
-                      <li>{t('strength8CharPoint2')}</li>
-                      <li>{t('strength8CharPoint3')}</li>
-                      <li>{t('strength8CharPoint4')}</li>
+                      <li>Instantly: If only using lowercase (like 'password'), a computer can guess it immediately.</li>
+                      <li>30 minutes: Adding uppercase (like 'Password') makes it a bit harder, but still not secure enough.</li>
+                      <li>1 hour: Adding numbers (like 'Password123') is still not strong enough.</li>
+                      <li>24 hours: Adding special characters (like 'Password@123') is better, but still not truly safe.</li>
                     </ul>
                   </div>
                 </div>
               </Card>
 
               <Card className="p-6">
-                <h3 className="font-medium text-lg mb-4">{t('strength12CharTitle')}</h3>
+                <h3 className="font-medium text-lg mb-4">Password Strength for 12 Characters</h3>
                 <div className="space-y-6">
                   <div className="space-y-3">
                     {strengthExamples12Char.map(renderStrengthExample)}
                   </div>
                   <div className="text-sm text-muted-foreground space-y-2">
-                    <p className="font-medium">{t('strength12CharConclusion')}</p>
+                    <p className="font-medium">✅ Conclusion: A password of 12 characters or more, combined with various character types, will be VERY SAFE!</p>
                     <ul className="list-disc list-inside space-y-1.5">
-                      <li>{t('strength12CharPoint1')}</li>
-                      <li>{t('strength12CharPoint2')}</li>
-                      <li>{t('strength12CharPoint3')}</li>
-                      <li>{t('strength12CharPoint4')}</li>
+                      <li>A few weeks: Only using lowercase letters (like 'helloeveryone') is still not safe.</li>
+                      <li>5 years: Adding uppercase letters (like 'HelloEveryone') makes it much harder to crack.</li>
+                      <li>2,000 years: Adding numbers (like 'HelloEveryone123') is very hard to crack.</li>
+                      <li>63,000 years: Adding special characters (like 'HelloEveryone@123') is nearly impossible to crack with current technology.</li>
                     </ul>
                   </div>
                 </div>
@@ -162,51 +160,51 @@ export function GuideContent(): JSX.Element {
 
               <div className="bg-muted/50 p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  <span className="font-medium">{t('strengthTip')}</span> {t('strengthTipDescription')}
+                  <span className="font-medium">💡 Tip:</span> Instead of remembering complex characters, you can use an easy-to-remember phrase and add numbers and special characters. For example: 'I love pho' → 'ILove@Pho2024'
                 </p>
               </div>
             </div>
           </section>
 
-          {/* Cách tạo mật khẩu tốt */}
+          {/* Tips */}
           <section id="tips" className="scroll-mt-16">
-            <h2 className="text-2xl font-semibold mb-6">{t('tipsTitle')}</h2>
+            <h2 className="text-2xl font-semibold mb-6">Tips for Creating a Secure Password</h2>
             <div className="space-y-6">
               <Card className="p-6">
-                <h3 className="font-medium text-lg mb-4">{t('doTitle')}</h3>
+                <h3 className="font-medium text-lg mb-4">Things YOU SHOULD do:</h3>
                 <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                  <li>{t('doTip1')}</li>
-                  <li>{t('doTip2')}</li>
-                  <li>{t('doTip3')}</li>
-                  <li>{t('doTip4')}</li>
+                  <li>Use at least 12 characters</li>
+                  <li>Combine uppercase, lowercase, numbers, and special characters</li>
+                  <li>Use random phrases (e.g., 'BlueCatLoves@Fish2024')</li>
+                  <li>Change important passwords every 3-6 months</li>
                 </ul>
               </Card>
               
               <Card className="p-6">
-                <h3 className="font-medium text-lg mb-4">{t('dontTitle')}</h3>
+                <h3 className="font-medium text-lg mb-4">Things YOU SHOULD NOT do:</h3>
                 <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                  <li>{t('dontTip1')}</li>
-                  <li>{t('dontTip2')}</li>
-                  <li>{t('dontTip3')}</li>
-                  <li>{t('dontTip4')}</li>
+                  <li>Use personal information (birthdays, names, phone numbers)</li>
+                  <li>Use dictionary words</li>
+                  <li>Use overly simple passwords (123456, password)</li>
+                  <li>Use the same password for multiple accounts</li>
                 </ul>
               </Card>
             </div>
           </section>
 
-          {/* Lời khuyên thêm */}
+          {/* Extra Tips */}
           <section id="extra" className="scroll-mt-16">
-            <h2 className="text-2xl font-semibold mb-6">{t('extraTitle')}</h2>
+            <h2 className="text-2xl font-semibold mb-6">Additional Tips to Protect Your Account</h2>
             <Card className="p-6">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  {t('extraTip')}
+                  In addition to setting a strong password, you should:
                 </p>
                 <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-                  <li>{t('extraTip1')}</li>
-                  <li>{t('extraTip2')}</li>
-                  <li>{t('extraTip3')}</li>
-                  <li>{t('extraTip4')}</li>
+                  <li>Enable two-factor authentication if possible</li>
+                  <li>Do not share your password with others</li>
+                  <li>Do not enter your password on public computers</li>
+                  <li>Use a password manager to store securely</li>
                 </ul>
               </div>
             </Card>

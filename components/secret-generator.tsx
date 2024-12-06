@@ -10,7 +10,6 @@ import { Copy, RefreshCw } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { generateSecret } from '@/lib/generators'
 import { PasswordAnalysis } from '@/lib/types'
-import { useTranslations } from 'next-intl';
 
 export function SecretGenerator() {
   const { toast } = useToast()
@@ -18,7 +17,6 @@ export function SecretGenerator() {
   const [algorithm, setAlgorithm] = useState('sha256')
   const [format, setFormat] = useState<'hex' | 'base64'>('hex')
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
-  const t = useTranslations('Components.SecretGenerator');
 
   const handleGenerateSecret = async () => {
     try {
@@ -27,8 +25,8 @@ export function SecretGenerator() {
       setAnalysis(result.analysis)
     } catch (error) {
       toast({
-        title: t('errorTitle'),
-        description: t('errorDescription'),
+        title: "Error",
+        description: "Failed to generate secret",
         variant: 'destructive',
       })
     }
@@ -38,15 +36,15 @@ export function SecretGenerator() {
     if (!secret) return
     await navigator.clipboard.writeText(secret)
     toast({
-      title: t('copiedTitle'),
-      description: t('copiedDescription'),
+      title: "Copied!",
+      description: "Secret copied to clipboard",
     })
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('title')}</CardTitle>
+        <CardTitle>Secret Generator</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <motion.div
@@ -56,7 +54,7 @@ export function SecretGenerator() {
         >
           <div className="flex items-center space-x-4 bg-secondary p-4 rounded-lg">
             <span className="text-xl font-mono flex-1 break-all font-[family-name:var(--font-geist-mono)]">
-              {secret || t('placeholder')}
+              {secret || "Click generate"}
             </span>
             <Button variant="outline" size="icon" onClick={handleGenerateSecret}>
               <RefreshCw className="h-4 w-4" />
@@ -69,10 +67,10 @@ export function SecretGenerator() {
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>{t('algorithmLabel')}</Label>
+            <Label>Select Algorithm</Label>
             <Select value={algorithm} onValueChange={setAlgorithm}>
               <SelectTrigger>
-                <SelectValue placeholder={t('selectAlgorithm')} />
+                <SelectValue placeholder="Select algorithm" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="sha256">SHA-256</SelectItem>
@@ -84,20 +82,20 @@ export function SecretGenerator() {
           </div>
 
           <div className="space-y-2">
-            <Label>{t('formatLabel')}</Label>
+            <Label>Select Format</Label>
             <Select value={format} onValueChange={(value: 'hex' | 'base64') => setFormat(value)}>
               <SelectTrigger>
-                <SelectValue placeholder={t('selectFormat')} />
+                <SelectValue placeholder="Select format" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hex">{t('hexadecimal')}</SelectItem>
-                <SelectItem value="base64">{t('base64')}</SelectItem>
+                <SelectItem value="hex">Hexadecimal</SelectItem>
+                <SelectItem value="base64">Base64</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <Button className="w-full" onClick={handleGenerateSecret}>
-            {t('generateSecret')}
+            Generate Secret
           </Button>
         </div>
       </CardContent>

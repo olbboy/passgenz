@@ -1,10 +1,9 @@
-import createNextIntlPlugin from 'next-intl/plugin';
-
-const withNextIntl = createNextIntlPlugin();
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Thêm các cấu hình khác của bạn ở đây
+  transpilePackages: ['lucide-react'],
+  images: {
+    domains: ['localhost'],
+  },
 };
 
-export default withNextIntl(nextConfig); 
+export default nextConfig; 

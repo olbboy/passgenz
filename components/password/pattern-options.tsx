@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Info } from "lucide-react"
-import { useTranslations } from 'next-intl'
 
 interface PatternOptionsProps {
   pattern: string;
@@ -11,13 +10,11 @@ interface PatternOptionsProps {
 }
 
 export function PatternOptions({ pattern, onChange }: PatternOptionsProps) {
-  const t = useTranslations('Components.PasswordGenerator.context');
-
   const patternGuide = {
-    'L': t('patternGuide.uppercase'),
-    'l': t('patternGuide.lowercase'),
-    'd': t('patternGuide.digit'),
-    's': t('patternGuide.special'),
+    'L': "Uppercase letter (A-Z)",
+    'l': "Lowercase letter (a-z)",
+    'd': "Digit (0-9)",
+    's': "Special character (!@#$%^&*)",
   };
 
   // Validate pattern format
@@ -44,7 +41,7 @@ export function PatternOptions({ pattern, onChange }: PatternOptionsProps) {
       {/* Pattern Input */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium">{t('patternTemplate')}</Label>
+          <Label className="text-sm font-medium">Pattern Template</Label>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -52,7 +49,7 @@ export function PatternOptions({ pattern, onChange }: PatternOptionsProps) {
               </TooltipTrigger>
               <TooltipContent className="w-80">
                 <div className="space-y-2">
-                  <p className="font-medium">{t('patternGuide.title')}:</p>
+                  <p className="font-medium">Pattern Guide:</p>
                   <div className="grid grid-cols-2 gap-2">
                     {Object.entries(patternGuide).map(([key, desc]) => (
                       <div key={key} className="flex items-center gap-2">
@@ -78,7 +75,7 @@ export function PatternOptions({ pattern, onChange }: PatternOptionsProps) {
         {/* Pattern Preview */}
         {pattern && (
           <div className="space-y-2">
-            <Label className="text-sm text-muted-foreground">{t('preview')}:</Label>
+            <Label className="text-sm text-muted-foreground">Preview:</Label>
             <div className="p-2 bg-muted rounded-md font-mono text-sm">
               {getPatternExample(pattern)}
             </div>
@@ -89,7 +86,7 @@ export function PatternOptions({ pattern, onChange }: PatternOptionsProps) {
       {/* Pattern Guide */}
       <Alert className="bg-muted/50">
         <AlertDescription className="text-sm">
-          <p className="mb-2">{t('examples')}:</p>
+          <p className="mb-2">Examples:</p>
           <ul className="space-y-1 text-muted-foreground">
             <li><code className="bg-muted px-1 rounded">Lldd</code> → Ab12</li>
             <li><code className="bg-muted px-1 rounded">LLLddd</code> → ABC123</li>
@@ -102,13 +99,13 @@ export function PatternOptions({ pattern, onChange }: PatternOptionsProps) {
       {pattern && !isValidPattern(pattern) && (
         <Alert variant="destructive" className="text-sm">
           <AlertDescription>
-            {t('validationWarning')}
+            Pattern can only contain L, l, d, s characters
           </AlertDescription>
         </Alert>
       )}
 
       <p className="text-xs text-muted-foreground">
-        {t('patternInstructions')}
+        Use L for uppercase, l for lowercase, d for digits, and s for special characters.
       </p>
     </div>
   );

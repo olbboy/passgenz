@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { BookOpen } from "lucide-react";
@@ -9,7 +8,6 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 export function GuideDrawer() {
-  const t = useTranslations('Components.GuideDrawer');
   const [width, setWidth] = useState("95%");
 
   // Dynamically adjust width based on screen size
@@ -49,7 +47,7 @@ export function GuideDrawer() {
       >
         <div className="h-full flex flex-col bg-background">
           <SheetHeader className="px-6 py-4 border-b flex flex-row items-center justify-between shrink-0">
-            <SheetTitle className="text-2xl font-semibold">{t('title')}</SheetTitle>
+            <SheetTitle className="text-2xl font-semibold">Password Security Guide</SheetTitle>
           </SheetHeader>
           <div className="flex-1 overflow-hidden">
             <GuideContent />

@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Sparkles, Loader2, Settings2 } from "lucide-react"
@@ -16,7 +15,7 @@ interface ContextOptionsProps {
     onAnalyze: (requirements: PasswordRequirements) => void;
 }
 
-// Định nghĩa character sets
+// Define character sets
 const defaultCharacterSets: AllowedCharacterSet[] = [
   {
     type: 'uppercase',
@@ -52,7 +51,6 @@ export function ContextOptions({
 }: ContextOptionsProps) {
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
-    const t = useTranslations('Components.PasswordGenerator.context');
 
     async function handleAIAnalysis() {
         setIsLoading(true);
@@ -145,16 +143,16 @@ export function ContextOptions({
 
             onAnalyze(requirements);
             toast({
-                title: t('toast.success.title'),
-                description: t('toast.success.description')
+                title: "Context analyzed successfully",
+                description: "Password requirements have been updated based on the context."
             });
 
         } catch (error) {
             console.error('AI Analysis Error:', error);
             toast({
                 variant: "destructive",
-                title: t('toast.error.title'),
-                description: error instanceof Error ? error.message : t('toast.error.description')
+                title: "Error",
+                description: error instanceof Error ? error.message : "Failed to analyze context"
             });
         } finally {
             setIsLoading(false);
@@ -162,7 +160,7 @@ export function ContextOptions({
     }
 
     const handleManualAnalysis = () => {
-        // Định nghĩa default rules
+        // Define default rules
         const defaultRules = {
             minLength: 12,
             maxLength: null,
@@ -224,8 +222,8 @@ export function ContextOptions({
         };
 
         toast({
-            title: t('toast.manual.title'),
-            description: t('toast.manual.description'),
+            title: "Manual Analysis",
+            description: "Using standard security requirements",
             variant: "default",
         });
 
@@ -236,7 +234,7 @@ export function ContextOptions({
         <div className="space-y-4">
             <div className="relative">
                 <Textarea
-                    placeholder={t('placeholder')}
+                    placeholder="Describe the platform or service you need a password for (e.g., online banking, social media, work system)..."
                     value={context}
                     onChange={(e) => onContextChange(e.target.value)}
                     rows={5}
@@ -248,7 +246,8 @@ export function ContextOptions({
                         variant="ghost"
                         onClick={handleAIAnalysis}
                         disabled={isLoading}
-                        title={t('analyze.ai')}
+                        className="relative"
+                        title="AI Analysis"
                     >
                         {isLoading ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -260,75 +259,12 @@ export function ContextOptions({
                         size="icon"
                         variant="ghost"
                         onClick={handleManualAnalysis}
-                        title={t('analyze.manual')}
+                        title="Manual Analysis"
                     >
                         <Settings2 className="h-4 w-4" />
                     </Button>
                 </div>
             </div>
-
-            {analyzedContext && (
-                <div className="space-y-2 p-4 bg-muted rounded-lg">
-                    <h3 className="font-medium">{t('results.title')}</h3>
-                    <div className="space-y-4">
-                        <div>
-                            <h4 className="text-sm font-medium">{t('results.platform.title')}</h4>
-                            <ul className="mt-2 space-y-1 text-sm">
-                                <li>• {t('results.platform.type')}: {analyzedContext.platformType.type}</li>
-                                <li>• {t('results.platform.description')}: {analyzedContext.platformType.description}</li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="text-sm font-medium">{t('results.rules.title')}</h4>
-                            <ul className="mt-2 space-y-1 text-sm">
-                                <li>• {t('results.rules.length')}: {analyzedContext.passwordRules.length.min}-{analyzedContext.passwordRules.length.max || t('results.rules.unlimited')} characters</li>
-                                <li>• {t('results.rules.requiredTypes')}: {analyzedContext.passwordRules.characterRequirements.requiredCombinations.count || t('results.rules.any')} from {analyzedContext.passwordRules.characterRequirements.requiredCombinations.from || t('results.rules.availableTypes')}</li>
-                                <li>• {t('results.rules.characterSets')}:</li>
-                                <ul className="ml-4 mt-1">
-                                    {analyzedContext.passwordRules.characterRequirements.allowedCharacterSets.map((set, index) => (
-                                        <li key={index}>
-                                            - {set.type} {set.required ? t('results.rules.required') : t('results.rules.optional')}: {set.description}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="text-sm font-medium">{t('results.security.title')}</h4>
-                            <ul className="mt-2 space-y-1 text-sm">
-                                <li>• {t('results.security.level')}: {analyzedContext.securityAssessment.level}</li>
-                                <li>• {t('results.security.justification')}: {analyzedContext.securityAssessment.justification}</li>
-                                {analyzedContext.securityAssessment.complianceStandards.length > 0 && (
-                                    <li>• {t('results.security.compliance')}: {analyzedContext.securityAssessment.complianceStandards.join(', ')}</li>
-                                )}
-                                {analyzedContext.securityAssessment.vulnerabilityWarnings.length > 0 && (
-                                    <li className="text-destructive">• {t('results.security.warnings')}: {analyzedContext.securityAssessment.vulnerabilityWarnings.join('; ')}</li>
-                                )}
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="text-sm font-medium">{t('results.recommendations.title')}</h4>
-                            <ul className="mt-2 space-y-1 text-sm">
-                                <li>• {t('results.recommendations.implementation')}:</li>
-                                <ul className="ml-4">
-                                    {analyzedContext.recommendations.implementation.map((rec, index) => (
-                                        <li key={index}>- {rec}</li>
-                                    ))}
-                                </ul>
-                                <li>• {t('results.recommendations.guidance')}:</li>
-                                <ul className="ml-4">
-                                    {analyzedContext.recommendations.userGuidance.map((guide, index) => (
-                                        <li key={index}>- {guide}</li>
-                                    ))}
-                                </ul>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 } 

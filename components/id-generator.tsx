@@ -12,7 +12,6 @@ import { Input } from './ui/input'
 import { generateId } from '@/lib/generators'
 import { PasswordAnalysis } from '@/lib/types'
 import { HistoryManagementService } from '@/lib/history-management'
-import { useTranslations } from 'next-intl';
 
 export function IdGenerator() {
   const { toast } = useToast()
@@ -22,7 +21,6 @@ export function IdGenerator() {
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const historyService = HistoryManagementService.getInstance()
-  const t = useTranslations('Components.IdGenerator');
 
   const handleGenerateId = async () => {
     try {
@@ -59,8 +57,8 @@ export function IdGenerator() {
     } catch (err) {
       toast({
         variant: "destructive",
-        title: t('errorTitle'),
-        description: err instanceof Error ? err.message : t('errorDescription')
+        title: "Error",
+        description: err instanceof Error ? err.message : "Failed to generate ID"
       });
     } finally {
       setIsGenerating(false);
@@ -71,15 +69,15 @@ export function IdGenerator() {
     if (!id) return
     await navigator.clipboard.writeText(id)
     toast({
-      title: t('copiedTitle'),
-      description: t('copiedDescription'),
+      title: "Copied!",
+      description: "ID copied to clipboard",
     })
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('title')}</CardTitle>
+        <CardTitle>ID Generator</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <motion.div
@@ -89,7 +87,7 @@ export function IdGenerator() {
         >
           <div className="flex items-center space-x-4 bg-secondary p-4 rounded-lg">
             <span className="text-xl font-mono flex-1 break-all font-[family-name:var(--font-geist-mono)]">
-              {id || t('placeholder')}
+              {id || "Click generate"}
             </span>
             <Button variant="outline" size="icon" onClick={handleGenerateId}>
               <RefreshCw className="h-4 w-4" />
@@ -102,24 +100,24 @@ export function IdGenerator() {
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>{t('formatLabel')}</Label>
+            <Label>ID Format</Label>
             <Select value={format} onValueChange={(value: 'uuid' | 'nanoid' | 'custom') => setFormat(value)}>
               <SelectTrigger>
-                <SelectValue placeholder={t('selectFormat')} />
+                <SelectValue placeholder="Select format" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="uuid">{t('uuid')}</SelectItem>
-                <SelectItem value="nanoid">{t('nanoid')}</SelectItem>
-                <SelectItem value="custom">{t('customFormat')}</SelectItem>
+                <SelectItem value="uuid">UUID v4</SelectItem>
+                <SelectItem value="nanoid">NanoID</SelectItem>
+                <SelectItem value="custom">Custom Format</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label>{t('prefixLabel')}</Label>
+            <Label>Prefix (optional)</Label>
             <Input
               type="text"
-              placeholder={t('prefixPlaceholder')}
+              placeholder="Enter prefix"
               value={prefix}
               onChange={(e) => setPrefix(e.target.value)}
             />
@@ -130,7 +128,7 @@ export function IdGenerator() {
             onClick={handleGenerateId}
             disabled={isGenerating}
           >
-            {isGenerating ? t('generating') : t('generateId')}
+            {isGenerating ? "Generating..." : "Generate ID"}
           </Button>
         </div>
       </CardContent>

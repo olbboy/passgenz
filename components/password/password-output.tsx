@@ -10,7 +10,6 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { format } from "date-fns"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useTranslations } from 'next-intl';
 
 interface PasswordOutputProps {
   password: string;
@@ -93,16 +92,14 @@ export function PasswordOutput({
   onCopy,
   breachResult 
 }: PasswordOutputProps) {
-  const t = useTranslations('Components.PasswordOutput');
-  const c = useTranslations('Components.Common');
   const metrics = password ? analyzePassword(password) : null;
 
-  // Recommendations section với type safety
+  // Recommendations section with type safety
   const hasRecommendations = metrics?.recommendations && metrics.recommendations.length > 0;
 
   return (
     <motion.div className="space-y-6">
-      {/* Password Display - Cải thiện UI */}
+      {/* Password Display */}
       <motion.div 
         className="relative"
         initial={{ opacity: 0, y: 20 }}
@@ -113,7 +110,7 @@ export function PasswordOutput({
             "text-xl sm:text-2xl font-mono flex-1 tracking-wider select-all break-all",
             !password && "text-muted-foreground text-lg sm:text-xl"
           )}>
-            {password || c('placeholder')}
+            {password || "Click generate to create password"}
           </span>
           <div className="flex gap-2 shrink-0">
             <TooltipProvider delayDuration={300}>
@@ -130,7 +127,7 @@ export function PasswordOutput({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="text-xs">
-                  {t('tooltips.generate')}
+                  Generate new password (Ctrl/⌘ + G)
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -153,7 +150,7 @@ export function PasswordOutput({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="text-xs">
-                  {t('tooltips.copy')}
+                  Copy to clipboard (Ctrl/⌘ + C)
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -161,7 +158,7 @@ export function PasswordOutput({
         </div>
       </motion.div>
 
-      {/* Strength Indicator - Cải thiện visual feedback */}
+      {/* Strength Indicator */}
       {password && (
         <motion.div 
           className="relative pt-4"
@@ -211,7 +208,7 @@ export function PasswordOutput({
         </motion.div>
       )}
 
-      {/* Distribution và Security Checks - Responsive Grid */}
+      {/* Distribution and Security Checks */}
       {metrics && password && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <AnimatePresence mode="wait">
@@ -225,7 +222,7 @@ export function PasswordOutput({
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg font-medium flex items-center gap-2">
                     <BarChart2 className="h-5 w-5" />
-                    {t('distribution.title')}
+                    Distribution
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -233,8 +230,8 @@ export function PasswordOutput({
                     {Object.entries(metrics.characterDistribution).map(([type, count]) => (
                       <div key={type}>
                         <div className="flex justify-between text-sm mb-1">
-                          <span className="capitalize">{t(`distribution.${type}`)}</span>
-                          <span className="font-mono">{count}/{password.length} {t('distribution.outOf')}</span>
+                          <span className="capitalize">{type}</span>
+                          <span className="font-mono">{count}/{password.length} characters</span>
                         </div>
                         <div className="relative h-2">
                           <div className="absolute inset-0 bg-secondary rounded-full" />
@@ -261,21 +258,19 @@ export function PasswordOutput({
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg font-medium flex items-center gap-2">
                     <ShieldCheck className="h-5 w-5" />
-                    {t('securityCheck.title')}
+                    Security Checks
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {Object.entries(metrics.patterns).map(([pattern, exists]) => (
-                      <div key={pattern} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/50">
-                        {exists ? (
-                          <XCircle className="h-5 w-5 text-red-500 shrink-0" />
+                    {Object.entries(metrics.patterns).map(([pattern, found]) => (
+                      <div key={pattern} className="flex items-center justify-between">
+                        <span className="text-sm">{formatPatternName(pattern)}</span>
+                        {found ? (
+                          <XCircle className="h-4 w-4 text-destructive" />
                         ) : (
-                          <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
+                          <CheckCircle className="h-4 w-4 text-success" />
                         )}
-                        <span className="text-sm">
-                          {t(`securityCheck.patterns.${formatPatternName(pattern)}`)}
-                        </span>
                       </div>
                     ))}
                   </div>
@@ -286,63 +281,31 @@ export function PasswordOutput({
         </div>
       )}
 
-      {/* Recommendations với type safety */}
-      <AnimatePresence>
-        {hasRecommendations && metrics?.recommendations && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Alert variant="warning" className="bg-yellow-50/50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-900/50">
-              {/* <Lightbulb className="h-4 w-4 text-yellow-600 dark:text-yellow-400" /> */}
-              <AlertTitle className="text-yellow-800 dark:text-yellow-200">
-                {t('recommendations.title')}
-              </AlertTitle>
-              <AlertDescription>
-                <ul className="space-y-2 mt-2">
-                  {metrics.recommendations.map((rec, index) => (
-                    <motion.li 
-                      key={`rec-${index}`}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center gap-2 text-yellow-700 dark:text-yellow-300"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
-                      {rec}
-                    </motion.li>
-                  ))}
-                </ul>
-              </AlertDescription>
-            </Alert>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Breach Check Alert */}
+      {breachResult?.breached && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Password Compromised</AlertTitle>
+          <AlertDescription>
+            Found in {breachResult.count} data breaches
+          </AlertDescription>
+        </Alert>
+      )}
 
-      {/* Breach Info với animation mượt hơn */}
-      <AnimatePresence>
-        {breachResult?.breached && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Alert variant="destructive" className="bg-red-50/50 dark:bg-red-900/20 border-red-200 dark:border-red-900/50">
-              <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
-              <AlertTitle className="text-red-800 dark:text-red-200">Password Compromised</AlertTitle>
-              <AlertDescription className="flex items-center gap-2 text-red-700 dark:text-red-300">
-                <span>Found in {breachResult.count?.toLocaleString()} data breaches</span>
-                <Button variant="link" size="sm" className="text-red-600 dark:text-red-400 h-auto p-0 hover:text-red-800 dark:hover:text-red-200">
-                  Learn More
-                </Button>
-              </AlertDescription>
-            </Alert>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Recommendations */}
+      {hasRecommendations && (
+        <Alert>
+          <Lightbulb className="h-4 w-4" />
+          <AlertTitle>Recommendations</AlertTitle>
+          <AlertDescription>
+            <ul className="list-disc list-inside space-y-1 mt-2">
+              {metrics.recommendations.map((rec, index) => (
+                <li key={index}>{rec}</li>
+              ))}
+            </ul>
+          </AlertDescription>
+        </Alert>
+      )}
     </motion.div>
   );
 } 
