@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="1200" height="630" fill="#09090b"/>
+    
+    <!-- Grid pattern -->
+    <pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#27272a" stroke-width="0.5"/>
+    </pattern>
+    <rect width="1200" height="630" fill="url(#grid)"/>
+    
+    <!-- Shield with gradient -->
+    <g transform="translate(100,115) scale(0.8)">
+        <!-- Your shield SVG here -->
+    </g>
+    
+    <!-- Text content -->
+    <g transform="translate(500,200)">
+        <text x="0" y="0" fill="white" font-family="Inter" font-size="72" font-weight="bold">
+            PassGenZ
+        </text>
+        <text x="0" y="60" fill="#a1a1aa" font-family="Inter" font-size="32">
+            Advanced Password Generator
+        </text>
+    </g>
+    
+    <!-- Tech elements -->
+    <g transform="translate(900,400)">
+        <!-- Additional decorative elements -->
+    </g>
+</svg> 

@@ -1,38 +1,24 @@
 {
-  "name": "PassGenz - Advanced Password Generator",
-  "short_name": "PassGenz",
-  "description": "Next-Generation Secure Password Generation Solution with AI-powered features",
+  "name": "PassGenZ",
+  "short_name": "PassGenZ",
+  "description": "Free online password generator. Create strong, secure, and memorable passwords instantly.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#10b981",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "32x32",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "/icon.png",
+      "src": "/images/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "/apple-icon.png",
-      "sizes": "180x180",
+      "src": "/images/icons/icon-512.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "purpose": "apple-touch-icon"
-    }
-  ],
-  "related_applications": [],
-  "prefer_related_applications": false,
-  "categories": ["utilities", "security"],
-  "screenshots": [],
-  "shortcuts": [
-    {
-      "name": "PassGenz",
-      "url": "/"
+      "purpose": "any maskable"
     }
   ]
 } 
