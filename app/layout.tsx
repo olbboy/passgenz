@@ -31,13 +31,6 @@ const APP_DESCRIPTION = "Free online password generator. Create strong, secure, 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-E6RGNPR8L3'
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-NJVMX8WH'
 
-// Determine the base URL based on environment
-const BASE_URL = process.env.CF_PAGES_URL 
-  ? `https://${process.env.CF_PAGES_URL}`
-  : process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000'
-    : 'https://passgen.pages.dev' // Default Cloudflare Pages URL
-
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -49,7 +42,9 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || 'https://passgenz.com'
+  ),
   applicationName: APP_NAME,
   title: {
     default: APP_DEFAULT_TITLE,
@@ -109,18 +104,14 @@ export const metadata: Metadata = {
     title: APP_DEFAULT_TITLE,
     description: APP_DESCRIPTION,
     siteName: APP_NAME,
-    url: BASE_URL,
-    images: [
-      {
-        url: "/logo.webp",
-        width: 1024,
-        height: 1024,
-        alt: "PassGenZ - Free Online Password Generator",
-        type: "image/webp",
-      }
-    ],
+    images: [{
+      url: '/logo.webp',
+      width: 1024,
+      height: 1024,
+      alt: "PassGenZ - Free Online Password Generator",
+      type: "image/webp",
+    }],
     locale: 'en_US',
-    countryName: 'United States',
   },
   twitter: {
     card: "summary",
@@ -129,7 +120,7 @@ export const metadata: Metadata = {
     site: "@olbboyz",
     creator: "@olbboyz",
     images: {
-      url: "/logo.webp",
+      url: '/logo.webp',
       alt: "PassGenZ - Free Online Password Generator",
       type: "image/webp",
       width: 1024,
@@ -158,21 +149,8 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
   other: {
-    'msapplication-TileImage': '/logo.webp',
     'msapplication-TileColor': '#09090b',
     'msapplication-config': '/browserconfig.xml',
-    // Social media verification
-    'facebook-domain-verification': 'your-facebook-domain-verification',
-    'google-site-verification': GA_ID,
-    // PWA related
-    'mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'apple-mobile-web-app-title': APP_NAME,
-    // Cache control
-    'Cache-Control': process.env.NODE_ENV === 'production' 
-      ? 'public, max-age=31536000, immutable' 
-      : 'no-cache, no-store, must-revalidate',
   },
 };
 
