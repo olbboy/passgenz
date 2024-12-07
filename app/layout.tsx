@@ -109,32 +109,32 @@ export const metadata: Metadata = {
     title: APP_DEFAULT_TITLE,
     description: APP_DESCRIPTION,
     siteName: APP_NAME,
+    url: BASE_URL,
     images: [
       {
-        url: "/images/og/og-image.png",
-        width: 1200,
-        height: 630,
+        url: "/logo.webp",
+        width: 1024,
+        height: 1024,
         alt: "PassGenZ - Free Online Password Generator",
-      },
-      {
-        url: "/images/og/og-image-square.png",
-        width: 600,
-        height: 600,
-        alt: "PassGenZ - Free Online Password Generator",
+        type: "image/webp",
       }
     ],
     locale: 'en_US',
+    countryName: 'United States',
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: APP_DEFAULT_TITLE,
     description: APP_DESCRIPTION,
-    images: {
-      url: "/images/og/twitter-image.png",
-      alt: "PassGenZ - Free Online Password Generator"
-    },
-    creator: "@olbboyz",
     site: "@olbboyz",
+    creator: "@olbboyz",
+    images: {
+      url: "/logo.webp",
+      alt: "PassGenZ - Free Online Password Generator",
+      type: "image/webp",
+      width: 1024,
+      height: 1024,
+    },
   },
   robots: {
     index: true,
@@ -158,8 +158,21 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
   other: {
+    'msapplication-TileImage': '/logo.webp',
     'msapplication-TileColor': '#09090b',
     'msapplication-config': '/browserconfig.xml',
+    // Social media verification
+    'facebook-domain-verification': 'your-facebook-domain-verification',
+    'google-site-verification': GA_ID,
+    // PWA related
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'apple-mobile-web-app-title': APP_NAME,
+    // Cache control
+    'Cache-Control': process.env.NODE_ENV === 'production' 
+      ? 'public, max-age=31536000, immutable' 
+      : 'no-cache, no-store, must-revalidate',
   },
 };
 

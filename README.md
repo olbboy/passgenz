@@ -1,6 +1,6 @@
 <div align="center">
 
-![passgenz](/public/icon.png)
+![passgenz](/public/images/icons/icon.png)
 
 # 🔐 PassGenz - Advanced Password Generator
 
