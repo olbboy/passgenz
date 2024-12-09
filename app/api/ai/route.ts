@@ -9,9 +9,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 export async function POST(request: Request) {
   try {
     const { prompt } = await request.json();
-    
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-pro",
+
+    const model = genAI.getGenerativeModel({
+      model: process.env.GEMINI_MODEL || "gemini-1.5-flash",
       generationConfig: {
         temperature: 0.1,
         topP: 0.1,
@@ -55,7 +55,7 @@ Rules:
     }
 
     const response = await result.response.text();
-    
+
     const cleanResponse = response
       .replace(/```(?:json)?\s*/g, '')
       .replace(/```\s*$/g, '')
@@ -70,7 +70,7 @@ Rules:
       }
 
       const parsedRules = JSON.parse(cleanResponse);
-      
+
       if (!parsedRules || typeof parsedRules !== 'object') {
         throw new Error("Invalid JSON format: Must be an object");
       }
@@ -94,7 +94,7 @@ Rules:
         }
       };
 
-      return NextResponse.json({ 
+      return NextResponse.json({
         rules,
         status: 'success'
       });
@@ -103,8 +103,8 @@ Rules:
       console.error('Parse Error:', parseError);
       console.error('Raw Response:', response);
       console.error('Cleaned Response:', cleanResponse);
-      
-      return NextResponse.json({ 
+
+      return NextResponse.json({
         error: `Failed to parse AI response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
         rawResponse: cleanResponse,
         status: 'error'
@@ -113,7 +113,7 @@ Rules:
 
   } catch (error) {
     console.error('PassGenz AI Error:', error);
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: error instanceof Error ? error.message : "PassGenz AI service failed",
       status: 'error'
     }, { status: 500 });
