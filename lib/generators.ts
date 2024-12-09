@@ -111,12 +111,74 @@ class QuantumSafeGenerator {
 
 // Export trực tiếp từ function declarations
 export async function generatePassword(config: GeneratorConfig): Promise<GenerationResult> {
-  const { mode, length, options, memorableOptions, pattern } = config;
+  const { mode, length, options, memorableOptions, pattern, context } = config;
 
   try {
     let password = '';
 
     switch (mode) {
+      case 'context':
+        if (context && context.requirements) {
+          const requirements = context.requirements;
+          const { allowedCharacterSets } = requirements.passwordRules.characterRequirements;
+          const { count: requiredCount } = requirements.passwordRules.characterRequirements.requiredCombinations;
+          const minLength = requirements.passwordRules.length.min;
+
+          // Get required character sets
+          const requiredSets = allowedCharacterSets
+            .filter(set => set.required && set.characters)
+            .map(set => set.characters!);
+
+          // Get optional character sets
+          const optionalSets = allowedCharacterSets
+            .filter(set => !set.required && set.characters)
+            .map(set => set.characters!);
+
+          if (requiredSets.length === 0 && optionalSets.length === 0) {
+            throw new Error('No character sets available in context requirements');
+          }
+
+          // Ensure we have at least one character from each required set
+          password = requiredSets.map(set => getRandomChar(set)).join('');
+
+          // Calculate how many more character types we need
+          const remainingTypesNeeded = Math.max(0, requiredCount - requiredSets.length);
+          
+          // Add characters from optional sets if needed
+          if (remainingTypesNeeded > 0 && optionalSets.length > 0) {
+            const shuffledOptionalSets = shuffleString(optionalSets.join('|')).split('|');
+            for (let i = 0; i < remainingTypesNeeded && i < shuffledOptionalSets.length; i++) {
+              password += getRandomChar(shuffledOptionalSets[i]);
+            }
+          }
+
+          // Fill remaining length with random characters from all allowed sets
+          const allSets = [...requiredSets, ...optionalSets];
+          const allChars = allSets.join('');
+          while (password.length < minLength) {
+            password += getRandomChar(allChars);
+          }
+
+          // Shuffle the password
+          password = shuffleString(password);
+
+          // Validate against custom constraints
+          const excludedChars = requirements.passwordRules.customConstraints
+            .filter(c => c.type === 'excluded-chars')
+            .flatMap(c => c.parameters?.chars || []);
+
+          if (excludedChars.length > 0) {
+            const hasExcludedChar = excludedChars.some(char => password.includes(char));
+            if (hasExcludedChar) {
+              // If we found excluded chars, try again with a new password
+              return generatePassword(config);
+            }
+          }
+        } else {
+          throw new Error('Context requirements not provided');
+        }
+        break;
+
       case 'memorable':
         if (memorableOptions) {
           const words = Array(memorableOptions.wordCount)

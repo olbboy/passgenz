@@ -265,6 +265,69 @@ export function ContextOptions({
                     </Button>
                 </div>
             </div>
+
+            {analyzedContext && (
+                <div className="space-y-2 p-4 bg-muted rounded-lg">
+                    <h3 className="font-medium">Analysis Results</h3>
+                    <div className="space-y-4">
+                        <div>
+                            <h4 className="text-sm font-medium">Platform Information</h4>
+                            <ul className="mt-2 space-y-1 text-sm">
+                                <li>• Type: {analyzedContext.platformType.type}</li>
+                                <li>• Description: {analyzedContext.platformType.description}</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 className="text-sm font-medium">Password Rules</h4>
+                            <ul className="mt-2 space-y-1 text-sm">
+                                <li>• Length: {analyzedContext.passwordRules.length.min}-{analyzedContext.passwordRules.length.max || 'unlimited'} characters</li>
+                                <li>• Required Types: {analyzedContext.passwordRules.characterRequirements.requiredCombinations.count || 'any'} from {analyzedContext.passwordRules.characterRequirements.requiredCombinations.from || 'available types'}</li>
+                                <li>• Character Sets:</li>
+                                <ul className="ml-4 mt-1">
+                                    {analyzedContext.passwordRules.characterRequirements.allowedCharacterSets.map((set, index) => (
+                                        <li key={index}>
+                                            - {set.type} ({set.required ? 'Required' : 'Optional'}): {set.description}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 className="text-sm font-medium">Security Assessment</h4>
+                            <ul className="mt-2 space-y-1 text-sm">
+                                <li>• Security Level: {analyzedContext.securityAssessment.level}</li>
+                                <li>• Justification: {analyzedContext.securityAssessment.justification}</li>
+                                {analyzedContext.securityAssessment.complianceStandards.length > 0 && (
+                                    <li>• Compliance Standards: {analyzedContext.securityAssessment.complianceStandards.join(', ')}</li>
+                                )}
+                                {analyzedContext.securityAssessment.vulnerabilityWarnings.length > 0 && (
+                                    <li className="text-destructive">• Warnings: {analyzedContext.securityAssessment.vulnerabilityWarnings.join('; ')}</li>
+                                )}
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 className="text-sm font-medium">Recommendations</h4>
+                            <ul className="mt-2 space-y-1 text-sm">
+                                <li>• Implementation:</li>
+                                <ul className="ml-4">
+                                    {analyzedContext.recommendations.implementation.map((rec, index) => (
+                                        <li key={index}>- {rec}</li>
+                                    ))}
+                                </ul>
+                                <li>• User Guidance:</li>
+                                <ul className="ml-4">
+                                    {analyzedContext.recommendations.userGuidance.map((guide, index) => (
+                                        <li key={index}>- {guide}</li>
+                                    ))}
+                                </ul>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 } 
