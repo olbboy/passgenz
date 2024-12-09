@@ -41,3 +41,8 @@ next-env.d.ts
 
 #docs
 /docs
+
+# Cloudflare-specific entries
+.dev.vars
+.wrangler/
+.cloudflare/

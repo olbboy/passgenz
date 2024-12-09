@@ -1,23 +1,22 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { PasswordRequirements, PasswordRules } from "@/lib/types";
 
 export const runtime = 'edge';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
 export async function POST(request: Request) {
   try {
     const { prompt } = await request.json();
 
-    const model = genAI.getGenerativeModel({
-      model: process.env.GEMINI_MODEL || "gemini-1.5-flash",
-      generationConfig: {
-        temperature: 0.1,
-        topP: 0.1,
-        topK: 16,
-        maxOutputTokens: 1024,
-      },
+    const openai = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY || "",
+      defaultQuery: { "transform_to_openai": "true" },
+      defaultHeaders: {
+        "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+        "X-Title": "PassGenz",
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
+      }
     });
 
     const enhancedPrompt = `You are a JSON generator. Your task is to convert password requirements into a specific JSON format.
@@ -49,12 +48,24 @@ Rules:
   }
 }`;
 
-    const result = await model.generateContent(enhancedPrompt);
-    if (!result.response) {
+    const completion = await openai.chat.completions.create({
+      model: "google/gemini-pro",
+      messages: [
+        {
+          role: "user",
+          content: enhancedPrompt
+        }
+      ],
+      temperature: 0.1,
+      top_p: 0.1,
+      max_tokens: 1024
+    });
+
+    const response = completion.choices[0]?.message?.content;
+
+    if (!response) {
       throw new Error("No response from AI");
     }
-
-    const response = await result.response.text();
 
     const cleanResponse = response
       .replace(/```(?:json)?\s*/g, '')

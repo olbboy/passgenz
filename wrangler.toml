@@ -1,0 +1,13 @@
+[env.development]
+name = "passgen-dev"
+workers_dev = true
+
+[env.production]
+name = "passgen"
+workers_dev = true
+
+[build]
+command = "npm run build"
+
+[site]
+bucket = ".next" 
