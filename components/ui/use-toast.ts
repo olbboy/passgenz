@@ -22,6 +22,13 @@ const actionTypes = {
   REMOVE_TOAST: "REMOVE_TOAST",
 } as const
 
+let count = 0
+
+function genId() {
+  count = (count + 1) % Number.MAX_VALUE
+  return count.toString()
+}
+
 type ActionType = typeof actionTypes
 
 type Action =
@@ -133,7 +140,7 @@ function dispatch(action: Action) {
 type Toast = Omit<ToasterToast, "id">
 
 function toast({ ...props }: Toast) {
-  const id = Math.random().toString(36).substr(2, 9)
+  const id = genId()
 
   const update = (props: ToasterToast) =>
     dispatch({

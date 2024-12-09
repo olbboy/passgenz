@@ -1,17 +1,79 @@
-import OpenAI from "openai";
+import { OpenAI } from 'openai';
+import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { NextResponse } from "next/server";
 import { PasswordRequirements, PasswordRules } from "@/lib/types";
 
 export const runtime = 'edge';
 
+interface AIModel {
+  id: string;
+  name: string;
+  provider: string;
+  contextWindow: number;
+  tokenLimit: number;
+  defaultParameters: ModelParameters;
+}
+
+interface ModelParameters {
+  temperature: number;
+  top_p: number;
+  max_tokens: number;
+}
+
+// Available models configuration
+const AVAILABLE_MODELS: AIModel[] = [
+  {
+    id: "google/gemini-pro",
+    name: "Gemini Pro",
+    provider: "google",
+    contextWindow: 32000,
+    tokenLimit: 2048,
+    defaultParameters: {
+      temperature: 0.1,
+      top_p: 0.1,
+      max_tokens: 1024
+    }
+  },
+  {
+    id: "anthropic/claude-2",
+    name: "Claude 2",
+    provider: "anthropic",
+    contextWindow: 100000,
+    tokenLimit: 4096,
+    defaultParameters: {
+      temperature: 0.1,
+      top_p: 0.1,
+      max_tokens: 1024
+    }
+  },
+  {
+    id: "meta/llama-2-70b-chat",
+    name: "Llama 2 70B",
+    provider: "meta",
+    contextWindow: 4096,
+    tokenLimit: 2048,
+    defaultParameters: {
+      temperature: 0.1,
+      top_p: 0.1,
+      max_tokens: 1024
+    }
+  }
+];
+
 export async function POST(request: Request) {
   try {
-    const { prompt } = await request.json();
+    const { prompt, modelId = "google/gemini-pro" } = await request.json();
+
+    // Find selected model configuration
+    const selectedModel = AVAILABLE_MODELS.find(model => model.id === modelId);
+    if (!selectedModel) {
+      throw new Error(`Invalid model ID: ${modelId}`);
+    }
 
     const openai = new OpenAI({
       baseURL: "https://openrouter.ai/api/v1",
       apiKey: process.env.OPENROUTER_API_KEY || "",
-      defaultQuery: { "transform_to_openai": "true" },
+      defaultQuery: { transform_to_openai: "true" },
       defaultHeaders: {
         "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
         "X-Title": "PassGenz",
@@ -48,79 +110,23 @@ Rules:
   }
 }`;
 
-    const completion = await openai.chat.completions.create({
-      model: "google/gemini-pro",
+    const response = await openai.chat.completions.create({
+      model: selectedModel.id,
       messages: [
         {
           role: "user",
           content: enhancedPrompt
         }
       ],
-      temperature: 0.1,
-      top_p: 0.1,
-      max_tokens: 1024
+      ...selectedModel.defaultParameters,
+      stream: true
     });
 
-    const response = completion.choices[0]?.message?.content;
+    // Create a stream from the response
+    const stream = OpenAIStream(response);
 
-    if (!response) {
-      throw new Error("No response from AI");
-    }
-
-    const cleanResponse = response
-      .replace(/```(?:json)?\s*/g, '')
-      .replace(/```\s*$/g, '')
-      .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
-      .replace(/^\s*{\s*/, '{')
-      .replace(/\s*}\s*$/, '}')
-      .trim();
-
-    try {
-      if (!cleanResponse.startsWith('{') || !cleanResponse.endsWith('}')) {
-        throw new Error("Invalid JSON format: Response must be a JSON object");
-      }
-
-      const parsedRules = JSON.parse(cleanResponse);
-
-      if (!parsedRules || typeof parsedRules !== 'object') {
-        throw new Error("Invalid JSON format: Must be an object");
-      }
-
-      const rules: PasswordRules = {
-        minLength: parsedRules?.minLength || 12,
-        maxLength: parsedRules?.maxLength ?? null,
-        requiredCharTypes: {
-          uppercase: parsedRules?.requiredCharTypes?.uppercase ?? false,
-          lowercase: parsedRules?.requiredCharTypes?.lowercase ?? false,
-          numbers: parsedRules?.requiredCharTypes?.numbers ?? false,
-          symbols: parsedRules?.requiredCharTypes?.symbols ?? false
-        },
-        excludedChars: parsedRules?.excludedChars || [],
-        minCharTypesRequired: parsedRules?.minCharTypesRequired || 3,
-        patterns: {
-          allowCommonWords: parsedRules?.patterns?.allowCommonWords ?? false,
-          allowKeyboardPatterns: parsedRules?.patterns?.allowKeyboardPatterns ?? false,
-          allowRepeatingChars: parsedRules?.patterns?.allowRepeatingChars ?? false,
-          allowSequentialChars: parsedRules?.patterns?.allowSequentialChars ?? false
-        }
-      };
-
-      return NextResponse.json({
-        rules,
-        status: 'success'
-      });
-
-    } catch (parseError) {
-      console.error('Parse Error:', parseError);
-      console.error('Raw Response:', response);
-      console.error('Cleaned Response:', cleanResponse);
-
-      return NextResponse.json({
-        error: `Failed to parse AI response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
-        rawResponse: cleanResponse,
-        status: 'error'
-      }, { status: 500 });
-    }
+    // Return the stream response
+    return new StreamingTextResponse(stream);
 
   } catch (error) {
     console.error('PassGenz AI Error:', error);

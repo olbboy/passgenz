@@ -7,6 +7,9 @@ import { Sparkles, Loader2, Settings2 } from "lucide-react"
 import { PasswordRequirements } from "@/lib/context-analyzer"
 import { useToast } from "@/components/ui/use-toast"
 import { AllowedCharacterSet } from "@/lib/types"
+import { useAIProviderStore } from '@/lib/stores/ai-provider-store'
+import { useAPIKeysStore } from '@/lib/stores/api-keys-store'
+import { useRouter } from 'next/navigation'
 
 interface ContextOptionsProps {
     context: string;
@@ -15,32 +18,32 @@ interface ContextOptionsProps {
     onAnalyze: (requirements: PasswordRequirements) => void;
 }
 
-// Define character sets
+// Default character sets
 const defaultCharacterSets: AllowedCharacterSet[] = [
-  {
-    type: 'uppercase',
-    required: true,
-    description: 'Uppercase letters (A-Z)',
-    characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  },
-  {
-    type: 'lowercase',
-    required: true,
-    description: 'Lowercase letters (a-z)',
-    characters: 'abcdefghijklmnopqrstuvwxyz'
-  },
-  {
-    type: 'number',
-    required: true,
-    description: 'Numbers (0-9)',
-    characters: '0123456789'
-  },
-  {
-    type: 'symbol',
-    required: true,
-    description: 'Special characters',
-    characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
-  }
+    {
+        type: 'uppercase',
+        required: true,
+        description: 'Uppercase letters (A-Z)',
+        characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    },
+    {
+        type: 'lowercase',
+        required: true,
+        description: 'Lowercase letters (a-z)',
+        characters: 'abcdefghijklmnopqrstuvwxyz'
+    },
+    {
+        type: 'number',
+        required: true,
+        description: 'Numbers (0-9)',
+        characters: '0123456789'
+    },
+    {
+        type: 'symbol',
+        required: true,
+        description: 'Special characters',
+        characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+    }
 ];
 
 export function ContextOptions({
@@ -51,14 +54,35 @@ export function ContextOptions({
 }: ContextOptionsProps) {
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
+    const router = useRouter();
+    const { selectedProvider, modelSettings } = useAIProviderStore();
+    const { getKey } = useAPIKeysStore();
 
     async function handleAIAnalysis() {
+        const apiKey = getKey(selectedProvider);
+        if (!apiKey) {
+            toast({
+                variant: "destructive",
+                title: "API Key Required",
+                description: "Please configure your API key in settings"
+            });
+            router.push('/settings');
+            return;
+        }
+
         setIsLoading(true);
         try {
             const res = await fetch("/api/ai", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: context }),
+                headers: { 
+                    "Content-Type": "application/json",
+                    "X-Provider-API-Key": apiKey
+                },
+                body: JSON.stringify({ 
+                    prompt: context,
+                    provider: selectedProvider,
+                    ...modelSettings
+                }),
             });
 
             const data = await res.json();
@@ -234,7 +258,7 @@ export function ContextOptions({
         <div className="space-y-4">
             <div className="relative">
                 <Textarea
-                    placeholder="Describe the platform or service you need a password for (e.g., online banking, social media, work system)..."
+                    placeholder="Describe the platform or service you need a password for..."
                     value={context}
                     onChange={(e) => onContextChange(e.target.value)}
                     rows={5}
@@ -255,6 +279,7 @@ export function ContextOptions({
                             <Sparkles className="h-4 w-4" />
                         )}
                     </Button>
+
                     <Button
                         size="icon"
                         variant="ghost"

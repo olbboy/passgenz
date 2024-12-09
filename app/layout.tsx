@@ -169,7 +169,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TooltipProvider>
-            {children}
+            <main className="min-h-screen">
+              {children}
+            </main>
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>
