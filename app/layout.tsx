@@ -1,26 +1,12 @@
 import React from 'react'
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { NextThemeProvider } from "@/providers/next-themes-provider"
+import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { Inter, JetBrains_Mono, Outfit } from 'next/font/google'
+import { inter, jetbrainsMono, outfit } from '@/lib/fonts'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import { Metadata } from 'next'
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-})
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-jetbrains-mono',
-})
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  variable: '--font-cal-sans',
-})
 
 const APP_NAME = "PassGenZ"
 const APP_DEFAULT_TITLE = "PassGenZ - Free Online Password Generator"
@@ -155,26 +141,28 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children
+  children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} font-sans antialiased`}>
-        <ThemeProvider
+        <NextThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider>
-            <main className="min-h-screen">
-              {children}
-            </main>
-            <Toaster />
-          </TooltipProvider>
-        </ThemeProvider>
+          <ThemeProvider>
+            <TooltipProvider>
+              <main className="min-h-screen">
+                {children}
+              </main>
+              <Toaster />
+            </TooltipProvider>
+          </ThemeProvider>
+        </NextThemeProvider>
         <GoogleAnalytics gaId={GA_ID} />
         <GoogleTagManager gtmId={GTM_ID} />
       </body>
