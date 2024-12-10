@@ -1,6 +1,36 @@
+export interface ThemeColors {
+  readonly background: string
+  readonly foreground: string
+  readonly card: string
+  readonly "card-foreground": string
+  readonly popover: string
+  readonly "popover-foreground": string
+  readonly primary: string
+  readonly "primary-foreground": string
+  readonly secondary: string
+  readonly "secondary-foreground": string
+  readonly muted: string
+  readonly "muted-foreground": string
+  readonly accent: string
+  readonly "accent-foreground": string
+  readonly destructive: string
+  readonly "destructive-foreground": string
+  readonly border: string
+  readonly input: string
+  readonly ring: string
+}
+
+export interface ThemeDefinition {
+  readonly name: string
+  readonly year?: number
+  readonly light: ThemeColors
+  readonly dark: ThemeColors
+}
+
 export const colorThemes = {
   default: {
-    name: "Default",
+    name: "Leo",
+    year: 2021,
     light: {
       background: "hsl(0 0% 100%)",
       foreground: "hsl(220 20% 20%)",
@@ -10,42 +40,43 @@ export const colorThemes = {
       "popover-foreground": "hsl(220 20% 20%)",
       primary: "hsl(142 49% 45%)",
       "primary-foreground": "hsl(0 0% 100%)",
-      secondary: "hsl(220 14% 96%)",
+      secondary: "hsl(220 20% 95%)",
       "secondary-foreground": "hsl(220 20% 20%)",
-      muted: "hsl(220 14% 96%)",
-      "muted-foreground": "hsl(220 14% 46%)",
-      accent: "hsl(142 49% 45%)",
-      "accent-foreground": "hsl(0 0% 100%)",
-      destructive: "hsl(0 84% 60%)",
+      muted: "hsl(220 20% 95%)",
+      "muted-foreground": "hsl(220 20% 40%)",
+      accent: "hsl(220 20% 95%)",
+      "accent-foreground": "hsl(220 20% 20%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(220 14% 90%)",
-      input: "hsl(220 14% 90%)",
+      border: "hsl(220 20% 90%)",
+      input: "hsl(220 20% 90%)",
       ring: "hsl(142 49% 45%)"
     },
     dark: {
-      background: "hsl(220 40% 10%)",
+      background: "hsl(220 20% 10%)",
       foreground: "hsl(0 0% 100%)",
-      card: "hsl(220 40% 10%)",
+      card: "hsl(220 20% 10%)",
       "card-foreground": "hsl(0 0% 100%)",
-      popover: "hsl(220 40% 10%)",
+      popover: "hsl(220 20% 10%)",
       "popover-foreground": "hsl(0 0% 100%)",
       primary: "hsl(142 49% 45%)",
       "primary-foreground": "hsl(0 0% 100%)",
-      secondary: "hsl(220 40% 16%)",
+      secondary: "hsl(220 20% 15%)",
       "secondary-foreground": "hsl(0 0% 100%)",
-      muted: "hsl(220 40% 16%)",
-      "muted-foreground": "hsl(220 14% 70%)",
-      accent: "hsl(142 49% 45%)",
+      muted: "hsl(220 20% 15%)",
+      "muted-foreground": "hsl(220 20% 60%)",
+      accent: "hsl(220 20% 15%)",
       "accent-foreground": "hsl(0 0% 100%)",
-      destructive: "hsl(0 84% 60%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(220 40% 16%)",
-      input: "hsl(220 40% 16%)",
+      border: "hsl(220 20% 20%)",
+      input: "hsl(220 20% 20%)",
       ring: "hsl(142 49% 45%)"
     }
   },
-  veryPeri: {
+  "very-peri": {
     name: "Very Peri",
+    year: 2022,
     light: {
       background: "hsl(0 0% 100%)",
       foreground: "hsl(220 20% 20%)",
@@ -53,44 +84,45 @@ export const colorThemes = {
       "card-foreground": "hsl(220 20% 20%)",
       popover: "hsl(0 0% 100%)",
       "popover-foreground": "hsl(220 20% 20%)",
-      primary: "hsl(240 45% 54%)",
+      primary: "hsl(239 37% 54%)",
       "primary-foreground": "hsl(0 0% 100%)",
-      secondary: "hsl(240 30% 96%)",
-      "secondary-foreground": "hsl(240 45% 54%)",
-      muted: "hsl(240 30% 96%)",
-      "muted-foreground": "hsl(240 25% 46%)",
-      accent: "hsl(240 45% 54%)",
-      "accent-foreground": "hsl(0 0% 100%)",
-      destructive: "hsl(0 84% 60%)",
+      secondary: "hsl(220 20% 95%)",
+      "secondary-foreground": "hsl(220 20% 20%)",
+      muted: "hsl(220 20% 95%)",
+      "muted-foreground": "hsl(220 20% 40%)",
+      accent: "hsl(220 20% 95%)",
+      "accent-foreground": "hsl(220 20% 20%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(240 30% 92%)",
-      input: "hsl(240 30% 92%)",
-      ring: "hsl(240 45% 54%)"
+      border: "hsl(220 20% 90%)",
+      input: "hsl(220 20% 90%)",
+      ring: "hsl(239 37% 54%)"
     },
     dark: {
-      background: "hsl(220 40% 10%)",
+      background: "hsl(220 20% 10%)",
       foreground: "hsl(0 0% 100%)",
-      card: "hsl(220 40% 10%)",
+      card: "hsl(220 20% 10%)",
       "card-foreground": "hsl(0 0% 100%)",
-      popover: "hsl(220 40% 10%)",
+      popover: "hsl(220 20% 10%)",
       "popover-foreground": "hsl(0 0% 100%)",
-      primary: "hsl(240 45% 54%)",
+      primary: "hsl(239 37% 54%)",
       "primary-foreground": "hsl(0 0% 100%)",
-      secondary: "hsl(240 40% 16%)",
+      secondary: "hsl(220 20% 15%)",
       "secondary-foreground": "hsl(0 0% 100%)",
-      muted: "hsl(240 40% 16%)",
-      "muted-foreground": "hsl(240 35% 70%)",
-      accent: "hsl(240 45% 54%)",
+      muted: "hsl(220 20% 15%)",
+      "muted-foreground": "hsl(220 20% 60%)",
+      accent: "hsl(220 20% 15%)",
       "accent-foreground": "hsl(0 0% 100%)",
-      destructive: "hsl(0 84% 60%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(240 40% 16%)",
-      input: "hsl(240 40% 16%)",
-      ring: "hsl(240 45% 54%)"
+      border: "hsl(220 20% 20%)",
+      input: "hsl(220 20% 20%)",
+      ring: "hsl(239 37% 54%)"
     }
   },
-  vivaMagenta: {
+  "viva-magenta": {
     name: "Viva Magenta",
+    year: 2023,
     light: {
       background: "hsl(0 0% 100%)",
       foreground: "hsl(220 20% 20%)",
@@ -98,44 +130,45 @@ export const colorThemes = {
       "card-foreground": "hsl(220 20% 20%)",
       popover: "hsl(0 0% 100%)",
       "popover-foreground": "hsl(220 20% 20%)",
-      primary: "hsl(344 65% 44%)",
+      primary: "hsl(342 65% 47%)",
       "primary-foreground": "hsl(0 0% 100%)",
-      secondary: "hsl(344 30% 96%)",
-      "secondary-foreground": "hsl(344 65% 44%)",
-      muted: "hsl(344 30% 96%)",
-      "muted-foreground": "hsl(344 25% 46%)",
-      accent: "hsl(344 65% 44%)",
-      "accent-foreground": "hsl(0 0% 100%)",
-      destructive: "hsl(0 84% 60%)",
+      secondary: "hsl(220 20% 95%)",
+      "secondary-foreground": "hsl(220 20% 20%)",
+      muted: "hsl(220 20% 95%)",
+      "muted-foreground": "hsl(220 20% 40%)",
+      accent: "hsl(220 20% 95%)",
+      "accent-foreground": "hsl(220 20% 20%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(344 30% 92%)",
-      input: "hsl(344 30% 92%)",
-      ring: "hsl(344 65% 44%)"
+      border: "hsl(220 20% 90%)",
+      input: "hsl(220 20% 90%)",
+      ring: "hsl(342 65% 47%)"
     },
     dark: {
-      background: "hsl(220 40% 10%)",
+      background: "hsl(220 20% 10%)",
       foreground: "hsl(0 0% 100%)",
-      card: "hsl(220 40% 10%)",
+      card: "hsl(220 20% 10%)",
       "card-foreground": "hsl(0 0% 100%)",
-      popover: "hsl(220 40% 10%)",
+      popover: "hsl(220 20% 10%)",
       "popover-foreground": "hsl(0 0% 100%)",
-      primary: "hsl(344 65% 44%)",
+      primary: "hsl(342 65% 47%)",
       "primary-foreground": "hsl(0 0% 100%)",
-      secondary: "hsl(344 40% 16%)",
+      secondary: "hsl(220 20% 15%)",
       "secondary-foreground": "hsl(0 0% 100%)",
-      muted: "hsl(344 40% 16%)",
-      "muted-foreground": "hsl(344 35% 70%)",
-      accent: "hsl(344 65% 44%)",
+      muted: "hsl(220 20% 15%)",
+      "muted-foreground": "hsl(220 20% 60%)",
+      accent: "hsl(220 20% 15%)",
       "accent-foreground": "hsl(0 0% 100%)",
-      destructive: "hsl(0 84% 60%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(344 40% 16%)",
-      input: "hsl(344 40% 16%)",
-      ring: "hsl(344 65% 44%)"
+      border: "hsl(220 20% 20%)",
+      input: "hsl(220 20% 20%)",
+      ring: "hsl(342 65% 47%)"
     }
   },
-  peachFuzz: {
+  "peach-fuzz": {
     name: "Peach Fuzz",
+    year: 2024,
     light: {
       background: "hsl(0 0% 100%)",
       foreground: "hsl(220 20% 20%)",
@@ -143,44 +176,45 @@ export const colorThemes = {
       "card-foreground": "hsl(220 20% 20%)",
       popover: "hsl(0 0% 100%)",
       "popover-foreground": "hsl(220 20% 20%)",
-      primary: "hsl(20 80% 82%)",
+      primary: "hsl(20 100% 80%)",
       "primary-foreground": "hsl(220 20% 20%)",
-      secondary: "hsl(20 30% 96%)",
-      "secondary-foreground": "hsl(20 80% 82%)",
-      muted: "hsl(20 30% 96%)",
-      "muted-foreground": "hsl(20 25% 46%)",
-      accent: "hsl(20 80% 82%)",
+      secondary: "hsl(220 20% 95%)",
+      "secondary-foreground": "hsl(220 20% 20%)",
+      muted: "hsl(220 20% 95%)",
+      "muted-foreground": "hsl(220 20% 40%)",
+      accent: "hsl(220 20% 95%)",
       "accent-foreground": "hsl(220 20% 20%)",
-      destructive: "hsl(0 84% 60%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(20 30% 92%)",
-      input: "hsl(20 30% 92%)",
-      ring: "hsl(20 80% 82%)"
+      border: "hsl(220 20% 90%)",
+      input: "hsl(220 20% 90%)",
+      ring: "hsl(20 100% 80%)"
     },
     dark: {
-      background: "hsl(220 40% 10%)",
+      background: "hsl(220 20% 10%)",
       foreground: "hsl(0 0% 100%)",
-      card: "hsl(220 40% 10%)",
+      card: "hsl(220 20% 10%)",
       "card-foreground": "hsl(0 0% 100%)",
-      popover: "hsl(220 40% 10%)",
+      popover: "hsl(220 20% 10%)",
       "popover-foreground": "hsl(0 0% 100%)",
-      primary: "hsl(20 80% 82%)",
+      primary: "hsl(20 100% 80%)",
       "primary-foreground": "hsl(220 20% 20%)",
-      secondary: "hsl(20 40% 16%)",
+      secondary: "hsl(220 20% 15%)",
       "secondary-foreground": "hsl(0 0% 100%)",
-      muted: "hsl(20 40% 16%)",
-      "muted-foreground": "hsl(20 35% 70%)",
-      accent: "hsl(20 80% 82%)",
-      "accent-foreground": "hsl(220 20% 20%)",
-      destructive: "hsl(0 84% 60%)",
+      muted: "hsl(220 20% 15%)",
+      "muted-foreground": "hsl(220 20% 60%)",
+      accent: "hsl(220 20% 15%)",
+      "accent-foreground": "hsl(0 0% 100%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(20 40% 16%)",
-      input: "hsl(20 40% 16%)",
-      ring: "hsl(20 80% 82%)"
+      border: "hsl(220 20% 20%)",
+      input: "hsl(220 20% 20%)",
+      ring: "hsl(20 100% 80%)"
     }
   },
-  mochaMousse: {
+  "mocha-mousse": {
     name: "Mocha Mousse",
+    year: 2025,
     light: {
       background: "hsl(0 0% 100%)",
       foreground: "hsl(220 20% 20%)",
@@ -188,46 +222,46 @@ export const colorThemes = {
       "card-foreground": "hsl(220 20% 20%)",
       popover: "hsl(0 0% 100%)",
       "popover-foreground": "hsl(220 20% 20%)",
-      primary: "hsl(25 30% 50%)",
+      primary: "hsl(20 15% 50%)",
       "primary-foreground": "hsl(0 0% 100%)",
-      secondary: "hsl(25 30% 96%)",
-      "secondary-foreground": "hsl(25 30% 50%)",
-      muted: "hsl(25 30% 96%)",
-      "muted-foreground": "hsl(25 25% 46%)",
-      accent: "hsl(25 30% 50%)",
-      "accent-foreground": "hsl(0 0% 100%)",
-      destructive: "hsl(0 84% 60%)",
+      secondary: "hsl(220 20% 95%)",
+      "secondary-foreground": "hsl(220 20% 20%)",
+      muted: "hsl(220 20% 95%)",
+      "muted-foreground": "hsl(220 20% 40%)",
+      accent: "hsl(220 20% 95%)",
+      "accent-foreground": "hsl(220 20% 20%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(25 30% 92%)",
-      input: "hsl(25 30% 92%)",
-      ring: "hsl(25 30% 50%)"
+      border: "hsl(220 20% 90%)",
+      input: "hsl(220 20% 90%)",
+      ring: "hsl(20 15% 50%)"
     },
     dark: {
-      background: "hsl(220 40% 10%)",
+      background: "hsl(220 20% 10%)",
       foreground: "hsl(0 0% 100%)",
-      card: "hsl(220 40% 10%)",
+      card: "hsl(220 20% 10%)",
       "card-foreground": "hsl(0 0% 100%)",
-      popover: "hsl(220 40% 10%)",
+      popover: "hsl(220 20% 10%)",
       "popover-foreground": "hsl(0 0% 100%)",
-      primary: "hsl(25 30% 50%)",
+      primary: "hsl(20 15% 50%)",
       "primary-foreground": "hsl(0 0% 100%)",
-      secondary: "hsl(25 40% 16%)",
+      secondary: "hsl(220 20% 15%)",
       "secondary-foreground": "hsl(0 0% 100%)",
-      muted: "hsl(25 40% 16%)",
-      "muted-foreground": "hsl(25 35% 70%)",
-      accent: "hsl(25 30% 50%)",
+      muted: "hsl(220 20% 15%)",
+      "muted-foreground": "hsl(220 20% 60%)",
+      accent: "hsl(220 20% 15%)",
       "accent-foreground": "hsl(0 0% 100%)",
-      destructive: "hsl(0 84% 60%)",
+      destructive: "hsl(0 100% 50%)",
       "destructive-foreground": "hsl(0 0% 100%)",
-      border: "hsl(25 40% 16%)",
-      input: "hsl(25 40% 16%)",
-      ring: "hsl(25 30% 50%)"
+      border: "hsl(220 20% 20%)",
+      input: "hsl(220 20% 20%)",
+      ring: "hsl(20 15% 50%)"
     }
   }
 } as const
 
-export type Theme = keyof typeof colorThemes
+export type ThemeType = keyof typeof colorThemes
 
 export type ColorMode = 'light' | 'dark'
 
-export type Colors = typeof colorThemes[Theme][ColorMode] 
+export type Colors = typeof colorThemes[ThemeType][ColorMode] 

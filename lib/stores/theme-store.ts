@@ -1,25 +1,23 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { colorThemes } from '@/config/themes'
+import { type ThemeType } from '@/config/themes'
+
+export type ColorMode = 'light' | 'dark' | 'system'
 
 interface ThemeState {
-  selectedTheme: keyof typeof colorThemes
-  setTheme: (theme: keyof typeof colorThemes) => void
-  resetTheme: () => void
+  selectedTheme: ThemeType
+  mode: ColorMode
+  setTheme: (theme: ThemeType) => void
+  setMode: (mode: ColorMode) => void
 }
 
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
       selectedTheme: 'default',
-      
-      setTheme: (theme) => {
-        set({ selectedTheme: theme })
-      },
-      
-      resetTheme: () => {
-        set({ selectedTheme: 'default' })
-      }
+      mode: 'system',
+      setTheme: (theme) => set({ selectedTheme: theme }),
+      setMode: (mode) => set({ mode })
     }),
     {
       name: 'theme-store'

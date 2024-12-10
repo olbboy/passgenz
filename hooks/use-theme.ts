@@ -2,31 +2,32 @@
 
 import { useEffect } from 'react'
 import { useThemeStore } from '@/lib/stores/theme-store'
-import { colorThemes, type Theme, type Colors } from '@/config/themes'
-
-function extractHSLValues(hslString: string) {
-  // Remove 'hsl(' and ')' and split the values
-  const values = hslString.replace('hsl(', '').replace(')', '').split(' ')
-  return values.join(' ')
-}
+import { useTheme as useNextTheme } from 'next-themes'
+import type { ColorMode } from '@/lib/stores/theme-store'
 
 export function useTheme() {
-  const { selectedTheme } = useThemeStore()
+  const { selectedTheme, setMode, setTheme } = useThemeStore()
+  const { theme: mode, systemTheme, setTheme: setNextTheme, resolvedTheme } = useNextTheme()
 
+  // Sync next-themes with our store
   useEffect(() => {
-    if (!selectedTheme) return
+    if (mode) {
+      setMode(mode as ColorMode)
+    }
+  }, [mode, setMode])
 
-    const theme = colorThemes[selectedTheme as Theme]
-    const root = document.documentElement
-    const isDark = root.classList.contains('dark')
-    const colors = isDark ? theme.dark : theme.light
+  const toggleMode = () => {
+    const newMode = resolvedTheme === 'dark' ? 'light' : 'dark'
+    setNextTheme(newMode)
+  }
 
-    // Apply colors to CSS variables
-    Object.entries(colors).forEach(([key, value]) => {
-      const hslValues = extractHSLValues(value as string)
-      root.style.setProperty(`--${key}`, hslValues)
-    })
-  }, [selectedTheme])
-
-  return { selectedTheme }
+  return {
+    selectedTheme,
+    mode: mode as ColorMode,
+    resolvedTheme,
+    systemTheme,
+    setTheme,
+    setMode: setNextTheme,
+    toggleMode
+  }
 } 
