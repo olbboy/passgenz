@@ -18,10 +18,10 @@ export function GeneratorTabs() {
       <Tabs defaultValue="password" className="w-full">
         <div className="flex items-center justify-between mb-4">
           <TabsList className="flex-1 grid grid-cols-4">
-            <TabsTrigger value="password">Password</TabsTrigger>
-            <TabsTrigger value="pin">PIN</TabsTrigger>
-            <TabsTrigger value="secret">Secret</TabsTrigger>
-            <TabsTrigger value="id">ID</TabsTrigger>
+            <TabsTrigger value="password" title="Generate strong random passwords with customizable length and character types">Password</TabsTrigger>
+            <TabsTrigger value="pin" title="Create easy-to-remember PINs with customizable length and character types">PIN</TabsTrigger>
+            <TabsTrigger value="secret" title="Generate secure secrets with customizable length and character types">Secret</TabsTrigger>
+            <TabsTrigger value="id" title="Create unique IDs with customizable length and character types">ID</TabsTrigger>
           </TabsList>
           
           <Button

@@ -305,54 +305,62 @@ export function PasswordGenerator() {
     }
   ] as const;
 
-  function getMethodDescription(mode: string): JSX.Element {
-    switch (mode) {
+  function getTooltipContent(tab: string) {
+    switch (tab) {
       case 'basic':
         return (
           <>
-            <h4 className="font-medium">Basic</h4>
+            <h4 className="font-medium">Basic Generator</h4>
             <ul className="text-sm space-y-1 list-disc pl-4">
-              {['Feature 1', 'Feature 2', 'Feature 3'].map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
+              <li>Customize length and character types</li>
+              <li>Include uppercase, lowercase, numbers, symbols</li>
+              <li>Generate strong random passwords</li>
+              <li>Copy password with one click</li>
+              <li>Check password strength instantly</li>
             </ul>
           </>
         );
       case 'context':
         return (
           <>
-            <h4 className="font-medium">Context</h4>
+            <h4 className="font-medium">Context-Aware Generator</h4>
             <ul className="text-sm space-y-1 list-disc pl-4">
-              {['Feature 1', 'Feature 2', 'Feature 3'].map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
+              <li>AI-powered password analysis</li>
+              <li>Platform-specific requirements</li>
+              <li>Security best practices compliance</li>
+              <li>Custom constraints handling</li>
+              <li>Automated security assessment</li>
             </ul>
           </>
         );
       case 'pattern':
         return (
           <>
-            <h4 className="font-medium">Pattern</h4>
+            <h4 className="font-medium">Pattern-Based Generator</h4>
             <ul className="text-sm space-y-1 list-disc pl-4">
-              {['Feature 1', 'Feature 2', 'Feature 3'].map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
+              <li>Create custom password patterns</li>
+              <li>Define character positions</li>
+              <li>Mix static and random elements</li>
+              <li>Save and reuse patterns</li>
+              <li>Pattern validation checks</li>
             </ul>
           </>
         );
       case 'memorable':
         return (
           <>
-            <h4 className="font-medium">Memorable</h4>
+            <h4 className="font-medium">Memorable Generator</h4>
             <ul className="text-sm space-y-1 list-disc pl-4">
-              {['Feature 1', 'Feature 2', 'Feature 3'].map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
+              <li>Generate easy-to-remember passwords</li>
+              <li>Word-based combinations</li>
+              <li>Custom word separators</li>
+              <li>Add numbers and symbols</li>
+              <li>Balance security and memorability</li>
             </ul>
           </>
         );
       default:
-        return <></>;
+        return null;
     }
   }
 
@@ -441,7 +449,7 @@ export function PasswordGenerator() {
                     </TabsTrigger>
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="w-64 p-3">
-                    {getMethodDescription(tab.value)}
+                    {getTooltipContent(tab.value)}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
