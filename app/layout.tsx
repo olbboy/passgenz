@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { inter, jetbrainsMono, outfit } from '@/lib/fonts'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import { Metadata } from 'next'
+import { ProductHuntBadge } from "@/components/product-hunt-badge";
 
 const APP_NAME = "PassGenZ"
 const APP_DEFAULT_TITLE = "PassGenZ - Free Online Password Generator"
@@ -165,6 +166,7 @@ export default function RootLayout({
         </NextThemeProvider>
         <GoogleAnalytics gaId={GA_ID} />
         <GoogleTagManager gtmId={GTM_ID} />
+        <ProductHuntBadge />
       </body>
     </html>
   );
