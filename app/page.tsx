@@ -12,6 +12,7 @@ import Image from 'next/image'
 import { MatrixHeaderWrapper } from '@/components/matrix-header-wrapper'
 import { PrivacyNotice } from '@/components/privacy-notice'
 import { Footer } from '@/components/footer'
+import { ProductHuntBadge } from '@/components/product-hunt-badge';
 
 export default function Home() {
   const [showSettings, setShowSettings] = React.useState(false)
@@ -35,7 +36,7 @@ export default function Home() {
         <div className="w-full max-w-3xl">
           <div className="flex justify-between items-center mb-8">
             <Link href="/" className="flex items-center gap-2">
-              <Suspense fallback={<h1 className="text-4xl font-bold">🔐</h1>}>
+              <Suspense fallback={<h1 className="text-4xl font-bold">ok</h1>}>
                 <MatrixHeaderWrapper />
               </Suspense>
             </Link>
@@ -63,7 +64,6 @@ export default function Home() {
               <ThemeToggle />
             </div>
           </div>
-          <PrivacyNotice />
           <GeneratorTabs />
         </div>
       </div>

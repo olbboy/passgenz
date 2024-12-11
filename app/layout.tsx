@@ -166,7 +166,6 @@ export default function RootLayout({
         </NextThemeProvider>
         <GoogleAnalytics gaId={GA_ID} />
         <GoogleTagManager gtmId={GTM_ID} />
-        <ProductHuntBadge />
       </body>
     </html>
   );

@@ -4,21 +4,21 @@ import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { ShieldCheck } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { ProductHuntBadge } from './product-hunt-badge'
 
 export function PrivacyNotice() {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
 
   return (
     <>
-      <div className="mb-6 flex items-center gap-2">
+      <div className="flex justify-center items-center h-full">
         <Button
           variant="outline"
-          size="sm"
-          className="bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-2"
+          size="icon"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white h-9 w-9 rounded-lg flex items-center justify-center transition-colors shadow-sm"
           onClick={() => setShowPrivacyModal(true)}
         >
-          <ShieldCheck className="h-4 w-4" />
-          <span className="text-sm font-medium">Privacy Protected</span>
+          <ShieldCheck className="h-5 w-5" />
         </Button>
       </div>
 

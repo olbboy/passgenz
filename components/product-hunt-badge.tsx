@@ -2,7 +2,7 @@
 
 export function ProductHuntBadge() {
   return (
-    <div className="fixed bottom-4 right-4 z-50 hidden md:block">
+    <div className="inline-block z-50">
       <a
         href="https://www.producthunt.com/posts/passgenz?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-passgenz"
         target="_blank"

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { MatrixLetter } from '@/components/matrix-letter';
+import { PrivacyNotice } from './privacy-notice';
 
 export function MatrixHeader() {
   const title = "PassGenZ";
@@ -24,7 +25,7 @@ export function MatrixHeader() {
             "hidden md:inline-block"
           )}
         >
-          🔐
+          <PrivacyNotice />
         </motion.span>
       </h1>
     </div>

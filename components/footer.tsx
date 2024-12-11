@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { siX } from 'simple-icons'
+import { ProductHuntBadge } from './product-hunt-badge'
 
 export function Footer() {
   return (
     <footer className="w-full py-5 text-center text-sm text-muted-foreground">
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-2 mb-2">
         <span>Made by</span>
         <Link
           href="https://x.com/olbboyz"
@@ -22,6 +23,7 @@ export function Footer() {
           <span>@olbboyz</span>
         </Link>
       </div>
+      <ProductHuntBadge />
     </footer>
   )
 } 
