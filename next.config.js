@@ -1,3 +1,5 @@
+const TerserPlugin = require('terser-webpack-plugin')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
@@ -12,7 +14,7 @@ const nextConfig = {
   },
   webpack: (config, { dev, isServer }) => {
     if (!dev && !isServer) {
-      config.optimization.minimizer.push(
+      config.optimization.minimizer = [
         new TerserPlugin({
           terserOptions: {
             compress: {
@@ -20,7 +22,7 @@ const nextConfig = {
             },
           },
         }),
-      );
+      ]
     }
     return config;
   },
