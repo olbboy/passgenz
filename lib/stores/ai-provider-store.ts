@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import type { AIProviderId } from '@/lib/constants/ai-providers'
 
 interface ModelSettings {
@@ -34,7 +34,7 @@ const DEFAULT_SETTINGS: ModelSettings = {
 export const useAIProviderStore = create<AIProviderState>()(
   persist(
     (set) => ({
-      selectedProvider: 'gemini',
+      selectedProvider: 'groq',
       modelSettings: DEFAULT_SETTINGS,
       
       setProvider: (provider) => 
@@ -49,7 +49,19 @@ export const useAIProviderStore = create<AIProviderState>()(
         set({ modelSettings: DEFAULT_SETTINGS })
     }),
     {
-      name: 'ai-provider-store'
+      name: 'ai-provider-store',
+      version: 1,
+      storage: createJSONStorage(() => localStorage),
+      migrate: (persistedState: any, version: number) => {
+        if (version === 0) {
+          // Nếu là version cũ, reset về state mặc định
+          return {
+            selectedProvider: 'groq',
+            modelSettings: DEFAULT_SETTINGS
+          }
+        }
+        return persistedState
+      }
     }
   )
 ) 

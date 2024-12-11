@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Sparkles, Loader2, Settings2 } from "lucide-react"
@@ -10,6 +10,7 @@ import { AllowedCharacterSet } from "@/lib/types"
 import { useAIProviderStore } from '@/lib/stores/ai-provider-store'
 import { useAPIKeysStore } from '@/lib/stores/api-keys-store'
 import { useRouter } from 'next/navigation'
+import type { AIProviderId } from '@/lib/constants/ai-providers'
 
 interface ContextOptionsProps {
     context: string;
@@ -18,7 +19,6 @@ interface ContextOptionsProps {
     onAnalyze: (requirements: PasswordRequirements) => void;
 }
 
-// Default character sets
 const defaultCharacterSets: AllowedCharacterSet[] = [
     {
         type: 'uppercase',
@@ -59,123 +59,208 @@ export function ContextOptions({
     const { getKey } = useAPIKeysStore();
 
     async function handleAIAnalysis() {
-        const apiKey = getKey(selectedProvider);
-        if (!apiKey) {
-            toast({
-                variant: "destructive",
-                title: "API Key Required",
-                description: "Please configure your API key in settings"
-            });
-            router.push('/settings');
-            return;
+        let providerToUse = selectedProvider;
+        let apiKey: string | undefined;
+    
+        try {
+            apiKey = getKey(providerToUse);
+        } catch (error) {
+            console.log('Falling back to groq provider');
+            providerToUse = 'groq';
+            try {
+                apiKey = getKey(providerToUse);
+            } catch (fallbackError) {
+                console.error('Failed to get API key:', fallbackError);
+                toast({
+                    variant: "destructive",
+                    title: "API Key Required",
+                    description: "Please configure your API key in settings"
+                });
+                return;
+            }
         }
-
+    
         setIsLoading(true);
         try {
+            const enhancedPrompt = `You are a JSON generator. Generate a JSON object for password requirements.
+
+Input: ${context}
+
+Instructions:
+1. Return ONLY the JSON object, no explanatory text
+2. Follow this EXACT structure:
+{
+  "minLength": number,
+  "maxLength": number,
+  "requiredCharTypes": {
+    "uppercase": boolean,
+    "lowercase": boolean,
+    "numbers": boolean,
+    "symbols": boolean
+  },
+  "excludedChars": string[],
+  "minCharTypesRequired": number,
+  "patterns": {
+    "allowCommonWords": boolean,
+    "allowKeyboardPatterns": boolean,
+    "allowRepeatingChars": boolean,
+    "allowSequentialChars": boolean
+  }
+}
+
+Example:
+{
+  "minLength": 12,
+  "maxLength": 64,
+  "requiredCharTypes": {
+    "uppercase": true,
+    "lowercase": true,
+    "numbers": true,
+    "symbols": true
+  },
+  "excludedChars": [],
+  "minCharTypesRequired": 3,
+  "patterns": {
+    "allowCommonWords": false,
+    "allowKeyboardPatterns": false,
+    "allowRepeatingChars": false,
+    "allowSequentialChars": false
+  }
+}`;
+    
+            const requestBody = {
+                messages: [{
+                    role: 'user',
+                    content: enhancedPrompt
+                }],
+                provider: providerToUse,
+                temperature: modelSettings.temperature,
+                top_p: modelSettings.top_p,
+                maxTokens: modelSettings.maxTokens
+            };
+    
+            console.log('Using provider:', providerToUse);
+            console.log('Request Body:', requestBody);
+    
             const res = await fetch("/api/ai", {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
                     "X-Provider-API-Key": apiKey
                 },
-                body: JSON.stringify({ 
-                    prompt: context,
-                    provider: selectedProvider,
-                    ...modelSettings
-                }),
+                body: JSON.stringify(requestBody),
             });
-
+    
             const data = await res.json();
             
-            if (!res.ok || data.error) {
+            if (!res.ok) {
                 throw new Error(data.error || 'Failed to analyze context');
             }
-
-            if (!data.rules) {
-                throw new Error('No rules returned from AI');
-            }
-
-            // Convert AI rules to PasswordRequirements format
-            const requirements: PasswordRequirements = {
-                platformType: {
-                    type: 'general',
-                    description: 'Generated from AI analysis'
-                },
-                passwordRules: {
-                    length: {
-                        min: data.rules.minLength,
-                        max: null,
-                        description: `${data.rules.minLength} characters minimum`
-                    },
-                    characterRequirements: {
-                        requiredCombinations: {
-                            count: data.rules.minCharTypesRequired,
-                            from: 4
-                        },
-                        allowedCharacterSets: [
-                            {
-                                type: 'uppercase',
-                                required: data.rules.requiredCharTypes.uppercase,
-                                description: 'Uppercase letters (A-Z)',
-                                characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                            },
-                            {
-                                type: 'lowercase',
-                                required: data.rules.requiredCharTypes.lowercase,
-                                description: 'Lowercase letters (a-z)',
-                                characters: 'abcdefghijklmnopqrstuvwxyz'
-                            },
-                            {
-                                type: 'number',
-                                required: data.rules.requiredCharTypes.numbers,
-                                description: 'Numbers (0-9)',
-                                characters: '0123456789'
-                            },
-                            {
-                                type: 'symbol',
-                                required: data.rules.requiredCharTypes.symbols,
-                                description: 'Special characters',
-                                characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
-                            }
-                        ]
-                    },
-                    customConstraints: data.rules.excludedChars.length ? [
-                        {
-                            type: 'excluded-chars',
-                            description: 'Excluded characters',
-                            parameters: { chars: data.rules.excludedChars }
+    
+            if (data.content) {
+                let jsonContent: string;
+                
+                // Xử lý response để lấy phần JSON
+                try {
+                    if (data.content.startsWith('{')) {
+                        // Nếu content bắt đầu bằng '{' thì đó là JSON trực tiếp (Groq)
+                        jsonContent = data.content;
+                    } else {
+                        // Nếu không, tìm JSON trong text (OpenAI)
+                        const jsonMatch = data.content.match(/\{[\s\S]*\}/);
+                        if (!jsonMatch) {
+                            throw new Error('No JSON found in response');
                         }
-                    ] : [],
-                    patterns: {
-                        allowCommonWords: false,
-                        allowKeyboardPatterns: false,
-                        allowRepeatingChars: false,
-                        allowSequentialChars: false
+                        jsonContent = jsonMatch[0];
                     }
-                },
-                securityAssessment: {
-                    level: 'high',
-                    justification: 'Follows security best practices',
-                    complianceStandards: ['NIST SP 800-63B'],
-                    vulnerabilityWarnings: []
-                },
-                recommendations: {
-                    implementation: ['Implement password strength meter'],
-                    userGuidance: ['Use a password manager']
+
+                    // Parse JSON sau khi đã xử lý
+                    const rules = JSON.parse(jsonContent);
+
+                    // Chuyển đổi thành PasswordRequirements
+                    const requirements: PasswordRequirements = {
+                        platformType: {
+                            type: 'general',
+                            description: 'Generated from AI analysis'
+                        },
+                        passwordRules: {
+                            length: {
+                                min: rules.minLength,
+                                max: rules.maxLength || null,
+                                description: `${rules.minLength} characters minimum`
+                            },
+                            characterRequirements: {
+                                requiredCombinations: {
+                                    count: rules.minCharTypesRequired,
+                                    from: 4
+                                },
+                                allowedCharacterSets: [
+                                    {
+                                        type: 'uppercase',
+                                        required: rules.requiredCharTypes.uppercase,
+                                        description: 'Uppercase letters (A-Z)',
+                                        characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                                    },
+                                    {
+                                        type: 'lowercase',
+                                        required: rules.requiredCharTypes.lowercase,
+                                        description: 'Lowercase letters (a-z)',
+                                        characters: 'abcdefghijklmnopqrstuvwxyz'
+                                    },
+                                    {
+                                        type: 'number',
+                                        required: rules.requiredCharTypes.numbers,
+                                        description: 'Numbers (0-9)',
+                                        characters: '0123456789'
+                                    },
+                                    {
+                                        type: 'symbol',
+                                        required: rules.requiredCharTypes.symbols,
+                                        description: 'Special characters',
+                                        characters: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+                                    }
+                                ]
+                            },
+                            customConstraints: rules.excludedChars?.length ? [
+                                {
+                                    type: 'excluded-chars',
+                                    description: 'Excluded characters',
+                                    parameters: { chars: rules.excludedChars }
+                                }
+                            ] : [],
+                            patterns: rules.patterns
+                        },
+                        securityAssessment: {
+                            level: 'high',
+                            justification: 'Follows security best practices',
+                            complianceStandards: ['NIST SP 800-63B'],
+                            vulnerabilityWarnings: []
+                        },
+                        recommendations: {
+                            implementation: ['Implement password strength meter'],
+                            userGuidance: ['Use a password manager']
+                        }
+                    };
+
+                    console.log('Generated requirements:', requirements);
+                    onAnalyze(requirements);
+                    toast({
+                        title: "Analysis Successful",
+                        description: "Password requirements have been updated."
+                    });
+                } catch (parseError) {
+                    console.error('Failed to parse AI response:', parseError);
+                    throw new Error('Failed to parse AI response');
                 }
-            };
-
-            onAnalyze(requirements);
-            toast({
-                title: "Context analyzed successfully",
-                description: "Password requirements have been updated based on the context."
-            });
-
+            } else {
+                throw new Error('No content returned from AI');
+            }
+    
         } catch (error) {
             console.error('AI Analysis Error:', error);
             toast({
                 variant: "destructive",
-                title: "Error",
+                title: "Analysis Failed",
                 description: error instanceof Error ? error.message : "Failed to analyze context"
             });
         } finally {
@@ -184,7 +269,6 @@ export function ContextOptions({
     }
 
     const handleManualAnalysis = () => {
-        // Define default rules
         const defaultRules = {
             minLength: 12,
             maxLength: null,
@@ -206,7 +290,7 @@ export function ContextOptions({
             passwordRules: {
                 length: {
                     min: defaultRules.minLength,
-                    max: null,
+                    max: defaultRules.maxLength,
                     description: `${defaultRules.minLength} characters minimum`
                 },
                 characterRequirements: {
@@ -214,18 +298,9 @@ export function ContextOptions({
                         count: defaultRules.minCharTypesRequired,
                         from: 4
                     },
-                    allowedCharacterSets: defaultCharacterSets.map(set => ({
-                        ...set,
-                        required: defaultRules.requiredCharTypes[set.type.toLowerCase() as keyof typeof defaultRules.requiredCharTypes]
-                    }))
+                    allowedCharacterSets: defaultCharacterSets
                 },
-                customConstraints: defaultRules.excludedChars.length ? [
-                    {
-                        type: 'excluded-chars',
-                        description: 'Excluded characters',
-                        parameters: { chars: defaultRules.excludedChars }
-                    }
-                ] : [],
+                customConstraints: [],
                 patterns: {
                     allowCommonWords: false,
                     allowKeyboardPatterns: false,
@@ -248,7 +323,6 @@ export function ContextOptions({
         toast({
             title: "Manual Analysis",
             description: "Using standard security requirements",
-            variant: "default",
         });
 
         onAnalyze(requirements);
@@ -306,9 +380,9 @@ export function ContextOptions({
                         <div>
                             <h4 className="text-sm font-medium">Password Rules</h4>
                             <ul className="mt-2 space-y-1 text-sm">
-                                <li>• Length: {analyzedContext.passwordRules.length.min}-{analyzedContext.passwordRules.length.max || 'unlimited'} characters</li>
-                                <li>• Required Types: {analyzedContext.passwordRules.characterRequirements.requiredCombinations.count || 'any'} from {analyzedContext.passwordRules.characterRequirements.requiredCombinations.from || 'available types'}</li>
-                                <li>• Character Sets:</li>
+                                <li> Length: {analyzedContext.passwordRules.length.min}-{analyzedContext.passwordRules.length.max || 'unlimited'} characters</li>
+                                <li>• Required Types: {analyzedContext.passwordRules.characterRequirements.requiredCombinations.count} from {analyzedContext.passwordRules.characterRequirements.requiredCombinations.from}</li>
+                                <li>Character Sets:</li>
                                 <ul className="ml-4 mt-1">
                                     {analyzedContext.passwordRules.characterRequirements.allowedCharacterSets.map((set, index) => (
                                         <li key={index}>
@@ -355,4 +429,8 @@ export function ContextOptions({
             )}
         </div>
     );
-} 
+}
+
+function setIsDrawerOpen(arg0: boolean) {
+    throw new Error("Function not implemented.")
+}

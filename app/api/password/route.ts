@@ -1,7 +1,9 @@
+import { OpenAI } from 'openai';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { PasswordRequirements, PasswordRules } from "@/lib/types";
 import { generatePatternFromRequirements } from "@/lib/utils";
+import Groq from 'groq-sdk';
 
 // Add interfaces for type safety
 interface CharacterSet {
@@ -14,6 +16,18 @@ interface Constraint {
   parameters?: {
     chars?: string[];
   };
+}
+
+// Hàm lấy API key với xử lý lỗi
+function getApiKey(provider: string, userApiKey?: string): string {
+  const envKey = process.env[`${provider.toUpperCase()}_API_KEY`];
+  const key = userApiKey || envKey;
+  
+  if (!key) {
+    throw new Error(`Không tìm thấy API key cho provider: ${provider}`);
+  }
+  
+  return key;
 }
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
