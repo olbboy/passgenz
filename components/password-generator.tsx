@@ -580,60 +580,40 @@ function validatePasswordAgainstContext(password: string, context: PasswordRequi
 
 // Helper function to validate password against rules
 function validatePasswordAgainstRules(password: string, rules: PasswordRules): boolean {
-  // Length check
-  if (password.length < rules.minLength) {
-    console.log('Failed length check');
-    return false;
-  }
-  if (rules.maxLength && password.length > rules.maxLength) {
-    console.log('Failed max length check');
-    return false;
-  }
+  // Kiểm tra độ dài
+  if (password.length < rules.minLength) return false;
+  if (rules.maxLength && password.length > rules.maxLength) return false;
 
-  // Character types check
+  // Kiểm tra các loại ký tự bắt buộc
   const hasUppercase = /[A-Z]/.test(password);
   const hasLowercase = /[a-z]/.test(password);
   const hasNumbers = /[0-9]/.test(password);
   const hasSymbols = /[!@#$%^&*()_+\-=[\]{};:,.<>?]/.test(password);
 
-  let charTypesUsed = 0;
-  if (rules.requiredCharTypes.uppercase && hasUppercase) charTypesUsed++;
-  if (rules.requiredCharTypes.lowercase && hasLowercase) charTypesUsed++;
-  if (rules.requiredCharTypes.numbers && hasNumbers) charTypesUsed++;
-  if (rules.requiredCharTypes.symbols && hasSymbols) charTypesUsed++;
+  if (rules.requiredCharTypes.uppercase && !hasUppercase) return false;
+  if (rules.requiredCharTypes.lowercase && !hasLowercase) return false;
+  if (rules.requiredCharTypes.numbers && !hasNumbers) return false;
+  if (rules.requiredCharTypes.symbols && !hasSymbols) return false;
 
-  if (charTypesUsed < rules.minCharTypesRequired) {
-    console.log('Failed character types check', {
-      required: rules.minCharTypesRequired,
-      used: charTypesUsed
-    });
-    return false;
-  }
+  // Kiểm tra số lượng loại ký tự tối thiểu
+  const usedTypes = [
+    hasUppercase && rules.requiredCharTypes.uppercase,
+    hasLowercase && rules.requiredCharTypes.lowercase,
+    hasNumbers && rules.requiredCharTypes.numbers,
+    hasSymbols && rules.requiredCharTypes.symbols
+  ].filter(Boolean).length;
+
+  if (usedTypes < rules.minCharTypesRequired) return false;
 
   // Pattern checks
-  if (!rules.patterns.allowCommonWords && /\b[a-z]{4,}\b/i.test(password)) {
-    console.log('Failed common words check');
-    return false;
-  }
-  if (!rules.patterns.allowKeyboardPatterns && /qwerty|asdf|zxcv/i.test(password)) {
-    console.log('Failed keyboard patterns check');
-    return false;
-  }
-  if (!rules.patterns.allowRepeatingChars && /(.)\1{2,}/.test(password)) {
-    console.log('Failed repeating chars check');
-    return false;
-  }
-  if (!rules.patterns.allowSequentialChars && /123|abc/i.test(password)) {
-    console.log('Failed sequential chars check');
-    return false;
-  }
+  if (!rules.patterns.allowCommonWords && /password|admin|root|123456/i.test(password)) return false;
+  if (!rules.patterns.allowKeyboardPatterns && /qwerty|asdf|zxcv/i.test(password)) return false;
+  if (!rules.patterns.allowRepeatingChars && /(.)\1{2,}/.test(password)) return false;
+  if (!rules.patterns.allowSequentialChars && /123|abc/i.test(password)) return false;
 
   // Excluded chars check
   for (const char of rules.excludedChars) {
-    if (password.includes(char)) {
-      console.log('Failed excluded chars check:', char);
-      return false;
-    }
+    if (password.includes(char)) return false;
   }
 
   return true;

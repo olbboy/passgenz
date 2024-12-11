@@ -10,11 +10,20 @@ const nextConfig = {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      config.optimization.minimizer.push(
+        new TerserPlugin({
+          terserOptions: {
+            compress: {
+              drop_console: true,
+            },
+          },
+        }),
+      );
+    }
+    return config;
+  },
 }
-
-console.log('Environment variables:', {
-  GROQ_API_KEY: process.env.NEXT_PUBLIC_GROQ_API_KEY,
-  NODE_ENV: process.env.NODE_ENV,
-});
 
 module.exports = nextConfig 
