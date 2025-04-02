@@ -46,21 +46,6 @@ export default function Home() {
                 open={showSettings} 
                 onOpenChange={setShowSettings} 
               />
-              {/* <Link 
-                href="https://github.com/olbboy/passgenz" 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <Button variant="outline" size="icon" className="w-9 h-9 transition-all duration-200 hover:scale-105 active:scale-95">
-                  <svg
-                    role="img"
-                    viewBox="0 0 24 24"
-                    className="h-5 w-5 fill-current"
-                  >
-                    <path d={siGithub.path} />
-                  </svg>
-                </Button>
-              </Link> */}
               <ThemeToggle />
             </div>
           </div>
