@@ -46,7 +46,7 @@ export default function Home() {
                 open={showSettings} 
                 onOpenChange={setShowSettings} 
               />
-              <Link 
+              {/* <Link 
                 href="https://github.com/olbboy/passgenz" 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -60,7 +60,7 @@ export default function Home() {
                     <path d={siGithub.path} />
                   </svg>
                 </Button>
-              </Link>
+              </Link> */}
               <ThemeToggle />
             </div>
           </div>
